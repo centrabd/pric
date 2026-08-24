@@ -3,94 +3,511 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قائمة المنتجات</title>
+    <title>منتجاتنا - المتجر</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background: #f4f7fc; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: auto; }
-        h1 { text-align: center; color: #2c3e50; }
-        .filters { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 30px; }
-        .filters button { padding: 10px 20px; border: none; border-radius: 30px; background: #ecf0f1; cursor: pointer; font-weight: bold; }
-        .filters button.active { background: #3498db; color: white; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 15px; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: 0.3s; text-align: center; }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; background: #eee; }
-        .card h3 { margin: 10px 0 5px; }
-        .card .price { color: #27ae60; font-size: 22px; font-weight: bold; }
-        .card .status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 14px; margin-top: 10px; }
-        .status.available { background: #d4edda; color: #155724; }
-        .status.unavailable { background: #f8d7da; color: #721c24; }
-        .loading { text-align: center; font-size: 24px; padding: 50px; }
-        .error { color: red; text-align: center; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Tahoma', sans-serif;
+        }
+        body {
+            background: #f0f4f9;
+            padding: 25px 15px;
+        }
+        .container {
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 32px;
+            color: #1a2634;
+            position: relative;
+            display: inline-block;
+        }
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: #3498db;
+            border-radius: 4px;
+        }
+        .header p {
+            color: #7f8c8d;
+            margin-top: 15px;
+        }
+
+        /* Controls (Search + Sort) */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 35px;
+            background: white;
+            padding: 18px 25px;
+            border-radius: 60px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+        .controls input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border: 2px solid #e9edf2;
+            border-radius: 40px;
+            font-size: 16px;
+            background: #f8fafc;
+            transition: 0.3s;
+            outline: none;
+        }
+        .controls input:focus {
+            border-color: #3498db;
+            background: white;
+        }
+        .controls select {
+            padding: 12px 20px;
+            border: 2px solid #e9edf2;
+            border-radius: 40px;
+            font-size: 16px;
+            background: #f8fafc;
+            outline: none;
+            cursor: pointer;
+        }
+        .controls .badge-count {
+            background: #e9edf2;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 25px;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+        .card .code {
+            font-size: 13px;
+            color: #95a5a6;
+            direction: ltr;
+            text-align: left;
+            margin-bottom: 8px;
+            background: #f8fafc;
+            padding: 3px 10px;
+            border-radius: 30px;
+            display: inline-block;
+            align-self: flex-start;
+        }
+        .card h3 {
+            font-size: 20px;
+            color: #1a2634;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            min-height: 52px;
+        }
+        .prices {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 8px 0 12px;
+        }
+        .prices span {
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .prices .cash { color: #27ae60; background: #eafaf1; }
+        .prices .inst { color: #2980b9; background: #eaf4fb; }
+        .card .qty {
+            font-size: 15px;
+            color: #34495e;
+            margin: 5px 0 12px;
+        }
+        .card .qty strong {
+            color: #e67e22;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 16px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            align-self: flex-start;
+            margin-top: 5px;
+        }
+        .status-badge.available {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-badge.unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Loading & Sentinel */
+        .loading-spinner {
+            text-align: center;
+            padding: 30px 0;
+            font-size: 18px;
+            color: #7f8c8d;
+            grid-column: 1 / -1;
+        }
+        .loading-spinner .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #e9edf2;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 12px;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .sentinel {
+            height: 10px;
+            grid-column: 1 / -1;
+        }
+
+        .error-box {
+            text-align: center;
+            padding: 40px;
+            color: #e74c3c;
+            background: #fde8e8;
+            border-radius: 16px;
+            grid-column: 1 / -1;
+        }
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            grid-column: 1 / -1;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .controls { border-radius: 30px; flex-direction: column; align-items: stretch; }
+            .controls .badge-count { justify-content: center; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🍽️ قائمة طعامنا</h1>
-        <div id="filterButtons" class="filters"></div>
-        <div id="menuGrid" class="grid"></div>
+        <div class="header">
+            <h1>🛍️ منتجاتنا</h1>
+            <p>استعرض أحدث المنتجات والأسعار</p>
+        </div>
+
+        <!-- أدوات التحكم -->
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج..." />
+            <select id="sortSelect">
+                <option value="name">ترتيب حسب الاسم</option>
+                <option value="cashPrice">ترتيب حسب سعر الكاش</option>
+                <option value="installPrice">ترتيب حسب سعر القسط</option>
+            </select>
+            <select id="orderSelect">
+                <option value="asc">تصاعدي</option>
+                <option value="desc">تنازلي</option>
+            </select>
+            <span class="badge-count" id="totalBadge">إجمالي: 0</span>
+        </div>
+
+        <!-- شبكة المنتجات -->
+        <div id="productGrid" class="grid">
+            <!-- سيتم إدراج العناصر هنا -->
+            <div class="loading-spinner" id="initialLoader">
+                <span class="spinner"></span> جاري التحميل...
+            </div>
+        </div>
+
+        <!-- عنصر المراقبة للتمرير اللانهائي -->
+        <div id="sentinel" class="sentinel"></div>
     </div>
 
     <script>
-        // ✏️ غيّر الرابط ده برابط Web App اللي خدته من جوجل Apps Script
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxuurZO98FfvtUqI7P-B9eIacBwTijI6VfZGj9JrHcxXA2mppq7znI1qIJKw8gJE58f/exec';
+        (function() {
+            // ⚠️ استبدل الرابط أدناه برابط Web App الخاص بك (بدون مسافات)
+            const API_URL = 'https://script.google.com/macros/s/AKfycbxuurZO98FfvtUqI7P-B9eIacBwTijI6VfZGj9JrHcxXA2mppq7znI1qIJKw8gJE58f/exec';
 
-        let allItems = [];
-        let currentFilter = 'الكل';
+            // حالة التطبيق
+            const state = {
+                items: [],
+                offset: 0,
+                limit: 20,
+                total: 0,
+                hasMore: true,
+                isLoading: false,
+                search: '',
+                sort: 'name',
+                order: 'asc',
+                initialLoadDone: false
+            };
 
-        async function fetchMenu() {
-            try {
-                document.getElementById('menuGrid').innerHTML = '<div class="loading">⏳ جاري تحميل المنيو...</div>';
-                const response = await fetch(`${API_URL}?action=getMenu`);
-                const result = await response.json();
-                
-                if (result.error) throw new Error(result.error);
-                allItems = result.data || [];
-                renderFilters();
-                renderMenu(currentFilter);
-            } catch (error) {
-                document.getElementById('menuGrid').innerHTML = `<div class="error">❌ فشل التحميل: ${error.message}</div>`;
-            }
-        }
+            const grid = document.getElementById('productGrid');
+            const sentinel = document.getElementById('sentinel');
+            const searchInput = document.getElementById('searchInput');
+            const sortSelect = document.getElementById('sortSelect');
+            const orderSelect = document.getElementById('orderSelect');
+            const totalBadge = document.getElementById('totalBadge');
 
-        function renderFilters() {
-            const categories = ['الكل', ...new Set(allItems.map(item => item.category).filter(Boolean))];
-            const container = document.getElementById('filterButtons');
-            container.innerHTML = categories.map(cat => 
-                `<button class="${cat === currentFilter ? 'active' : ''}" onclick="filterItems('${cat}')">${cat}</button>`
-            ).join('');
-        }
-
-        function filterItems(category) {
-            currentFilter = category;
-            document.querySelectorAll('#filterButtons button').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            renderMenu(category);
-        }
-
-        function renderMenu(category) {
-            const grid = document.getElementById('menuGrid');
-            const filtered = category === 'الكل' ? allItems : allItems.filter(item => item.category === category);
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">لا توجد منتجات في هذا القسم</p>';
-                return;
+            // بناء URL مع البارامترات
+            function buildUrl() {
+                const params = new URLSearchParams();
+                params.append('action', 'getMenu');
+                params.append('offset', state.offset);
+                params.append('limit', state.limit);
+                params.append('search', state.search);
+                params.append('sort', state.sort);
+                params.append('order', state.order);
+                return `${API_URL}?${params.toString()}`;
             }
 
-            grid.innerHTML = filtered.map(item => `
-                <div class="card">
-                    <img src="${item.image || 'https://via.placeholder.com/250x180?text=No+Image'}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/250x180?text=Error'">
-                    <h3>${item.name}</h3>
-                    <div class="price">${item.price} ج.م</div>
-                    <span class="status ${item.available ? 'available' : 'unavailable'}">
-                        ${item.available ? '✅ متوفر' : '❌ غير متوفر'}
-                    </span>
-                </div>
-            `).join('');
-        }
+            // جلب البيانات
+            async function fetchItems(reset = false) {
+                if (state.isLoading) return;
+                if (!reset && !state.hasMore) return;
 
-        // تحميل البيانات عند فتح الصفحة
-        fetchMenu();
+                if (reset) {
+                    state.offset = 0;
+                    state.items = [];
+                    state.hasMore = true;
+                    grid.innerHTML = '';
+                    // نضيف مؤقت تحميل
+                    const loader = document.createElement('div');
+                    loader.className = 'loading-spinner';
+                    loader.id = 'fetchLoader';
+                    loader.innerHTML = '<span class="spinner"></span> جاري التحميل...';
+                    grid.appendChild(loader);
+                }
+
+                state.isLoading = true;
+
+                try {
+                    const response = await fetch(buildUrl());
+                    const result = await response.json();
+
+                    // معالجة الأخطاء
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+
+                    const newItems = result.data || [];
+                    state.total = result.total || 0;
+
+                    // إزالة مؤقت التحميل
+                    const loader = document.getElementById('fetchLoader');
+                    if (loader) loader.remove();
+
+                    if (reset) {
+                        state.items = newItems;
+                    } else {
+                        state.items = [...state.items, ...newItems];
+                    }
+
+                    // تحديث hasMore
+                    state.hasMore = state.items.length < state.total;
+
+                    // تحديث العرض
+                    renderItems(reset);
+
+                    // تحديث العداد
+                    totalBadge.textContent = `إجمالي: ${state.total}`;
+
+                    // زيادة الـ offset للصفحة التالية
+                    if (!reset) {
+                        state.offset += state.limit;
+                    } else {
+                        state.offset = state.limit;
+                    }
+
+                    state.initialLoadDone = true;
+
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    // إزالة مؤقت التحميل
+                    const loader = document.getElementById('fetchLoader');
+                    if (loader) loader.remove();
+
+                    // عرض رسالة خطأ
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-box';
+                    errorDiv.innerHTML = `❌ فشل التحميل: ${error.message}<br><small>تأكد من صلاحيات Web App (Anyone) وصحة الرابط</small>`;
+                    grid.appendChild(errorDiv);
+                    state.hasMore = false;
+                } finally {
+                    state.isLoading = false;
+                }
+            }
+
+            // عرض العناصر
+            function renderItems(reset) {
+                if (reset) {
+                    // إزالة كل شيء عدا sentinel
+                    while (grid.firstChild) {
+                        if (grid.firstChild.id === 'sentinel') break;
+                        grid.removeChild(grid.firstChild);
+                    }
+                } else {
+                    // إزالة رسالة "لا توجد نتائج" أو "خطأ" السابقة
+                    const toRemove = grid.querySelectorAll('.no-results, .error-box, #fetchLoader');
+                    toRemove.forEach(el => el.remove());
+                }
+
+                if (state.items.length === 0 && state.initialLoadDone) {
+                    const noRes = document.createElement('div');
+                    noRes.className = 'no-results';
+                    noRes.textContent = '😕 لا توجد منتجات تطابق بحثك.';
+                    grid.appendChild(noRes);
+                    return;
+                }
+
+                // إضافة البطاقات الجديدة فقط (آخر 20 عنصر مضافين)
+                // لكن نفضل إعادة رسم الكل عشان الترتيب يتغير
+                if (reset) {
+                    state.items.forEach(item => {
+                        grid.appendChild(createCard(item));
+                    });
+                } else {
+                    // نضيف العناصر الجديدة فقط (آخر دفعة)
+                    const startIndex = state.items.length - state.limit;
+                    const newBatch = state.items.slice(startIndex);
+                    newBatch.forEach(item => {
+                        grid.appendChild(createCard(item));
+                    });
+                }
+
+                // تحديث sentinel مكانه
+                const existingSentinel = document.getElementById('sentinel');
+                if (existingSentinel) grid.appendChild(existingSentinel);
+            }
+
+            // إنشاء بطاقة منتج
+            function createCard(item) {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                const code = document.createElement('div');
+                code.className = 'code';
+                code.textContent = `📦 ${item.id}`;
+                card.appendChild(code);
+
+                const name = document.createElement('h3');
+                name.textContent = item.name;
+                card.appendChild(name);
+
+                const pricesDiv = document.createElement('div');
+                pricesDiv.className = 'prices';
+                const cashSpan = document.createElement('span');
+                cashSpan.className = 'cash';
+                cashSpan.textContent = `💰 ${item.cashPrice} ج.م`;
+                const instSpan = document.createElement('span');
+                instSpan.className = 'inst';
+                instSpan.textContent = `📆 ${item.installPrice} ج.م`;
+                pricesDiv.appendChild(cashSpan);
+                pricesDiv.appendChild(instSpan);
+                card.appendChild(pricesDiv);
+
+                const qty = document.createElement('div');
+                qty.className = 'qty';
+                qty.innerHTML = `📊 الكمية: <strong>${item.quantity}</strong>`;
+                card.appendChild(qty);
+
+                const status = document.createElement('span');
+                status.className = `status-badge ${item.available ? 'available' : 'unavailable'}`;
+                status.textContent = item.available ? '✅ متوفر' : '❌ غير متوفر';
+                card.appendChild(status);
+
+                return card;
+            }
+
+            // مراقبة التمرير (Infinite Scroll)
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && state.hasMore && !state.isLoading) {
+                        fetchItems(false);
+                    }
+                });
+            }, { rootMargin: '0px 0px 100px 0px' });
+
+            observer.observe(sentinel);
+
+            // أحداث البحث والترتيب (تعيد التحميل من الصفر)
+            function resetAndFetch() {
+                state.search = searchInput.value;
+                state.sort = sortSelect.value;
+                state.order = orderSelect.value;
+                // إعادة تعيين كل شيء
+                const oldItems = state.items;
+                state.items = [];
+                state.offset = 0;
+                state.hasMore = true;
+                state.initialLoadDone = false;
+                // مسح الشبكة مع الاحتفاظ بالسنتينل
+                while (grid.firstChild) {
+                    if (grid.firstChild.id === 'sentinel') break;
+                    grid.removeChild(grid.firstChild);
+                }
+                // إضافة محمل
+                const loader = document.createElement('div');
+                loader.className = 'loading-spinner';
+                loader.id = 'fetchLoader';
+                loader.innerHTML = '<span class="spinner"></span> جاري البحث...';
+                grid.appendChild(loader);
+
+                fetchItems(true);
+            }
+
+            // ربط الأحداث
+            searchInput.addEventListener('input', resetAndFetch);
+            sortSelect.addEventListener('change', resetAndFetch);
+            orderSelect.addEventListener('change', resetAndFetch);
+
+            // تحميل أولي
+            fetchItems(true);
+
+            // لو فشل بسبب CORS أو الرابط، نعرض رسالة واضحة
+            window.addEventListener('unhandledrejection', (e) => {
+                if (e.reason && e.reason.message) {
+                    // تجاهل لتجنب تكرار الرسائل
+                }
+            });
+
+        })();
     </script>
 </body>
 </html>
