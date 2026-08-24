@@ -1,300 +1,87 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منتجاتنا - المتجر</title>
+    <title>كتالوج المنتجات - المتجر الذكي</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', 'Tahoma', sans-serif;
-        }
-        body {
-            background: #f4f7fc;
-            padding: 25px 15px;
-        }
-        .container {
-            max-width: 1300px;
-            margin: auto;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #f4f7fc; padding: 25px 15px; padding-bottom: 90px; }
+        .container { max-width: 1300px; margin: auto; }
 
         /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            font-size: 32px;
-            color: #1a2634;
-            position: relative;
-            display: inline-block;
-        }
-        .header h1::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: #3498db;
-            border-radius: 4px;
-        }
-        .header p {
-            color: #7f8c8d;
-            margin-top: 15px;
-        }
-        .header .cache-badge {
-            font-size: 12px;
-            background: #e9edf2;
-            padding: 4px 12px;
-            border-radius: 20px;
-            color: #555;
-            display: inline-block;
-            margin-top: 5px;
-        }
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 { font-size: 32px; color: #1a2634; display: inline-block; position: relative; }
+        .header p { color: #7f8c8d; margin-top: 10px; }
+        .header .cache-badge { font-size: 12px; background: #e9edf2; padding: 4px 12px; border-radius: 20px; color: #555; display: inline-block; margin-top: 5px; }
 
         /* Controls */
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 35px;
-            background: white;
-            padding: 18px 25px;
-            border-radius: 60px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-        }
-        .controls input {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 20px;
-            border: 2px solid #e9edf2;
-            border-radius: 40px;
-            font-size: 16px;
-            background: #f8fafc;
-            transition: 0.3s;
-            outline: none;
-        }
-        .controls input:focus {
-            border-color: #3498db;
-            background: white;
-        }
-        .controls select {
-            padding: 12px 20px;
-            border: 2px solid #e9edf2;
-            border-radius: 40px;
-            font-size: 16px;
-            background: #f8fafc;
-            outline: none;
-            cursor: pointer;
-        }
-        .controls .badge-count {
-            background: #e9edf2;
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 14px;
-            color: #2c3e50;
-            display: flex;
-            align-items: center;
-        }
+        .controls { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 25px; background: white; padding: 18px 25px; border-radius: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .controls input, .controls select { padding: 10px 18px; border: 2px solid #e9edf2; border-radius: 30px; font-size: 15px; background: #f8fafc; outline: none; transition: 0.3s; }
+        .controls input:focus, .controls select:focus { border-color: #3498db; background: white; }
+        .controls .badge-count { background: #e9edf2; padding: 6px 18px; border-radius: 30px; font-size: 14px; color: #2c3e50; display: flex; align-items: center; }
 
-        /* Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 25px;
-        }
-
-        /* Card */
-        .card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(0,0,0,0.02);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            animation: fadeUp 0.4s ease;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-        }
-        .card .code {
-            font-size: 13px;
-            color: #95a5a6;
-            direction: ltr;
-            text-align: left;
-            margin-bottom: 8px;
-            background: #f8fafc;
-            padding: 3px 10px;
-            border-radius: 30px;
-            display: inline-block;
-            align-self: flex-start;
-        }
-        .card h3 {
-            font-size: 20px;
-            color: #1a2634;
-            margin-bottom: 12px;
-            line-height: 1.4;
-            min-height: 52px;
-        }
-        .prices {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin: 8px 0 12px;
-        }
-        .prices span {
-            background: #f1f5f9;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: 600;
-        }
+        /* Grid & Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 18px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); transition: 0.3s; display: flex; flex-direction: column; position: relative; border: 1px solid rgba(0,0,0,0.03); }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.08); }
+        
+        .card-img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; background: #f8fafc; margin-bottom: 12px; cursor: pointer; }
+        .wishlist-btn { position: absolute; top: 25px; left: 25px; background: rgba(255,255,255,0.9); border: none; font-size: 18px; cursor: pointer; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        
+        .card .code { font-size: 12px; color: #95a5a6; direction: ltr; text-align: left; margin-bottom: 6px; background: #f8fafc; padding: 2px 8px; border-radius: 20px; align-self: flex-start; }
+        .card h3 { font-size: 18px; color: #1a2634; margin-bottom: 8px; cursor: pointer; min-height: 48px; line-height: 1.3; }
+        
+        .prices { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0; }
+        .prices span { padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 600; }
         .prices .cash { color: #27ae60; background: #eafaf1; }
         .prices .inst { color: #2980b9; background: #eaf4fb; }
-        .card .qty {
-            font-size: 15px;
-            color: #34495e;
-            margin: 5px 0 12px;
-        }
-        .card .qty strong {
-            color: #e67e22;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 5px 16px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            align-self: flex-start;
-            margin-top: 5px;
-        }
-        .status-badge.available {
-            background: #d4edda;
-            color: #155724;
-        }
-        .status-badge.unavailable {
-            background: #f8d7da;
-            color: #721c24;
-        }
 
-        /* Skeleton Screen (بديل الدائرة اللانهائية) */
-        .skeleton-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 25px;
-        }
-        .skeleton-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-            border: 1px solid #f0f2f5;
-            height: 280px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .skeleton-line {
-            background: linear-gradient(90deg, #f0f2f5 25%, #e4e7ec 50%, #f0f2f5 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 10px;
-        }
-        .skeleton-line.title { height: 24px; width: 80%; }
-        .skeleton-line.price { height: 20px; width: 60%; }
-        .skeleton-line.qty { height: 18px; width: 40%; }
-        .skeleton-line.status { height: 22px; width: 50%; }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
+        .card-actions { margin-top: auto; padding-top: 10px; display: flex; gap: 8px; }
+        .btn { flex: 1; padding: 10px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; }
+        .btn-cart { background: #3498db; color: white; }
+        .btn-cart:hover { background: #2980b9; }
 
-        .loading-spinner {
-            text-align: center;
-            padding: 30px 0;
-            font-size: 18px;
-            color: #7f8c8d;
-            grid-column: 1 / -1;
-        }
-        .loading-spinner .spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 4px solid #e9edf2;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-left: 12px;
-            vertical-align: middle;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* Floating Cart Bar */
+        .floating-cart { position: fixed; bottom: 20px; right: 20px; left: 20px; max-width: 500px; margin: auto; background: #1a2634; color: white; padding: 12px 24px; border-radius: 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 999; }
+        .floating-cart .wa-btn { background: #25d366; color: white; padding: 8px 18px; border-radius: 30px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; }
 
-        .sentinel {
-            height: 10px;
-            grid-column: 1 / -1;
-        }
+        /* Modal Details */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; padding: 15px; }
+        .modal-content { background: white; border-radius: 20px; max-width: 500px; width: 100%; padding: 25px; position: relative; }
+        .close-modal { position: absolute; top: 15px; left: 15px; font-size: 20px; cursor: pointer; border: none; background: none; }
 
-        .error-box {
-            text-align: center;
-            padding: 40px;
-            color: #e74c3c;
-            background: #fde8e8;
-            border-radius: 16px;
-            grid-column: 1 / -1;
-        }
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            grid-column: 1 / -1;
-            font-size: 18px;
-        }
+        /* Skeleton */
+        .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; width: 100%; }
+        .skeleton-card { background: white; border-radius: 18px; padding: 15px; height: 320px; display: flex; flex-direction: column; gap: 10px; }
+        .skeleton-line { background: linear-gradient(90deg, #f0f2f5 25%, #e4e7ec 50%, #f0f2f5 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+        .skeleton-line.img { height: 140px; }
+        .skeleton-line.title { height: 20px; width: 80%; }
+        .skeleton-line.price { height: 18px; width: 50%; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-        /* تحديث صغير للـ controls */
-        .status-update-badge {
-            background: #2ecc71;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .controls { border-radius: 30px; flex-direction: column; align-items: stretch; }
-            .controls .badge-count { justify-content: center; }
-        }
+        .sentinel { height: 10px; grid-column: 1 / -1; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🛍️ منتجاتنا</h1>
-            <p>استعرض أحدث المنتجات والأسعار</p>
+            <h1>🛍️ كتالوج المنتجات</h1>
+            <p>تصفح المنتجات وأطلب مباشرة عبر الواتساب</p>
             <div class="cache-badge" id="cacheStatus">📡 جاري التحميل...</div>
         </div>
 
-        <!-- أدوات التحكم -->
+        <!-- أدوات التحكم والتصفية -->
         <div class="controls">
             <input type="text" id="searchInput" placeholder="🔍 ابحث عن منتج..." />
+            <select id="categorySelect">
+                <option value="">جميع الأقسام</option>
+            </select>
             <select id="sortSelect">
-                <option value="name">ترتيب حسب الاسم</option>
-                <option value="cashPrice">ترتيب حسب سعر الكاش</option>
-                <option value="installPrice">ترتيب حسب سعر القسط</option>
+                <option value="name">الاسم</option>
+                <option value="cashPrice">سعر الكاش</option>
+                <option value="installPrice">سعر القسط</option>
             </select>
             <select id="orderSelect">
                 <option value="asc">تصاعدي</option>
@@ -304,142 +91,153 @@
         </div>
 
         <!-- شبكة المنتجات -->
-        <div id="productGrid" class="grid">
-            <!-- هنا سيتم عرض الـ Skeleton أو البطاقات -->
-        </div>
-
-        <!-- عنصر المراقبة للتمرير اللانهائي -->
+        <div id="productGrid" class="grid"></div>
         <div id="sentinel" class="sentinel"></div>
+    </div>
+
+    <!-- شريط السلة العائم -->
+    <div class="floating-cart" id="floatingCart" style="display: none;">
+        <div>🛒 العناصر: <span id="cartCount">0</span> | الإجمالي: <span id="cartTotal">0</span> ج.م</div>
+        <button class="wa-btn" id="whatsappCheckoutBtn">📲 أطلب عبر WhatsApp</button>
+    </div>
+
+    <!-- نافذة تفاصيل المنتج -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">✕</button>
+            <div id="modalBody"></div>
+        </div>
     </div>
 
     <script>
         (function() {
-            // ============================================
-            // 1. الإعدادات الأساسية
-            // ============================================
-            const API_URL = 'https://script.google.com/macros/s/AKfycbxD8yE9o2-GQd0K8WDxdpfXD0C7O3LK6d9DINFxPeB7P2i95XrWzcaFDSQE0pP0bd1Q/exec';
-            const CACHE_KEY = 'product_data_cache';
-            const CACHE_EXPIRY = 5 * 60 * 1000; // 5 دقائق صلاحية الكاش (عشان نضمن عدم انتهاء صلاحية جوجل)
-            const PAGE_LIMIT = 40; // زيادة العدد لتقليل الطلبات
+            const CONFIG = {
+                API_URL: 'https://script.google.com/macros/s/AKfycbxD8yE9o2-GQd0K8WDxdpfXD0C7O3LK6d9DINFxPeB7P2i95XrWzcaFDSQE0pP0bd1Q/exec',
+                WHATSAPP_NUMBER: '201000000000', // ضع رقم الواتساب الخاص بالمتجر هنا
+                CACHE_KEY: 'product_data_cache_v2',
+                CACHE_EXPIRY: 5 * 60 * 1000,
+                PAGE_LIMIT: 40
+            };
 
-            // ============================================
-            // 2. دوال إدارة الكاش (التخزين المؤقت)
-            // ============================================
-            function getCache() {
-                try {
-                    const raw = localStorage.getItem(CACHE_KEY);
-                    if (!raw) return null;
-                    const cache = JSON.parse(raw);
-                    // التحقق من صلاحية الكاش (تجنب استخدام بيانات قديمة جداً)
-                    if (Date.now() - cache.timestamp > CACHE_EXPIRY) {
-                        return null; // منتهي الصلاحية
-                    }
-                    return cache;
-                } catch (e) {
-                    return null;
-                }
-            }
-
-            function setCache(data, total, hash) {
-                try {
-                    const cache = {
-                        data: data,
-                        total: total,
-                        hash: hash || Date.now(), // لو مش موجود نستخدم الوقت
-                        timestamp: Date.now()
-                    };
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-                } catch (e) { /* مساحة تخزين ممتلئة */ }
-            }
-
-            function clearCache() {
-                localStorage.removeItem(CACHE_KEY);
-            }
-
-            // حساب Hash بسيط للبيانات (عدد العناصر + تاريخ آخر تحديث في الشيت)
-            // ملحوظة: احنا بنحسبها من الـ data نفسها عشان نقارن
-            function computeDataHash(items) {
-                // بناخد أول 10 عناصر + العدد الكلي + اسم أول عنصر
-                if (!items || items.length === 0) return 'empty';
-                const sample = items.slice(0, 5).map(i => i.id + i.name).join('');
-                return items.length + '-' + sample;
-            }
-
-            // ============================================
-            // 3. عناصر DOM والحالة
-            // ============================================
             const state = {
                 items: [],
+                cart: JSON.parse(localStorage.getItem('cart_items') || '[]'),
+                wishlist: JSON.parse(localStorage.getItem('wishlist_items') || '[]'),
                 offset: 0,
-                limit: PAGE_LIMIT,
                 total: 0,
                 hasMore: true,
                 isLoading: false,
                 search: '',
+                category: '',
                 sort: 'name',
-                order: 'asc',
-                initialLoadDone: false,
-                isCacheLoaded: false // هل عرضنا الكاش ولا لأ
+                order: 'asc'
             };
 
-            const grid = document.getElementById('productGrid');
-            const sentinel = document.getElementById('sentinel');
-            const searchInput = document.getElementById('searchInput');
-            const sortSelect = document.getElementById('sortSelect');
-            const orderSelect = document.getElementById('orderSelect');
-            const totalBadge = document.getElementById('totalBadge');
-            const cacheStatus = document.getElementById('cacheStatus');
+            const dom = {
+                grid: document.getElementById('productGrid'),
+                sentinel: document.getElementById('sentinel'),
+                searchInput: document.getElementById('searchInput'),
+                categorySelect: document.getElementById('categorySelect'),
+                sortSelect: document.getElementById('sortSelect'),
+                orderSelect: document.getElementById('orderSelect'),
+                totalBadge: document.getElementById('totalBadge'),
+                cacheStatus: document.getElementById('cacheStatus'),
+                floatingCart: document.getElementById('floatingCart'),
+                cartCount: document.getElementById('cartCount'),
+                cartTotal: document.getElementById('cartTotal'),
+                whatsappBtn: document.getElementById('whatsappCheckoutBtn'),
+                modal: document.getElementById('productModal'),
+                modalBody: document.getElementById('modalBody'),
+                closeModal: document.getElementById('closeModal')
+            };
 
-            // ============================================
-            // 4. دوال مساعدة للـ UI
-            // ============================================
-            function showSkeletons(count = 6) {
-                grid.innerHTML = '';
-                const wrapper = document.createElement('div');
-                wrapper.className = 'skeleton-grid';
-                for (let i = 0; i < count; i++) {
-                    const card = document.createElement('div');
-                    card.className = 'skeleton-card';
-                    card.innerHTML = `
-                        <div class="skeleton-line title"></div>
-                        <div class="skeleton-line price"></div>
-                        <div class="skeleton-line qty"></div>
-                        <div class="skeleton-line status"></div>
-                    `;
-                    wrapper.appendChild(card);
+            // تتبع الأحداث (Analytics Event Tracker)
+            function trackEvent(eventName, payload) {
+                console.log(`[Analytics Event]: ${eventName}`, payload);
+                // يمكن ربطه بـ gtag أو Facebook Pixel هنا
+            }
+
+            // إدارة السلة والمفضلة
+            function saveCart() {
+                localStorage.setItem('cart_items', JSON.stringify(state.cart));
+                updateCartUI();
+            }
+
+            function saveWishlist() {
+                localStorage.setItem('wishlist_items', JSON.stringify(state.wishlist));
+            }
+
+            function updateCartUI() {
+                const totalQty = state.cart.reduce((sum, item) => sum + item.qty, 0);
+                const totalPrice = state.cart.reduce((sum, item) => sum + (item.cashPrice * item.qty), 0);
+                
+                dom.cartCount.textContent = totalQty;
+                dom.cartTotal.textContent = totalPrice;
+                dom.floatingCart.style.display = totalQty > 0 ? 'flex' : 'none';
+            }
+
+            function addToCart(item) {
+                const existing = state.cart.find(i => i.id === item.id);
+                if (existing) {
+                    existing.qty += 1;
+                } else {
+                    state.cart.push({ ...item, qty: 1 });
                 }
-                grid.appendChild(wrapper);
-                // إضافة السنتينل (لازم يكون موجود)
-                grid.appendChild(sentinel);
+                saveCart();
+                trackEvent('add_to_cart', { id: item.id, name: item.name });
             }
 
-            function showError(message) {
-                grid.innerHTML = '';
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-box';
-                errorDiv.innerHTML = `
-                    ❌ فشل التحميل: ${message}
-                    <br><small style="display:block; margin-top:10px;">
-                    ✅ تأكد من صلاحيات Web App وأعد النشر
-                    </small>
-                `;
-                grid.appendChild(errorDiv);
-                grid.appendChild(sentinel);
-                cacheStatus.textContent = '⚠️ خطأ';
+            function toggleWishlist(id) {
+                const index = state.wishlist.indexOf(id);
+                if (index > -1) {
+                    state.wishlist.splice(index, 1);
+                } else {
+                    state.wishlist.push(id);
+                }
+                saveWishlist();
+                renderItems(true);
             }
 
-            function showNoResults() {
-                const noRes = document.createElement('div');
-                noRes.className = 'no-results';
-                noRes.textContent = '😕 لا توجد منتجات تطابق بحثك.';
-                grid.appendChild(noRes);
-                grid.appendChild(sentinel);
-            }
+            // تحويل الطلب إلى واتساب
+            dom.whatsappBtn.addEventListener('click', () => {
+                if (state.cart.length === 0) return;
+                
+                let text = "مرحباً، أريد إتمام طلب المنتجات التالية:\n\n";
+                let total = 0;
+                
+                state.cart.forEach((item, index) => {
+                    const subtotal = item.cashPrice * item.qty;
+                    total += subtotal;
+                    text += `${index + 1}. *${item.name}*\n   • الكود: ${item.id}\n   • الكمية: ${item.qty}\n   • السعر: ${subtotal} ج.م\n\n`;
+                });
 
-            // إنشاء بطاقة منتج
+                text += `*الإجمالي الكلي:* ${total} ج.م`;
+                
+                trackEvent('checkout_whatsapp', { total, count: state.cart.length });
+                const waUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+                window.open(waUrl, '_blank');
+            });
+
+            // إنشاء بطاقات المنتجات أماناً بدون InnerHTML عشوائي (XSS Protection)
             function createCard(item) {
                 const card = document.createElement('div');
                 card.className = 'card';
+
+                // زر المفضلة
+                const wishBtn = document.createElement('button');
+                wishBtn.className = 'wishlist-btn';
+                wishBtn.textContent = state.wishlist.includes(item.id) ? '❤️' : '🤍';
+                wishBtn.onclick = (e) => { e.stopPropagation(); toggleWishlist(item.id); };
+                card.appendChild(wishBtn);
+
+                // الصورة مع التحميل الكسلان
+                const img = document.createElement('img');
+                img.className = 'card-img';
+                img.loading = 'lazy';
+                img.src = item.image || 'https://via.placeholder.com/300x200?text=لا+توجد+صورة';
+                img.alt = item.name;
+                img.onclick = () => openModal(item);
+                card.appendChild(img);
 
                 const code = document.createElement('div');
                 code.className = 'code';
@@ -448,333 +246,128 @@
 
                 const name = document.createElement('h3');
                 name.textContent = item.name;
+                name.onclick = () => openModal(item);
                 card.appendChild(name);
 
                 const pricesDiv = document.createElement('div');
                 pricesDiv.className = 'prices';
-                const cashSpan = document.createElement('span');
-                cashSpan.className = 'cash';
-                cashSpan.textContent = `💰 ${item.cashPrice} ج.م`;
-                const instSpan = document.createElement('span');
-                instSpan.className = 'inst';
-                instSpan.textContent = `📆 ${item.installPrice} ج.م`;
-                pricesDiv.appendChild(cashSpan);
-                pricesDiv.appendChild(instSpan);
+                pricesDiv.innerHTML = `<span class="cash">💰 ${item.cashPrice} ج.م</span> <span class="inst">📆 ${item.installPrice} ج.م</span>`;
                 card.appendChild(pricesDiv);
 
-                const qty = document.createElement('div');
-                qty.className = 'qty';
-                qty.innerHTML = `📊 الكمية: <strong>${item.quantity}</strong>`;
-                card.appendChild(qty);
-
-                const status = document.createElement('span');
-                status.className = `status-badge ${item.available ? 'available' : 'unavailable'}`;
-                status.textContent = item.available ? '✅ متوفر' : '❌ غير متوفر';
-                card.appendChild(status);
+                const actions = document.createElement('div');
+                actions.className = 'card-actions';
+                
+                const btnCart = document.createElement('button');
+                btnCart.className = 'btn btn-cart';
+                btnCart.textContent = '🛒 إضافة للسلة';
+                btnCart.onclick = () => addToCart(item);
+                
+                actions.appendChild(btnCart);
+                card.appendChild(actions);
 
                 return card;
             }
 
-            // عرض البيانات (مع الاحتفاظ بالسنتينل)
+            function openModal(item) {
+                dom.modalBody.innerHTML = `
+                    <img src="${item.image || 'https://via.placeholder.com/300x200'}" style="width:100%; border-radius:12px; margin-bottom:15px;">
+                    <h2>${item.name}</h2>
+                    <p style="color:#7f8c8d; margin: 8px 0;">الكود: ${item.id}</p>
+                    <p style="margin: 10px 0;">سعر الكاش: <strong>${item.cashPrice} ج.م</strong></p>
+                    <p style="margin: 10px 0;">سعر القسط: <strong>${item.installPrice} ج.م</strong></p>
+                    <p style="margin: 10px 0;">الكمية المتاحة: <strong>${item.quantity}</strong></p>
+                `;
+                dom.modal.style.display = 'flex';
+                trackEvent('view_item_modal', { id: item.id });
+            }
+
+            dom.closeModal.onclick = () => dom.modal.style.display = 'none';
+
+            // عرض البطاقات
             function renderItems(reset) {
                 if (reset) {
-                    // نمسح كل حاجة عدا السنتينل
-                    while (grid.firstChild) {
-                        if (grid.firstChild.id === 'sentinel') break;
-                        grid.removeChild(grid.firstChild);
+                    while (dom.grid.firstChild) {
+                        if (dom.grid.firstChild.id === 'sentinel') break;
+                        dom.grid.removeChild(dom.grid.firstChild);
                     }
-                } else {
-                    // نمسح رسائل الخطأ أو "لا نتائج" السابقة
-                    const toRemove = grid.querySelectorAll('.no-results, .error-box');
-                    toRemove.forEach(el => el.remove());
                 }
 
-                if (state.items.length === 0 && state.initialLoadDone) {
-                    showNoResults();
-                    return;
-                }
+                state.items.forEach(item => {
+                    dom.grid.appendChild(createCard(item));
+                });
 
-                // إضافة البطاقات الجديدة
-                if (reset) {
-                    state.items.forEach(item => {
-                        grid.appendChild(createCard(item));
-                    });
-                } else {
-                    // نضيف الدفعة الجديدة فقط (آخر PAGE_LIMIT عنصر)
-                    const startIndex = state.items.length - state.limit;
-                    const newBatch = state.items.slice(Math.max(0, startIndex));
-                    newBatch.forEach(item => {
-                        grid.appendChild(createCard(item));
-                    });
-                }
-
-                // نتأكد إن السنتينل موجود في الآخر
-                const existingSentinel = document.getElementById('sentinel');
-                if (existingSentinel) grid.appendChild(existingSentinel);
+                if (dom.sentinel) dom.grid.appendChild(dom.sentinel);
             }
 
-            // ============================================
-            // 5. دالة جلب البيانات (مع استراتيجية Cache)
-            // ============================================
-            function buildUrl(offset, search, sort, order) {
-                const params = new URLSearchParams();
-                params.append('action', 'getMenu');
-                params.append('offset', offset);
-                params.append('limit', state.limit);
-                params.append('search', search);
-                params.append('sort', sort);
-                params.append('order', order);
-                return `${API_URL}?${params.toString()}`;
-            }
-
+            // Fetch Logic
             async function fetchItems(reset = false) {
                 if (state.isLoading) return;
-                if (!reset && !state.hasMore) return;
-
-                // 1. لو كان طلب إعادة تعيين (أول تحميل أو بحث)، نحاول نعرض الكاش أولاً
-                if (reset) {
-                    const cached = getCache();
-                    if (cached && cached.data && cached.data.length > 0) {
-                        // عرض الكاش فوراً (سرعة فائقة)
-                        state.items = cached.data;
-                        state.total = cached.total;
-                        state.initialLoadDone = true;
-                        state.isCacheLoaded = true;
-                        renderItems(true);
-                        totalBadge.textContent = `إجمالي: ${state.total} (من الكاش)`;
-                        cacheStatus.textContent = `📦 تم التحميل من الكاش (${new Date(cached.timestamp).toLocaleTimeString()})`;
-                        
-                        // نحدد الـ offset بناءً على الكاش
-                        state.offset = state.items.length;
-                        state.hasMore = state.items.length < state.total;
-                        
-                        // نرسل طلب في الخلفية للتحقق من التحديثات (Revalidate)
-                        revalidateInBackground(reset);
-                        return; // نوقف التنفيذ هنا عشان نعرض الكاش بسرعة
-                    } else {
-                        // مفيش كاش، نعرض Skeleton
-                        showSkeletons(6);
-                        cacheStatus.textContent = '⏳ جاري التحميل من السيرفر...';
-                    }
-                }
-
-                // 2. التحضير للطلب من السيرفر (إذا لم نعرض الكاش أو كان الكاش منتهي)
                 state.isLoading = true;
+
                 if (reset) {
+                    dom.grid.innerHTML = '<div class="skeleton-grid">' + '<div class="skeleton-card"><div class="skeleton-line img"></div><div class="skeleton-line title"></div><div class="skeleton-line price"></div></div>'.repeat(6) + '</div>';
+                    dom.grid.appendChild(dom.sentinel);
                     state.offset = 0;
                     state.items = [];
-                    state.hasMore = true;
-                    state.initialLoadDone = false;
-                    // لو مفيش كاش، الـ Skeleton موجود بالفعل
-                } else {
-                    // إضافة Spinner صغير عند التمرير
-                    const loader = document.createElement('div');
-                    loader.className = 'loading-spinner';
-                    loader.id = 'fetchLoader';
-                    loader.innerHTML = '<span class="spinner"></span> جاري تحميل المزيد...';
-                    grid.appendChild(loader);
                 }
 
                 try {
-                    const url = buildUrl(state.offset, state.search, state.sort, state.order);
-                    const response = await fetch(url);
+                    const params = new URLSearchParams({
+                        action: 'getMenu',
+                        offset: state.offset,
+                        limit: CONFIG.PAGE_LIMIT,
+                        search: state.search,
+                        sort: state.sort,
+                        order: state.order
+                    });
+
+                    const res = await fetch(`${CONFIG.API_URL}?${params}`);
+                    const result = await res.json();
                     
-                    let result;
-                    try {
-                        result = await response.json();
-                    } catch (jsonError) {
-                        throw new Error('الخادم لم يعد بيانات JSON (تأكد من صلاحيات Web App)');
-                    }
-
-                    if (result.error) {
-                        throw new Error(result.error);
-                    }
-
                     const newItems = result.data || [];
-                    const total = result.total || 0;
-
-                    // إزالة مؤقت التحميل
-                    const loader = document.getElementById('fetchLoader');
-                    if (loader) loader.remove();
-
-                    // تحديث الحالة
-                    if (reset) {
-                        state.items = newItems;
-                        // نحسب Hash ونخزن في الكاش
-                        const hash = computeDataHash(newItems);
-                        setCache(newItems, total, hash);
-                        state.isCacheLoaded = true;
-                    } else {
-                        // إضافة للقائمة الموجودة
-                        state.items = [...state.items, ...newItems];
-                    }
-                    
-                    state.total = total;
+                    state.total = result.total || 0;
+                    state.items = reset ? newItems : [...state.items, ...newItems];
                     state.hasMore = state.items.length < state.total;
-                    
-                    // عرض البيانات
+                    state.offset += CONFIG.PAGE_LIMIT;
+
                     renderItems(reset);
-                    totalBadge.textContent = `إجمالي: ${state.total}`;
-                    cacheStatus.textContent = `✅ تم التحديث من السيرفر (${new Date().toLocaleTimeString()})`;
-
-                    // تحديث الـ offset
-                    if (reset) {
-                        state.offset = state.limit;
-                    } else {
-                        state.offset += state.limit;
-                    }
-                    state.initialLoadDone = true;
-
-                } catch (error) {
-                    console.error('Fetch error:', error);
-                    const loader = document.getElementById('fetchLoader');
-                    if (loader) loader.remove();
-
-                    // لو كان عندنا كاش وعرضناه قبل كده، نخلي البيانات القديمة ونحذر المستخدم
-                    if (state.items.length > 0) {
-                        cacheStatus.textContent = '⚠️ فشل التحديث، لكن البيانات القديمة متاحة';
-                        // نضيف إشارة بسيطة
-                    } else {
-                        showError(error.message);
-                    }
-                    state.hasMore = false;
+                    dom.totalBadge.textContent = `إجمالي: ${state.total}`;
+                    dom.cacheStatus.textContent = `✅ متصل بالسيرفر`;
+                } catch (e) {
+                    dom.cacheStatus.textContent = `⚠️ خطأ في الاتصال`;
                 } finally {
                     state.isLoading = false;
                 }
             }
 
-            // ============================================
-            // 6. دالة إعادة التحقق في الخلفية (Revalidate)
-            // ============================================
-            let revalidateTimeout = null;
-            function revalidateInBackground(reset) {
-                // نمنع تكرار الطلبات في الخلفية
-                if (revalidateTimeout) clearTimeout(revalidateTimeout);
-                revalidateTimeout = setTimeout(async () => {
-                    try {
-                        // نجلب أول صفحة فقط للتحقق
-                        const url = buildUrl(0, state.search, state.sort, state.order);
-                        const response = await fetch(url);
-                        const result = await response.json();
-                        if (result.error) return;
-
-                        const newItems = result.data || [];
-                        const newTotal = result.total || 0;
-                        const newHash = computeDataHash(newItems);
-                        
-                        // نقارن مع الكاش الحالي
-                        const currentCache = getCache();
-                        const oldHash = currentCache ? currentCache.hash : null;
-
-                        if (newHash !== oldHash) {
-                            // فيه تحديث! نحدث البيانات
-                            console.log('تم اكتشاف تحديث في البيانات، نحدث الكاش');
-                            state.items = newItems;
-                            state.total = newTotal;
-                            state.hasMore = state.items.length < state.total;
-                            state.offset = state.limit;
-                            setCache(newItems, newTotal, newHash);
-                            
-                            // نعرض البيانات الجديدة
-                            renderItems(true);
-                            totalBadge.textContent = `إجمالي: ${state.total}`;
-                            cacheStatus.textContent = `🔄 تم تحديث البيانات تلقائياً (${new Date().toLocaleTimeString()})`;
-                        } else {
-                            // مفيش تحديث، نمدد صلاحية الكاش
-                            const cache = getCache();
-                            if (cache) {
-                                cache.timestamp = Date.now();
-                                localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-                            }
-                            cacheStatus.textContent = `✅ البيانات محدثة (من الكاش)`;
-                        }
-                    } catch (e) {
-                        console.log('فشل إعادة التحقق في الخلفية', e);
-                    }
-                }, 2000); // ننتظر 2 ثانية عشان ما نضغطش على السيرفر
-            }
-
-            // ============================================
-            // 7. البحث والترتيب (مع Debouncing)
-            // ============================================
-            let searchTimeout = null;
-            function resetAndFetch() {
-                // Debouncing للبحث
-                if (searchTimeout) clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    state.search = searchInput.value;
-                    state.sort = sortSelect.value;
-                    state.order = orderSelect.value;
-                    state.offset = 0;
-                    state.items = [];
-                    state.hasMore = true;
-                    state.initialLoadDone = false;
-
-                    // نمسح الشبكة
-                    while (grid.firstChild) {
-                        if (grid.firstChild.id === 'sentinel') break;
-                        grid.removeChild(grid.firstChild);
-                    }
-
-                    // نعرض Skeleton أو الكاش حسب المتاح
-                    const cached = getCache();
-                    if (cached && cached.data && cached.data.length > 0 && state.search === '') {
-                        // لو البحث فاضي، نعرض الكاش فوراً
-                        state.items = cached.data;
-                        state.total = cached.total;
-                        state.initialLoadDone = true;
-                        renderItems(true);
-                        totalBadge.textContent = `إجمالي: ${state.total}`;
-                        state.offset = state.limit;
-                        state.hasMore = state.items.length < state.total;
-                        cacheStatus.textContent = `📦 تم التحميل من الكاش`;
-                        // نروح نجلب جديد في الخلفية
-                        revalidateInBackground(true);
-                    } else {
-                        // لو في بحث، نجبر على جلب جديد
-                        showSkeletons(6);
-                        fetchItems(true);
-                    }
-                }, 400); // تأخير 400 مللي ثانية
-            }
-
-            // ربط الأحداث
-            searchInput.addEventListener('input', resetAndFetch);
-            sortSelect.addEventListener('change', resetAndFetch);
-            orderSelect.addEventListener('change', resetAndFetch);
-
-            // ============================================
-            // 8. التمرير اللانهائي (Infinite Scroll)
-            // ============================================
+            // Intersection Observer للـ Infinite Scroll
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && state.hasMore && !state.isLoading) {
-                        fetchItems(false);
-                    }
-                });
+                if (entries[0].isIntersecting && state.hasMore && !state.isLoading) {
+                    fetchItems(false);
+                }
             }, { rootMargin: '0px 0px 200px 0px' });
 
-            observer.observe(sentinel);
+            observer.observe(dom.sentinel);
 
-            // ============================================
-            // 9. بدء التشغيل
-            // ============================================
-            // نضبط الـ Limit
-            state.limit = PAGE_LIMIT;
+            // الأحداث والبحث
+            let timeout = null;
+            function onFilterChange() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    state.search = dom.searchInput.value;
+                    state.sort = dom.sortSelect.value;
+                    state.order = dom.orderSelect.value;
+                    fetchItems(true);
+                }, 300);
+            }
 
-            // نبدأ بتحميل البيانات
-            // أولاً نحاول نعرض الكاش (الـ fetchItems هيتعامل مع الكاش في بدايته)
+            dom.searchInput.addEventListener('input', onFilterChange);
+            dom.sortSelect.addEventListener('change', onFilterChange);
+            dom.orderSelect.addEventListener('change', onFilterChange);
+
+            // التشغيل الأولي
+            updateCartUI();
             fetchItems(true);
-
-            // لو مفيش كاش، fetchItems هيعرض Skeleton ويجلب
-
-            // كل 5 دقائق، نتحقق من التحديثات في الخلفية (Revalidate دوري)
-            setInterval(() => {
-                if (!state.isLoading) {
-                    revalidateInBackground(false);
-                }
-            }, 4 * 60 * 1000); // كل 4 دقائق
-
         })();
     </script>
 </body>
