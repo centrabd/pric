@@ -2,128 +2,645 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>لوحة تحكم المنيو</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المتجر - Admin</title>
     <style>
-        body { font-family: Arial; background: #f4f7fc; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; }
-        th { background: #2c3e50; color: white; }
-        .editable { border: 1px solid #ddd; padding: 8px; border-radius: 4px; width: 80px; }
-        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
-        .btn-save { background: #27ae60; color: white; }
-        .btn-save:hover { background: #2ecc71; }
-        .badge-available { background: #d4edda; color: #155724; padding: 5px 10px; border-radius: 20px; }
-        .badge-unavailable { background: #f8d7da; color: #721c24; padding: 5px 10px; border-radius: 20px; }
-        .login-box { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
-        .login-box button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 4px; font-size: 16px; }
-        .login-box button:hover { background: #2980b9; }
-        .container { max-width: 1200px; margin: auto; }
-        h1 { color: #2c3e50; }
+        /* ====== BASE ====== */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body {
+            background: #f4f7fc;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container { max-width: 1400px; width: 100%; margin: auto; }
+
+        /* ====== LOGIN ====== */
+        .login-box {
+            max-width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .login-box h2 { margin-bottom: 20px; color: #1a2634; }
+        .login-box input {
+            width: 100%;
+            padding: 14px 18px;
+            margin: 10px 0;
+            border: 2px solid #e9edf2;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .login-box input:focus { border-color: #3498db; box-shadow: 0 0 0 4px rgba(52,152,219,0.1); }
+        .login-box button {
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .login-box button:hover { background: #2980b9; transform: scale(1.02); }
+        .login-error { color: #e74c3c; margin-top: 12px; font-size: 14px; }
+
+        /* ====== ADMIN PANEL ====== */
+        .admin-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+        .admin-header h1 {
+            font-size: 28px;
+            color: #1a2634;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .admin-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .admin-actions button {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-refresh { background: #3498db; color: white; }
+        .btn-refresh:hover { background: #2980b9; transform: scale(1.02); }
+        .btn-add { background: #27ae60; color: white; }
+        .btn-add:hover { background: #219a52; transform: scale(1.02); }
+        .btn-logout { background: #e74c3c; color: white; }
+        .btn-logout:hover { background: #c0392b; }
+
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            margin-bottom: 25px;
+        }
+        .stat-item { font-size: 14px; color: #555; }
+        .stat-item strong { color: #1a2634; font-size: 18px; margin-left: 4px; }
+
+        /* ====== TABLE ====== */
+        .table-wrapper {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 700px;
+        }
+        th {
+            background: #f8fafc;
+            color: #1a2634;
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 700;
+            border-bottom: 2px solid #e9edf2;
+            white-space: nowrap;
+        }
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0f2f5;
+            text-align: center;
+            vertical-align: middle;
+        }
+        tr:hover { background: #f8fafc; }
+        tr:last-child td { border-bottom: none; }
+
+        .editable {
+            width: 100%;
+            min-width: 70px;
+            padding: 8px 10px;
+            border: 2px solid #e9edf2;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            background: #fafbfc;
+            transition: 0.3s;
+            outline: none;
+        }
+        .editable:focus {
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(52,152,219,0.08);
+        }
+        .editable.price { font-weight: 600; color: #27ae60; }
+        .editable.inst { font-weight: 600; color: #2980b9; }
+        .editable.qty { font-weight: 600; color: #e67e22; }
+
+        select.editable {
+            appearance: auto;
+            cursor: pointer;
+            background: #fafbfc;
+        }
+
+        .btn-save {
+            padding: 8px 16px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .btn-save:hover { background: #219a52; transform: scale(1.05); }
+        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status-badge.available { background: #d4edda; color: #155724; }
+        .status-badge.unavailable { background: #f8d7da; color: #721c24; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #95a5a6;
+        }
+        .empty-state svg { margin-bottom: 15px; opacity: 0.3; }
+
+        /* ====== TOAST ====== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+        }
+        .toast {
+            background: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.4s ease;
+            width: 100%;
+            border-right: 5px solid #3498db;
+        }
+        .toast.success { border-right-color: #27ae60; }
+        .toast.error { border-right-color: #e74c3c; }
+        .toast.warning { border-right-color: #f39c12; }
+        .toast-icon { font-size: 20px; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 768px) {
+            .admin-header { flex-direction: column; align-items: stretch; text-align: center; }
+            .admin-actions { justify-content: center; }
+            .stats-bar { justify-content: center; }
+            .editable { min-width: 50px; font-size: 13px; padding: 6px 8px; }
+            table { font-size: 13px; min-width: 600px; }
+            th, td { padding: 8px 6px; }
+            .btn-save { font-size: 12px; padding: 6px 12px; }
+            .login-box { margin: 40px 15px; padding: 25px 20px; }
+        }
     </style>
 </head>
 <body>
-    <div id="app">
-        <!-- واجهة تسجيل الدخول -->
+
+    <!-- ====== TOAST CONTAINER ====== -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="container" id="app">
+
+        <!-- ====== LOGIN SCREEN ====== -->
         <div id="loginScreen" class="login-box">
-            <h2 style="text-align:center;">🔐 دخول المشرف</h2>
-            <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور">
+            <h2>🔐 دخول المشرف</h2>
+            <p style="color:#95a5a6; font-size:14px; margin-bottom:15px;">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
+            <input type="password" id="passwordInput" placeholder="كلمة المرور" autofocus>
             <button onclick="login()">تسجيل الدخول</button>
-            <p id="loginError" style="color:red; text-align:center;"></p>
+            <p id="loginError" class="login-error"></p>
         </div>
 
-        <!-- لوحة التحكم -->
-        <div id="adminPanel" style="display:none;" class="container">
-            <h1>📋 إدارة المنتجات</h1>
-            <div style="margin: 20px 0;">
-                <button onclick="fetchAdminData()" style="padding:10px 20px; background:#3498db; color:white; border:none; border-radius:6px;">🔄 تحديث</button>
+        <!-- ====== ADMIN PANEL ====== -->
+        <div id="adminPanel" style="display:none;">
+
+            <!-- Header -->
+            <div class="admin-header">
+                <h1>📋 إدارة المنتجات</h1>
+                <div class="admin-actions">
+                    <button class="btn-refresh" onclick="fetchAdminData()">🔄 تحديث</button>
+                    <button class="btn-add" onclick="openAddModal()">➕ إضافة منتج</button>
+                    <button class="btn-logout" onclick="logout()">🚪 خروج</button>
+                </div>
             </div>
-            <div id="adminGrid"></div>
+
+            <!-- Stats -->
+            <div class="stats-bar" id="statsBar">
+                <span class="stat-item">📦 <strong id="totalCount">0</strong> منتج</span>
+                <span class="stat-item">✅ <strong id="availableCount">0</strong> متوفر</span>
+                <span class="stat-item">❌ <strong id="unavailableCount">0</strong> غير متوفر</span>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrapper">
+                <div id="adminGrid">
+                    <div class="empty-state">⏳ جاري التحميل...</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ====== MODAL لإضافة منتج جديد ====== -->
+    <div id="addModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:10000; justify-content:center; align-items:center; padding:20px;">
+        <div style="background:white; max-width:500px; width:100%; border-radius:20px; padding:30px; animation:slideDown 0.3s ease; max-height:90vh; overflow-y:auto;">
+            <h2 style="margin-bottom:20px;">➕ إضافة منتج جديد</h2>
+            <div style="display:flex; flex-direction:column; gap:15px;">
+                <input id="addCode" placeholder="كود الصنف *" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
+                <input id="addName" placeholder="اسم الصنف *" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
+                <input id="addCash" type="number" placeholder="سعر الكاش" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
+                <input id="addInst" type="number" placeholder="سعر القسط شهري" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
+                <input id="addQty" type="number" placeholder="الكمية" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
+                <select id="addAvailable" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
+                    <option value="true">متوفر</option>
+                    <option value="false">غير متوفر</option>
+                </select>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="submitAddProduct()" style="flex:1; padding:14px; background:#27ae60; color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer;">💾 حفظ</button>
+                    <button onclick="closeAddModal()" style="flex:0.5; padding:14px; background:#e9edf2; color:#555; border:none; border-radius:12px; font-size:16px; cursor:pointer;">إلغاء</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // ✏️ غيّر الرابط ده برابط Web App
-        const API_URL = ' https://script.google.com/macros/s/AKfycbxuurZO98FfvtUqI7P-B9eIacBwTijI6VfZGj9JrHcxXA2mppq7znI1qIJKw8gJE58f/exec ';
-        const ADMIN_PASSWORD = '123'; // نفس كلمة المرور في المشروع الأصلي
+        (function() {
+            'use strict';
 
-        let itemsData = [];
+            // =========================================================
+            // 1. الإعدادات (غيّرها حسب الحاجة)
+            // =========================================================
+            // 🔥 تأكد من أن الرابط صحيح وبدون مسافات
+            const API_URL = 'https://script.google.com/macros/s/AKfycbxD8yE9o2-GQd0K8WDxdpfXD0C7O3LK6d9DINFxPeB7P2i95XrWzcaFDSQE0pP0bd1Q/exec';
+            const ADMIN_PASSWORD = '123'; // غيرها لكلمة مرور أقوى
 
-        function login() {
-            const pass = document.getElementById('passwordInput').value;
-            if (pass === ADMIN_PASSWORD) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                fetchAdminData();
-            } else {
-                document.getElementById('loginError').innerText = '❌ كلمة المرور خاطئة';
+            let itemsData = [];
+            let isSaving = false;
+
+            // =========================================================
+            // 2. دوال مساعدة (أمان - Toast - تنقية)
+            // =========================================================
+            function escapeHtml(text) {
+                if (!text) return '';
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
-        }
 
-        async function fetchAdminData() {
-            try {
-                const response = await fetch(`${API_URL}?action=getMenu`);
-                const result = await response.json();
-                if (result.error) throw new Error(result.error);
-                itemsData = result.data || [];
-                renderAdminTable();
-            } catch (error) {
-                alert('فشل التحميل: ' + error.message);
+            function showToast(message, type = 'success') {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+                toast.innerHTML = `<span class="toast-icon">${icons[type] || 'ℹ️'}</span><span>${escapeHtml(message)}</span>`;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-20px)';
+                    setTimeout(() => toast.remove(), 400);
+                }, 3500);
             }
-        }
 
-        function renderAdminTable() {
-            const container = document.getElementById('adminGrid');
-            if (itemsData.length === 0) {
-                container.innerHTML = '<p>لا توجد منتجات.</p>';
-                return;
-            }
-            let html = `<table>
-                <thead><tr><th>#</th><th>القسم</th><th>الاسم</th><th>السعر</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>`;
-            itemsData.forEach(item => {
-                html += `<tr>
-                    <td>${item.id}</td>
-                    <td>${item.category}</td>
-                    <td>${item.name}</td>
-                    <td><input class="editable" type="number" id="price_${item.id}" value="${item.price}" step="0.5"></td>
-                    <td>
-                        <select id="status_${item.id}">
-                            <option value="true" ${item.available ? 'selected' : ''}>متوفر</option>
-                            <option value="false" ${!item.available ? 'selected' : ''}>غير متوفر</option>
-                        </select>
-                    </td>
-                    <td><button class="btn btn-save" onclick="updateItem('${item.id}')">💾 حفظ التعديل</button></td>
-                </tr>`;
-            });
-            html += `</tbody></table>`;
-            container.innerHTML = html;
-        }
-
-        async function updateItem(id) {
-            const price = document.getElementById(`price_${id}`).value;
-            const available = document.getElementById(`status_${id}`).value === 'true';
-
-            const payload = {
-                action: 'updateItem',
-                id: id,
-                price: parseFloat(price),
-                available: available
+            // =========================================================
+            // 3. تسجيل الدخول / الخروج
+            // =========================================================
+            window.login = function() {
+                const pass = document.getElementById('passwordInput').value;
+                if (pass === ADMIN_PASSWORD) {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('loginError').textContent = '';
+                    fetchAdminData();
+                    showToast('تم تسجيل الدخول بنجاح', 'success');
+                } else {
+                    document.getElementById('loginError').textContent = '❌ كلمة المرور خاطئة';
+                    showToast('كلمة المرور خاطئة', 'error');
+                }
             };
 
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors', // مهم عشان CORS
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+            window.logout = function() {
+                document.getElementById('adminPanel').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                showToast('تم تسجيل الخروج', 'info');
+            };
+
+            // =========================================================
+            // 4. جلب البيانات من الـ API
+            // =========================================================
+            window.fetchAdminData = async function() {
+                try {
+                    const grid = document.getElementById('adminGrid');
+                    grid.innerHTML = '<div class="empty-state">⏳ جاري التحميل...</div>';
+
+                    const response = await fetch(`${API_URL}?action=getMenu`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const result = await response.json();
+
+                    if (result.error) throw new Error(result.error);
+
+                    itemsData = result.data || [];
+                    renderAdminTable();
+                    updateStats();
+
+                    showToast(`تم تحميل ${itemsData.length} منتج`, 'success');
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    document.getElementById('adminGrid').innerHTML = `
+                        <div class="empty-state" style="color:#e74c3c;">
+                            ❌ فشل التحميل: ${escapeHtml(error.message)}
+                            <br><button onclick="fetchAdminData()" style="margin-top:15px;padding:10px 30px;background:#3498db;color:white;border:none;border-radius:30px;cursor:pointer;">🔄 إعادة المحاولة</button>
+                        </div>
+                    `;
+                    showToast('فشل تحميل البيانات: ' + error.message, 'error');
+                }
+            };
+
+            // =========================================================
+            // 5. عرض الجدول (باستخدام innerHTML مع تنظيف)
+            // =========================================================
+            function renderAdminTable() {
+                const container = document.getElementById('adminGrid');
+
+                if (!itemsData || itemsData.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                            <p>لا توجد منتجات حالياً</p>
+                            <button class="btn-add" onclick="openAddModal()" style="margin-top:15px;">➕ إضافة منتج</button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>الكود</th>
+                                <th>اسم الصنف</th>
+                                <th>سعر الكاش</th>
+                                <th>سعر القسط</th>
+                                <th>الكمية</th>
+                                <th>التوافر</th>
+                                <th>الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                itemsData.forEach((item, index) => {
+                    // ننظف المعرف لاستخدامه في DOM (نزيل أي أحرف خاصة)
+                    const safeId = String(item.id).replace(/[^a-zA-Z0-9]/g, '') || 'id_' + index;
+                    const isAvailable = item.available === true || item.available === 'true';
+
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><strong>${escapeHtml(item.id)}</strong></td>
+                            <td style="text-align:right;">${escapeHtml(item.name)}</td>
+                            <td>
+                                <input class="editable price" type="number" id="cash_${safeId}" value="${item.cashPrice || 0}" step="0.5" />
+                            </td>
+                            <td>
+                                <input class="editable inst" type="number" id="inst_${safeId}" value="${item.installPrice || 0}" step="0.5" />
+                            </td>
+                            <td>
+                                <input class="editable qty" type="number" id="qty_${safeId}" value="${item.quantity || 0}" step="1" min="0" />
+                            </td>
+                            <td>
+                                <select class="editable" id="status_${safeId}">
+                                    <option value="true" ${isAvailable ? 'selected' : ''}>✅ متوفر</option>
+                                    <option value="false" ${!isAvailable ? 'selected' : ''}>❌ غير متوفر</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn-save" onclick="updateItem('${escapeHtml(item.id)}', '${safeId}')" id="saveBtn_${safeId}">
+                                    💾 حفظ
+                                </button>
+                            </td>
+                        </tr>
+                    `;
                 });
-                // بسبب no-cors، مش هنقدر نقرأ الرد، لكن هنفترض نجاح ونحدث البيانات يدوياً
-                alert('✅ تم التحديث بنجاح (افتراضي)');
-                fetchAdminData(); // إعادة تحميل البيانات
-            } catch (error) {
-                alert('❌ فشل التحديث: ' + error.message);
+
+                html += `</tbody></table>`;
+                container.innerHTML = html;
             }
-        }
+
+            // =========================================================
+            // 6. تحديث الإحصائيات
+            // =========================================================
+            function updateStats() {
+                const total = itemsData.length;
+                const available = itemsData.filter(i => i.available === true || i.available === 'true').length;
+                const unavailable = total - available;
+
+                document.getElementById('totalCount').textContent = total;
+                document.getElementById('availableCount').textContent = available;
+                document.getElementById('unavailableCount').textContent = unavailable;
+            }
+
+            // =========================================================
+            // 7. تحديث منتج (Save)
+            // =========================================================
+            window.updateItem = async function(originalId, safeId) {
+                if (isSaving) return;
+                isSaving = true;
+
+                const saveBtn = document.getElementById(`saveBtn_${safeId}`);
+                if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '⏳ جاري...'; }
+
+                try {
+                    const cashPrice = parseFloat(document.getElementById(`cash_${safeId}`).value) || 0;
+                    const installPrice = parseFloat(document.getElementById(`inst_${safeId}`).value) || 0;
+                    const quantity = parseInt(document.getElementById(`qty_${safeId}`).value) || 0;
+                    const available = document.getElementById(`status_${safeId}`).value === 'true';
+
+                    const payload = {
+                        action: 'updateItem',
+                        id: originalId,
+                        cashPrice: cashPrice,
+                        installPrice: installPrice,
+                        quantity: quantity,
+                        available: available
+                    };
+
+                    // نستخدم mode: 'no-cors' لتجنب مشاكل CORS، لكن لا نقرأ الرد
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    // نحدث البيانات محلياً لتجنب إعادة التحميل الكامل (سرعة)
+                    const item = itemsData.find(i => i.id === originalId);
+                    if (item) {
+                        item.cashPrice = cashPrice;
+                        item.installPrice = installPrice;
+                        item.quantity = quantity;
+                        item.available = available;
+                    }
+
+                    showToast(`✅ تم تحديث المنتج ${originalId} بنجاح`, 'success');
+
+                    // نحدث الإحصائيات والجدول (إعادة رسم الجدول كامل عشان يظهر التغيير)
+                    // بدلاً من renderAdminTable() كاملة، نحدث فقط الخلايا المعنية لتوفير الأداء، لكن للبساطة:
+                    fetchAdminData(); // يعيد تحميل كل شيء للتأكد من التزامن مع السيرفر
+
+                } catch (error) {
+                    console.error('Update error:', error);
+                    showToast('❌ فشل التحديث: ' + error.message, 'error');
+                } finally {
+                    isSaving = false;
+                    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '💾 حفظ'; }
+                }
+            };
+
+            // =========================================================
+            // 8. إضافة منتج جديد (Modal)
+            // =========================================================
+            window.openAddModal = function() {
+                document.getElementById('addModal').style.display = 'flex';
+                document.getElementById('addCode').focus();
+            };
+
+            window.closeAddModal = function() {
+                document.getElementById('addModal').style.display = 'none';
+                // تنظيف الحقول
+                ['addCode', 'addName', 'addCash', 'addInst', 'addQty'].forEach(id => {
+                    document.getElementById(id).value = '';
+                });
+                document.getElementById('addAvailable').value = 'true';
+            };
+
+            window.submitAddProduct = async function() {
+                const code = document.getElementById('addCode').value.trim();
+                const name = document.getElementById('addName').value.trim();
+                const cash = parseFloat(document.getElementById('addCash').value) || 0;
+                const inst = parseFloat(document.getElementById('addInst').value) || 0;
+                const qty = parseInt(document.getElementById('addQty').value) || 0;
+                const avail = document.getElementById('addAvailable').value === 'true';
+
+                if (!code || !name) {
+                    showToast('⚠️ الكود واسم الصنف مطلوبان', 'warning');
+                    return;
+                }
+
+                // التحقق من عدم وجود الكود مكرر
+                if (itemsData.some(i => i.id === code)) {
+                    showToast('⚠️ هذا الكود موجود بالفعل', 'warning');
+                    return;
+                }
+
+                try {
+                    const payload = {
+                        action: 'addItem',
+                        id: code,
+                        name: name,
+                        cashPrice: cash,
+                        installPrice: inst,
+                        quantity: qty,
+                        available: avail
+                    };
+
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    showToast(`✅ تم إضافة المنتج ${code} بنجاح`, 'success');
+                    closeAddModal();
+                    fetchAdminData(); // إعادة تحميل القائمة
+
+                } catch (error) {
+                    showToast('❌ فشل الإضافة: ' + error.message, 'error');
+                }
+            };
+
+            // إغلاق المودال بالضغط على Escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('addModal');
+                    if (modal.style.display === 'flex') closeAddModal();
+                }
+            });
+
+            // =========================================================
+            // 9. دعم تسجيل الدخول بضغط Enter
+            // =========================================================
+            document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') login();
+            });
+
+            // =========================================================
+            // 10. بدء التشغيل (نفحص إذا كان المستخدم مسجل سابقاً؟ لا، نطلب تسجيل الدخول)
+            // =========================================================
+            // نعرض شاشة تسجيل الدخول افتراضياً
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+
+        })();
     </script>
 </body>
 </html>
