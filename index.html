@@ -46,8 +46,17 @@
             color: #7f8c8d;
             margin-top: 15px;
         }
+        .header .cache-badge {
+            font-size: 12px;
+            background: #e9edf2;
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #555;
+            display: inline-block;
+            margin-top: 5px;
+        }
 
-        /* Controls (Search + Sort) */
+        /* Controls */
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -111,6 +120,11 @@
             display: flex;
             flex-direction: column;
             position: relative;
+            animation: fadeUp 0.4s ease;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .card:hover {
             transform: translateY(-6px);
@@ -176,7 +190,38 @@
             color: #721c24;
         }
 
-        /* Loading & Sentinel */
+        /* Skeleton Screen (بديل الدائرة اللانهائية) */
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 25px;
+        }
+        .skeleton-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border: 1px solid #f0f2f5;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .skeleton-line {
+            background: linear-gradient(90deg, #f0f2f5 25%, #e4e7ec 50%, #f0f2f5 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 10px;
+        }
+        .skeleton-line.title { height: 24px; width: 80%; }
+        .skeleton-line.price { height: 20px; width: 60%; }
+        .skeleton-line.qty { height: 18px; width: 40%; }
+        .skeleton-line.status { height: 22px; width: 50%; }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
         .loading-spinner {
             text-align: center;
             padding: 30px 0;
@@ -218,7 +263,17 @@
             font-size: 18px;
         }
 
-        /* Responsive */
+        /* تحديث صغير للـ controls */
+        .status-update-badge {
+            background: #2ecc71;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
         @media (max-width: 768px) {
             .controls { border-radius: 30px; flex-direction: column; align-items: stretch; }
             .controls .badge-count { justify-content: center; }
@@ -228,8 +283,9 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🛍️ 0 منتجاتنا</h1>
+            <h1>🛍️ منتجاتنا</h1>
             <p>استعرض أحدث المنتجات والأسعار</p>
+            <div class="cache-badge" id="cacheStatus">📡 جاري التحميل...</div>
         </div>
 
         <!-- أدوات التحكم -->
@@ -249,9 +305,7 @@
 
         <!-- شبكة المنتجات -->
         <div id="productGrid" class="grid">
-            <div class="loading-spinner" id="initialLoader">
-                <span class="spinner"></span> جاري التحميل...
-            </div>
+            <!-- هنا سيتم عرض الـ Skeleton أو البطاقات -->
         </div>
 
         <!-- عنصر المراقبة للتمرير اللانهائي -->
@@ -260,21 +314,72 @@
 
     <script>
         (function() {
-            // ⚠️ ضع هنا رابط Web App الخاص بك (بدون أي مسافات)
+            // ============================================
+            // 1. الإعدادات الأساسية
+            // ============================================
             const API_URL = 'https://script.google.com/macros/s/AKfycbxD8yE9o2-GQd0K8WDxdpfXD0C7O3LK6d9DINFxPeB7P2i95XrWzcaFDSQE0pP0bd1Q/exec';
+            const CACHE_KEY = 'product_data_cache';
+            const CACHE_EXPIRY = 5 * 60 * 1000; // 5 دقائق صلاحية الكاش (عشان نضمن عدم انتهاء صلاحية جوجل)
+            const PAGE_LIMIT = 40; // زيادة العدد لتقليل الطلبات
 
-            // حالة التطبيق
+            // ============================================
+            // 2. دوال إدارة الكاش (التخزين المؤقت)
+            // ============================================
+            function getCache() {
+                try {
+                    const raw = localStorage.getItem(CACHE_KEY);
+                    if (!raw) return null;
+                    const cache = JSON.parse(raw);
+                    // التحقق من صلاحية الكاش (تجنب استخدام بيانات قديمة جداً)
+                    if (Date.now() - cache.timestamp > CACHE_EXPIRY) {
+                        return null; // منتهي الصلاحية
+                    }
+                    return cache;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function setCache(data, total, hash) {
+                try {
+                    const cache = {
+                        data: data,
+                        total: total,
+                        hash: hash || Date.now(), // لو مش موجود نستخدم الوقت
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+                } catch (e) { /* مساحة تخزين ممتلئة */ }
+            }
+
+            function clearCache() {
+                localStorage.removeItem(CACHE_KEY);
+            }
+
+            // حساب Hash بسيط للبيانات (عدد العناصر + تاريخ آخر تحديث في الشيت)
+            // ملحوظة: احنا بنحسبها من الـ data نفسها عشان نقارن
+            function computeDataHash(items) {
+                // بناخد أول 10 عناصر + العدد الكلي + اسم أول عنصر
+                if (!items || items.length === 0) return 'empty';
+                const sample = items.slice(0, 5).map(i => i.id + i.name).join('');
+                return items.length + '-' + sample;
+            }
+
+            // ============================================
+            // 3. عناصر DOM والحالة
+            // ============================================
             const state = {
                 items: [],
                 offset: 0,
-                limit: 20,
+                limit: PAGE_LIMIT,
                 total: 0,
                 hasMore: true,
                 isLoading: false,
                 search: '',
                 sort: 'name',
                 order: 'asc',
-                initialLoadDone: false
+                initialLoadDone: false,
+                isCacheLoaded: false // هل عرضنا الكاش ولا لأ
             };
 
             const grid = document.getElementById('productGrid');
@@ -283,141 +388,55 @@
             const sortSelect = document.getElementById('sortSelect');
             const orderSelect = document.getElementById('orderSelect');
             const totalBadge = document.getElementById('totalBadge');
+            const cacheStatus = document.getElementById('cacheStatus');
 
-            function buildUrl() {
-                const params = new URLSearchParams();
-                params.append('action', 'getMenu');
-                params.append('offset', state.offset);
-                params.append('limit', state.limit);
-                params.append('search', state.search);
-                params.append('sort', state.sort);
-                params.append('order', state.order);
-                return `${API_URL}?${params.toString()}`;
-            }
-
-            async function fetchItems(reset = false) {
-                if (state.isLoading) return;
-                if (!reset && !state.hasMore) return;
-
-                if (reset) {
-                    state.offset = 0;
-                    state.items = [];
-                    state.hasMore = true;
-                    // مسح الشبكة مع الاحتفاظ بالسنتينل
-                    while (grid.firstChild) {
-                        if (grid.firstChild.id === 'sentinel') break;
-                        grid.removeChild(grid.firstChild);
-                    }
-                    // إضافة محمل
-                    const loader = document.createElement('div');
-                    loader.className = 'loading-spinner';
-                    loader.id = 'fetchLoader';
-                    loader.innerHTML = '<span class="spinner"></span> جاري التحميل...';
-                    grid.appendChild(loader);
-                }
-
-                state.isLoading = true;
-
-                try {
-                    const response = await fetch(buildUrl());
-                    
-                    // محاولة تحويل الاستجابة إلى JSON
-                    let result;
-                    try {
-                        result = await response.json();
-                    } catch (jsonError) {
-                        // لو الاستجابة مش JSON (يعني HTML)، نرمي خطأ مخصص
-                        throw new Error('الخادم لم يعد بيانات JSON (تأكد من صلاحيات Web App وأعد النشر)');
-                    }
-
-                    // التحقق من وجود خطأ في الـ JSON
-                    if (result.error) {
-                        throw new Error(result.error);
-                    }
-
-                    const newItems = result.data || [];
-                    state.total = result.total || 0;
-
-                    // إزالة مؤقت التحميل
-                    const loader = document.getElementById('fetchLoader');
-                    if (loader) loader.remove();
-
-                    if (reset) {
-                        state.items = newItems;
-                    } else {
-                        state.items = [...state.items, ...newItems];
-                    }
-
-                    state.hasMore = state.items.length < state.total;
-                    renderItems(reset);
-                    totalBadge.textContent = `إجمالي: ${state.total}`;
-
-                    if (!reset) {
-                        state.offset += state.limit;
-                    } else {
-                        state.offset = state.limit;
-                    }
-                    state.initialLoadDone = true;
-
-                } catch (error) {
-                    console.error('Fetch error:', error);
-                    const loader = document.getElementById('fetchLoader');
-                    if (loader) loader.remove();
-
-                    // عرض رسالة خطأ واضحة
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'error-box';
-                    errorDiv.innerHTML = `
-                        ❌ فشل التحميل: ${error.message}
-                        <br><small style="display:block; margin-top:10px;">
-                        ✅ تأكد من:
-                        <br>1. صلاحيات Web App = "أي شخص"
-                        <br>2. إعادة نشر الكود كـ "إصدار جديد"
-                        <br>3. الرابط صحيح ولا يحتوي على مسافات
-                        </small>
+            // ============================================
+            // 4. دوال مساعدة للـ UI
+            // ============================================
+            function showSkeletons(count = 6) {
+                grid.innerHTML = '';
+                const wrapper = document.createElement('div');
+                wrapper.className = 'skeleton-grid';
+                for (let i = 0; i < count; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'skeleton-card';
+                    card.innerHTML = `
+                        <div class="skeleton-line title"></div>
+                        <div class="skeleton-line price"></div>
+                        <div class="skeleton-line qty"></div>
+                        <div class="skeleton-line status"></div>
                     `;
-                    grid.appendChild(errorDiv);
-                    state.hasMore = false;
-                } finally {
-                    state.isLoading = false;
+                    wrapper.appendChild(card);
                 }
+                grid.appendChild(wrapper);
+                // إضافة السنتينل (لازم يكون موجود)
+                grid.appendChild(sentinel);
             }
 
-            function renderItems(reset) {
-                if (reset) {
-                    while (grid.firstChild) {
-                        if (grid.firstChild.id === 'sentinel') break;
-                        grid.removeChild(grid.firstChild);
-                    }
-                } else {
-                    const toRemove = grid.querySelectorAll('.no-results, .error-box, #fetchLoader');
-                    toRemove.forEach(el => el.remove());
-                }
-
-                if (state.items.length === 0 && state.initialLoadDone) {
-                    const noRes = document.createElement('div');
-                    noRes.className = 'no-results';
-                    noRes.textContent = '😕 لا توجد منتجات تطابق بحثك.';
-                    grid.appendChild(noRes);
-                    return;
-                }
-
-                if (reset) {
-                    state.items.forEach(item => {
-                        grid.appendChild(createCard(item));
-                    });
-                } else {
-                    const startIndex = state.items.length - state.limit;
-                    const newBatch = state.items.slice(startIndex);
-                    newBatch.forEach(item => {
-                        grid.appendChild(createCard(item));
-                    });
-                }
-
-                const existingSentinel = document.getElementById('sentinel');
-                if (existingSentinel) grid.appendChild(existingSentinel);
+            function showError(message) {
+                grid.innerHTML = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-box';
+                errorDiv.innerHTML = `
+                    ❌ فشل التحميل: ${message}
+                    <br><small style="display:block; margin-top:10px;">
+                    ✅ تأكد من صلاحيات Web App وأعد النشر
+                    </small>
+                `;
+                grid.appendChild(errorDiv);
+                grid.appendChild(sentinel);
+                cacheStatus.textContent = '⚠️ خطأ';
             }
 
+            function showNoResults() {
+                const noRes = document.createElement('div');
+                noRes.className = 'no-results';
+                noRes.textContent = '😕 لا توجد منتجات تطابق بحثك.';
+                grid.appendChild(noRes);
+                grid.appendChild(sentinel);
+            }
+
+            // إنشاء بطاقة منتج
             function createCard(item) {
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -456,46 +475,306 @@
                 return card;
             }
 
-            // مراقبة التمرير
+            // عرض البيانات (مع الاحتفاظ بالسنتينل)
+            function renderItems(reset) {
+                if (reset) {
+                    // نمسح كل حاجة عدا السنتينل
+                    while (grid.firstChild) {
+                        if (grid.firstChild.id === 'sentinel') break;
+                        grid.removeChild(grid.firstChild);
+                    }
+                } else {
+                    // نمسح رسائل الخطأ أو "لا نتائج" السابقة
+                    const toRemove = grid.querySelectorAll('.no-results, .error-box');
+                    toRemove.forEach(el => el.remove());
+                }
+
+                if (state.items.length === 0 && state.initialLoadDone) {
+                    showNoResults();
+                    return;
+                }
+
+                // إضافة البطاقات الجديدة
+                if (reset) {
+                    state.items.forEach(item => {
+                        grid.appendChild(createCard(item));
+                    });
+                } else {
+                    // نضيف الدفعة الجديدة فقط (آخر PAGE_LIMIT عنصر)
+                    const startIndex = state.items.length - state.limit;
+                    const newBatch = state.items.slice(Math.max(0, startIndex));
+                    newBatch.forEach(item => {
+                        grid.appendChild(createCard(item));
+                    });
+                }
+
+                // نتأكد إن السنتينل موجود في الآخر
+                const existingSentinel = document.getElementById('sentinel');
+                if (existingSentinel) grid.appendChild(existingSentinel);
+            }
+
+            // ============================================
+            // 5. دالة جلب البيانات (مع استراتيجية Cache)
+            // ============================================
+            function buildUrl(offset, search, sort, order) {
+                const params = new URLSearchParams();
+                params.append('action', 'getMenu');
+                params.append('offset', offset);
+                params.append('limit', state.limit);
+                params.append('search', search);
+                params.append('sort', sort);
+                params.append('order', order);
+                return `${API_URL}?${params.toString()}`;
+            }
+
+            async function fetchItems(reset = false) {
+                if (state.isLoading) return;
+                if (!reset && !state.hasMore) return;
+
+                // 1. لو كان طلب إعادة تعيين (أول تحميل أو بحث)، نحاول نعرض الكاش أولاً
+                if (reset) {
+                    const cached = getCache();
+                    if (cached && cached.data && cached.data.length > 0) {
+                        // عرض الكاش فوراً (سرعة فائقة)
+                        state.items = cached.data;
+                        state.total = cached.total;
+                        state.initialLoadDone = true;
+                        state.isCacheLoaded = true;
+                        renderItems(true);
+                        totalBadge.textContent = `إجمالي: ${state.total} (من الكاش)`;
+                        cacheStatus.textContent = `📦 تم التحميل من الكاش (${new Date(cached.timestamp).toLocaleTimeString()})`;
+                        
+                        // نحدد الـ offset بناءً على الكاش
+                        state.offset = state.items.length;
+                        state.hasMore = state.items.length < state.total;
+                        
+                        // نرسل طلب في الخلفية للتحقق من التحديثات (Revalidate)
+                        revalidateInBackground(reset);
+                        return; // نوقف التنفيذ هنا عشان نعرض الكاش بسرعة
+                    } else {
+                        // مفيش كاش، نعرض Skeleton
+                        showSkeletons(6);
+                        cacheStatus.textContent = '⏳ جاري التحميل من السيرفر...';
+                    }
+                }
+
+                // 2. التحضير للطلب من السيرفر (إذا لم نعرض الكاش أو كان الكاش منتهي)
+                state.isLoading = true;
+                if (reset) {
+                    state.offset = 0;
+                    state.items = [];
+                    state.hasMore = true;
+                    state.initialLoadDone = false;
+                    // لو مفيش كاش، الـ Skeleton موجود بالفعل
+                } else {
+                    // إضافة Spinner صغير عند التمرير
+                    const loader = document.createElement('div');
+                    loader.className = 'loading-spinner';
+                    loader.id = 'fetchLoader';
+                    loader.innerHTML = '<span class="spinner"></span> جاري تحميل المزيد...';
+                    grid.appendChild(loader);
+                }
+
+                try {
+                    const url = buildUrl(state.offset, state.search, state.sort, state.order);
+                    const response = await fetch(url);
+                    
+                    let result;
+                    try {
+                        result = await response.json();
+                    } catch (jsonError) {
+                        throw new Error('الخادم لم يعد بيانات JSON (تأكد من صلاحيات Web App)');
+                    }
+
+                    if (result.error) {
+                        throw new Error(result.error);
+                    }
+
+                    const newItems = result.data || [];
+                    const total = result.total || 0;
+
+                    // إزالة مؤقت التحميل
+                    const loader = document.getElementById('fetchLoader');
+                    if (loader) loader.remove();
+
+                    // تحديث الحالة
+                    if (reset) {
+                        state.items = newItems;
+                        // نحسب Hash ونخزن في الكاش
+                        const hash = computeDataHash(newItems);
+                        setCache(newItems, total, hash);
+                        state.isCacheLoaded = true;
+                    } else {
+                        // إضافة للقائمة الموجودة
+                        state.items = [...state.items, ...newItems];
+                    }
+                    
+                    state.total = total;
+                    state.hasMore = state.items.length < state.total;
+                    
+                    // عرض البيانات
+                    renderItems(reset);
+                    totalBadge.textContent = `إجمالي: ${state.total}`;
+                    cacheStatus.textContent = `✅ تم التحديث من السيرفر (${new Date().toLocaleTimeString()})`;
+
+                    // تحديث الـ offset
+                    if (reset) {
+                        state.offset = state.limit;
+                    } else {
+                        state.offset += state.limit;
+                    }
+                    state.initialLoadDone = true;
+
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                    const loader = document.getElementById('fetchLoader');
+                    if (loader) loader.remove();
+
+                    // لو كان عندنا كاش وعرضناه قبل كده، نخلي البيانات القديمة ونحذر المستخدم
+                    if (state.items.length > 0) {
+                        cacheStatus.textContent = '⚠️ فشل التحديث، لكن البيانات القديمة متاحة';
+                        // نضيف إشارة بسيطة
+                    } else {
+                        showError(error.message);
+                    }
+                    state.hasMore = false;
+                } finally {
+                    state.isLoading = false;
+                }
+            }
+
+            // ============================================
+            // 6. دالة إعادة التحقق في الخلفية (Revalidate)
+            // ============================================
+            let revalidateTimeout = null;
+            function revalidateInBackground(reset) {
+                // نمنع تكرار الطلبات في الخلفية
+                if (revalidateTimeout) clearTimeout(revalidateTimeout);
+                revalidateTimeout = setTimeout(async () => {
+                    try {
+                        // نجلب أول صفحة فقط للتحقق
+                        const url = buildUrl(0, state.search, state.sort, state.order);
+                        const response = await fetch(url);
+                        const result = await response.json();
+                        if (result.error) return;
+
+                        const newItems = result.data || [];
+                        const newTotal = result.total || 0;
+                        const newHash = computeDataHash(newItems);
+                        
+                        // نقارن مع الكاش الحالي
+                        const currentCache = getCache();
+                        const oldHash = currentCache ? currentCache.hash : null;
+
+                        if (newHash !== oldHash) {
+                            // فيه تحديث! نحدث البيانات
+                            console.log('تم اكتشاف تحديث في البيانات، نحدث الكاش');
+                            state.items = newItems;
+                            state.total = newTotal;
+                            state.hasMore = state.items.length < state.total;
+                            state.offset = state.limit;
+                            setCache(newItems, newTotal, newHash);
+                            
+                            // نعرض البيانات الجديدة
+                            renderItems(true);
+                            totalBadge.textContent = `إجمالي: ${state.total}`;
+                            cacheStatus.textContent = `🔄 تم تحديث البيانات تلقائياً (${new Date().toLocaleTimeString()})`;
+                        } else {
+                            // مفيش تحديث، نمدد صلاحية الكاش
+                            const cache = getCache();
+                            if (cache) {
+                                cache.timestamp = Date.now();
+                                localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+                            }
+                            cacheStatus.textContent = `✅ البيانات محدثة (من الكاش)`;
+                        }
+                    } catch (e) {
+                        console.log('فشل إعادة التحقق في الخلفية', e);
+                    }
+                }, 2000); // ننتظر 2 ثانية عشان ما نضغطش على السيرفر
+            }
+
+            // ============================================
+            // 7. البحث والترتيب (مع Debouncing)
+            // ============================================
+            let searchTimeout = null;
+            function resetAndFetch() {
+                // Debouncing للبحث
+                if (searchTimeout) clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    state.search = searchInput.value;
+                    state.sort = sortSelect.value;
+                    state.order = orderSelect.value;
+                    state.offset = 0;
+                    state.items = [];
+                    state.hasMore = true;
+                    state.initialLoadDone = false;
+
+                    // نمسح الشبكة
+                    while (grid.firstChild) {
+                        if (grid.firstChild.id === 'sentinel') break;
+                        grid.removeChild(grid.firstChild);
+                    }
+
+                    // نعرض Skeleton أو الكاش حسب المتاح
+                    const cached = getCache();
+                    if (cached && cached.data && cached.data.length > 0 && state.search === '') {
+                        // لو البحث فاضي، نعرض الكاش فوراً
+                        state.items = cached.data;
+                        state.total = cached.total;
+                        state.initialLoadDone = true;
+                        renderItems(true);
+                        totalBadge.textContent = `إجمالي: ${state.total}`;
+                        state.offset = state.limit;
+                        state.hasMore = state.items.length < state.total;
+                        cacheStatus.textContent = `📦 تم التحميل من الكاش`;
+                        // نروح نجلب جديد في الخلفية
+                        revalidateInBackground(true);
+                    } else {
+                        // لو في بحث، نجبر على جلب جديد
+                        showSkeletons(6);
+                        fetchItems(true);
+                    }
+                }, 400); // تأخير 400 مللي ثانية
+            }
+
+            // ربط الأحداث
+            searchInput.addEventListener('input', resetAndFetch);
+            sortSelect.addEventListener('change', resetAndFetch);
+            orderSelect.addEventListener('change', resetAndFetch);
+
+            // ============================================
+            // 8. التمرير اللانهائي (Infinite Scroll)
+            // ============================================
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting && state.hasMore && !state.isLoading) {
                         fetchItems(false);
                     }
                 });
-            }, { rootMargin: '0px 0px 100px 0px' });
+            }, { rootMargin: '0px 0px 200px 0px' });
 
             observer.observe(sentinel);
 
-            // أحداث البحث والترتيب
-            function resetAndFetch() {
-                state.search = searchInput.value;
-                state.sort = sortSelect.value;
-                state.order = orderSelect.value;
-                state.offset = 0;
-                state.items = [];
-                state.hasMore = true;
-                state.initialLoadDone = false;
+            // ============================================
+            // 9. بدء التشغيل
+            // ============================================
+            // نضبط الـ Limit
+            state.limit = PAGE_LIMIT;
 
-                while (grid.firstChild) {
-                    if (grid.firstChild.id === 'sentinel') break;
-                    grid.removeChild(grid.firstChild);
-                }
-                const loader = document.createElement('div');
-                loader.className = 'loading-spinner';
-                loader.id = 'fetchLoader';
-                loader.innerHTML = '<span class="spinner"></span> جاري البحث...';
-                grid.appendChild(loader);
-
-                fetchItems(true);
-            }
-
-            searchInput.addEventListener('input', resetAndFetch);
-            sortSelect.addEventListener('change', resetAndFetch);
-            orderSelect.addEventListener('change', resetAndFetch);
-
-            // تحميل أولي
+            // نبدأ بتحميل البيانات
+            // أولاً نحاول نعرض الكاش (الـ fetchItems هيتعامل مع الكاش في بدايته)
             fetchItems(true);
+
+            // لو مفيش كاش، fetchItems هيعرض Skeleton ويجلب
+
+            // كل 5 دقائق، نتحقق من التحديثات في الخلفية (Revalidate دوري)
+            setInterval(() => {
+                if (!state.isLoading) {
+                    revalidateInBackground(false);
+                }
+            }, 4 * 60 * 1000); // كل 4 دقائق
+
         })();
     </script>
 </body>
