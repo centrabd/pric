@@ -405,7 +405,7 @@
             opacity: 0.3;
         }
 
-        /* ===== PAGINATION ===== */
+        /* ===== PAGINATION & INFINITE SCROLL ===== */
         .pagination-bar {
             display: flex;
             justify-content: space-between;
@@ -447,6 +447,36 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+
+        /* Sentinel (المراقب للتمرير) */
+        .sentinel {
+            height: 20px;
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+
+        /* Spinner عند التحميل */
+        .loading-more {
+            text-align: center;
+            padding: 20px 0;
+            color: #95a5a6;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .loading-more .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #e9edf2;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* ===== TOAST ===== */
@@ -724,16 +754,18 @@
                 <div id="adminGrid">
                     <div class="empty-state">جاري التحميل...</div>
                 </div>
+                <!-- Sentinel for Infinite Scroll -->
+                <div id="sentinel" class="sentinel"></div>
             </div>
 
-            <!-- Pagination -->
+            <!-- Pagination (Load More Button) -->
             <div class="pagination-bar" id="paginationBar">
                 <div class="info">
                     عرض <strong id="displayStart">0</strong> إلى <strong id="displayEnd">0</strong> من <strong id="totalDisplay">0</strong> منتج
                 </div>
                 <button class="load-more" id="loadMoreBtn">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                    تحميل المزيد (5)
+                    تحميل المزيد
                 </button>
             </div>
 
@@ -771,8 +803,7 @@
             // =========================================================
             const API_URL = 'https://script.google.com/macros/s/AKfycbxD8yE9o2-GQd0K8WDxdpfXD0C7O3LK6d9DINFxPeB7P2i95XrWzcaFDSQE0pP0bd1Q/exec';
             const ADMIN_PASSWORD = '123';
-            const PAGE_SIZE = 5;
-            const LOAD_DELAY = 1000; // 1 ثانية بين كل دفعة
+            const PAGE_SIZE = 20; // عدد المنتجات لكل دفعة (يمكنك تغييره حسب الرغبة)
 
             // =========================================================
             // 2. الحالة (State)
@@ -782,11 +813,13 @@
             let currentPage = 0;
             let isLoading = false;
             let isSaving = false;
+            let hasMore = true;
 
             // =========================================================
             // 3. عناصر DOM
             // =========================================================
             const grid = document.getElementById('adminGrid');
+            const sentinel = document.getElementById('sentinel');
             const searchInput = document.getElementById('searchInput');
             const sortField = document.getElementById('sortField');
             const sortOrder = document.getElementById('sortOrder');
@@ -876,6 +909,7 @@
 
                     allItems = result.data || [];
                     currentPage = 0;
+                    hasMore = true;
                     applyFiltersAndSort();
                     updateStats();
                     showToast('تم تحميل ' + allItems.length + ' منتج', 'success');
@@ -943,11 +977,12 @@
 
                 filteredItems = items;
                 currentPage = 0;
+                hasMore = filteredItems.length > PAGE_SIZE;
                 renderTablePage();
             }
 
             // =========================================================
-            // 8. عرض الجدول مع Pagination (5 منتجات لكل دفعة)
+            // 8. عرض الجدول مع Pagination (PAGE_SIZE منتج لكل دفعة)
             // =========================================================
             function renderTablePage() {
                 const start = currentPage * PAGE_SIZE;
@@ -1019,7 +1054,7 @@
             }
 
             // =========================================================
-            // 9. تحديث معلومات الترقيم
+            // 9. تحديث معلومات الترقيم وزر التحميل
             // =========================================================
             function updatePaginationInfo() {
                 const total = filteredItems.length;
@@ -1030,32 +1065,36 @@
                 displayEnd.textContent = total > 0 ? end : 0;
                 totalDisplay.textContent = total;
 
-                if (end >= total) {
+                // التحقق مما إذا كانت هناك منتجات إضافية
+                hasMore = end < total;
+
+                if (hasMore) {
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.innerHTML = `
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        تحميل المزيد
+                    `;
+                } else {
                     loadMoreBtn.disabled = true;
                     loadMoreBtn.innerHTML = `
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                         تم تحميل الكل
                     `;
+                }
+
+                // إظهار/إخفاء عنصر المراقب (الـ sentinel) حسب الحاجة
+                if (hasMore) {
+                    sentinel.style.display = 'block';
                 } else {
-                    loadMoreBtn.disabled = false;
-                    loadMoreBtn.innerHTML = `
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                        تحميل المزيد (5)
-                    `;
+                    sentinel.style.display = 'none';
                 }
             }
 
             // =========================================================
-            // 10. تحميل المزيد (تدريجي بتأخير 1 ثانية)
+            // 10. تحميل المزيد (زر + تمرير تلقائي)
             // =========================================================
-            window.loadMore = function() {
-                if (isLoading) return;
-                const total = filteredItems.length;
-                const loaded = (currentPage + 1) * PAGE_SIZE;
-                if (loaded >= total) {
-                    showToast('تم تحميل جميع المنتجات', 'info');
-                    return;
-                }
+            function loadMore() {
+                if (isLoading || !hasMore) return;
 
                 isLoading = true;
                 loadMoreBtn.disabled = true;
@@ -1064,18 +1103,38 @@
                     جاري التحميل...
                 `;
 
+                // محاكاة تأخير بسيط لتحسين تجربة المستخدم
                 setTimeout(() => {
                     currentPage++;
                     renderTablePage();
                     isLoading = false;
                     showToast('تم تحميل دفعة جديدة', 'success');
-                }, LOAD_DELAY);
-            };
+                }, 500);
+            }
 
-            loadMoreBtn.addEventListener('click', window.loadMore);
+            // ربط زر "تحميل المزيد"
+            loadMoreBtn.addEventListener('click', loadMore);
 
             // =========================================================
-            // 11. تحديث المنتج (Save)
+            // 11. التحميل التلقائي عند التمرير (Infinite Scroll)
+            // =========================================================
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && hasMore && !isLoading) {
+                        loadMore();
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px 0px 100px 0px',
+                threshold: 0.1
+            });
+
+            // نراقب عنصر السنتينل
+            observer.observe(sentinel);
+
+            // =========================================================
+            // 12. تحديث المنتج (Save)
             // =========================================================
             window.updateItem = async function(originalId, safeId) {
                 if (isSaving) return;
@@ -1130,7 +1189,7 @@
             };
 
             // =========================================================
-            // 12. حذف المنتج
+            // 13. حذف المنتج
             // =========================================================
             window.deleteItem = async function(id) {
                 if (!confirm('هل أنت متأكد من حذف المنتج ' + id + '؟')) return;
@@ -1154,7 +1213,7 @@
             };
 
             // =========================================================
-            // 13. إضافة منتج (Modal)
+            // 14. إضافة منتج (Modal)
             // =========================================================
             window.openAddModal = function() {
                 document.getElementById('modalTitle').textContent = 'إضافة منتج جديد';
@@ -1217,7 +1276,7 @@
             };
 
             // =========================================================
-            // 14. تحديث الإحصائيات
+            // 15. تحديث الإحصائيات
             // =========================================================
             function updateStats() {
                 const total = allItems.length;
@@ -1228,7 +1287,7 @@
             }
 
             // =========================================================
-            // 15. ربط أحداث البحث والفلتر والترتيب (مع Debounce)
+            // 16. ربط أحداث البحث والفلتر والترتيب (مع Debounce)
             // =========================================================
             let searchTimeout = null;
 
@@ -1255,14 +1314,14 @@
             });
 
             // =========================================================
-            // 16. دعم تسجيل الدخول بـ Enter
+            // 17. دعم تسجيل الدخول بـ Enter
             // =========================================================
             document.getElementById('passwordInput').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') login();
             });
 
             // =========================================================
-            // 17. بدء التشغيل
+            // 18. بدء التشغيل
             // =========================================================
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('adminPanel').style.display = 'none';
