@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة تحكم المنيو</title>
+    <style>
+        body { font-family: Arial; background: #f4f7fc; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; }
+        th { background: #2c3e50; color: white; }
+        .editable { border: 1px solid #ddd; padding: 8px; border-radius: 4px; width: 80px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-save { background: #27ae60; color: white; }
+        .btn-save:hover { background: #2ecc71; }
+        .badge-available { background: #d4edda; color: #155724; padding: 5px 10px; border-radius: 20px; }
+        .badge-unavailable { background: #f8d7da; color: #721c24; padding: 5px 10px; border-radius: 20px; }
+        .login-box { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        .login-box button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 4px; font-size: 16px; }
+        .login-box button:hover { background: #2980b9; }
+        .container { max-width: 1200px; margin: auto; }
+        h1 { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- واجهة تسجيل الدخول -->
+        <div id="loginScreen" class="login-box">
+            <h2 style="text-align:center;">🔐 دخول المشرف</h2>
+            <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور">
+            <button onclick="login()">تسجيل الدخول</button>
+            <p id="loginError" style="color:red; text-align:center;"></p>
+        </div>
+
+        <!-- لوحة التحكم -->
+        <div id="adminPanel" style="display:none;" class="container">
+            <h1>📋 إدارة المنتجات</h1>
+            <div style="margin: 20px 0;">
+                <button onclick="fetchAdminData()" style="padding:10px 20px; background:#3498db; color:white; border:none; border-radius:6px;">🔄 تحديث</button>
+            </div>
+            <div id="adminGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // ✏️ غيّر الرابط ده برابط Web App
+        const API_URL = ' https://script.google.com/macros/s/AKfycbxuurZO98FfvtUqI7P-B9eIacBwTijI6VfZGj9JrHcxXA2mppq7znI1qIJKw8gJE58f/exec ';
+        const ADMIN_PASSWORD = '123'; // نفس كلمة المرور في المشروع الأصلي
+
+        let itemsData = [];
+
+        function login() {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                fetchAdminData();
+            } else {
+                document.getElementById('loginError').innerText = '❌ كلمة المرور خاطئة';
+            }
+        }
+
+        async function fetchAdminData() {
+            try {
+                const response = await fetch(`${API_URL}?action=getMenu`);
+                const result = await response.json();
+                if (result.error) throw new Error(result.error);
+                itemsData = result.data || [];
+                renderAdminTable();
+            } catch (error) {
+                alert('فشل التحميل: ' + error.message);
+            }
+        }
+
+        function renderAdminTable() {
+            const container = document.getElementById('adminGrid');
+            if (itemsData.length === 0) {
+                container.innerHTML = '<p>لا توجد منتجات.</p>';
+                return;
+            }
+            let html = `<table>
+                <thead><tr><th>#</th><th>القسم</th><th>الاسم</th><th>السعر</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>`;
+            itemsData.forEach(item => {
+                html += `<tr>
+                    <td>${item.id}</td>
+                    <td>${item.category}</td>
+                    <td>${item.name}</td>
+                    <td><input class="editable" type="number" id="price_${item.id}" value="${item.price}" step="0.5"></td>
+                    <td>
+                        <select id="status_${item.id}">
+                            <option value="true" ${item.available ? 'selected' : ''}>متوفر</option>
+                            <option value="false" ${!item.available ? 'selected' : ''}>غير متوفر</option>
+                        </select>
+                    </td>
+                    <td><button class="btn btn-save" onclick="updateItem('${item.id}')">💾 حفظ التعديل</button></td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        async function updateItem(id) {
+            const price = document.getElementById(`price_${id}`).value;
+            const available = document.getElementById(`status_${id}`).value === 'true';
+
+            const payload = {
+                action: 'updateItem',
+                id: id,
+                price: parseFloat(price),
+                available: available
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // مهم عشان CORS
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                // بسبب no-cors، مش هنقدر نقرأ الرد، لكن هنفترض نجاح ونحدث البيانات يدوياً
+                alert('✅ تم التحديث بنجاح (افتراضي)');
+                fetchAdminData(); // إعادة تحميل البيانات
+            } catch (error) {
+                alert('❌ فشل التحديث: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
