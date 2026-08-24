@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم المتجر - Admin</title>
+    <title>لوحة تحكم المتجر - Admin Pro</title>
     <style>
-        /* ====== BASE ====== */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        /* ===== BASE ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
         body {
-            background: #f4f7fc;
+            background: #f0f4f9;
             padding: 20px;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
         }
-        .container { max-width: 1400px; width: 100%; margin: auto; }
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
 
-        /* ====== LOGIN ====== */
+        /* ===== LOGIN ===== */
         .login-box {
             max-width: 400px;
             margin: 80px auto;
@@ -27,18 +32,30 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             text-align: center;
         }
-        .login-box h2 { margin-bottom: 20px; color: #1a2634; }
+        .login-box h2 {
+            margin-bottom: 10px;
+            color: #1a2634;
+            font-weight: 700;
+        }
+        .login-box p.sub {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
         .login-box input {
             width: 100%;
             padding: 14px 18px;
-            margin: 10px 0;
+            margin: 8px 0;
             border: 2px solid #e9edf2;
             border-radius: 10px;
             font-size: 16px;
             outline: none;
             transition: 0.3s;
         }
-        .login-box input:focus { border-color: #3498db; box-shadow: 0 0 0 4px rgba(52,152,219,0.1); }
+        .login-box input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52,152,219,0.1);
+        }
         .login-box button {
             width: 100%;
             padding: 14px;
@@ -52,20 +69,30 @@
             transition: 0.3s;
             margin-top: 10px;
         }
-        .login-box button:hover { background: #2980b9; transform: scale(1.02); }
-        .login-error { color: #e74c3c; margin-top: 12px; font-size: 14px; }
+        .login-box button:hover {
+            background: #2980b9;
+        }
+        .login-error {
+            color: #e74c3c;
+            margin-top: 12px;
+            font-size: 14px;
+        }
 
-        /* ====== ADMIN PANEL ====== */
+        /* ===== ADMIN PANEL ===== */
         .admin-header {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             gap: 15px;
+            background: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
         }
         .admin-header h1 {
-            font-size: 28px;
+            font-size: 24px;
             color: #1a2634;
             display: flex;
             align-items: center;
@@ -73,13 +100,13 @@
         }
         .admin-actions {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         .admin-actions button {
-            padding: 10px 22px;
+            padding: 8px 18px;
             border: none;
-            border-radius: 50px;
+            border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
@@ -87,40 +114,152 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            background: #e9edf2;
+            color: #2c3e50;
         }
-        .btn-refresh { background: #3498db; color: white; }
-        .btn-refresh:hover { background: #2980b9; transform: scale(1.02); }
-        .btn-add { background: #27ae60; color: white; }
-        .btn-add:hover { background: #219a52; transform: scale(1.02); }
-        .btn-logout { background: #e74c3c; color: white; }
-        .btn-logout:hover { background: #c0392b; }
+        .admin-actions button:hover {
+            transform: scale(1.02);
+            background: #d5dbe3;
+        }
+        .admin-actions .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        .admin-actions .btn-primary:hover {
+            background: #2980b9;
+        }
+        .admin-actions .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        .admin-actions .btn-success:hover {
+            background: #219a52;
+        }
+        .admin-actions .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .admin-actions .btn-danger:hover {
+            background: #c0392b;
+        }
 
+        /* ===== STATS ===== */
         .stats-bar {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             background: white;
-            padding: 15px 25px;
+            padding: 12px 24px;
             border-radius: 16px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.04);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
-        .stat-item { font-size: 14px; color: #555; }
-        .stat-item strong { color: #1a2634; font-size: 18px; margin-left: 4px; }
+        .stat-item {
+            font-size: 14px;
+            color: #555;
+        }
+        .stat-item strong {
+            color: #1a2634;
+            font-size: 18px;
+            margin-left: 4px;
+        }
 
-        /* ====== TABLE ====== */
+        /* ===== TOOLBAR (بحث + فلتر + ترتيب) ===== */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: white;
+            padding: 14px 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .toolbar .search-wrap {
+            flex: 2;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 2px solid #e9edf2;
+            border-radius: 30px;
+            padding: 0 16px;
+            transition: 0.3s;
+        }
+        .toolbar .search-wrap:focus-within {
+            border-color: #3498db;
+            background: white;
+        }
+        .toolbar .search-wrap input {
+            flex: 1;
+            padding: 10px 12px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            outline: none;
+            min-width: 120px;
+        }
+        .toolbar .search-wrap svg {
+            fill: none;
+            stroke: #95a5a6;
+            stroke-width: 2;
+            flex-shrink: 0;
+        }
+        .toolbar select,
+        .toolbar input[type="number"] {
+            padding: 10px 16px;
+            border: 2px solid #e9edf2;
+            border-radius: 30px;
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+            transition: 0.3s;
+            min-width: 120px;
+        }
+        .toolbar select:focus,
+        .toolbar input[type="number"]:focus {
+            border-color: #3498db;
+            background: white;
+        }
+        .toolbar .filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .toolbar .filter-group button {
+            padding: 6px 16px;
+            border: 2px solid #e9edf2;
+            border-radius: 30px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            color: #555;
+        }
+        .toolbar .filter-group button.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .toolbar .filter-group button:hover:not(.active) {
+            border-color: #3498db;
+        }
+
+        /* ===== TABLE ===== */
         .table-wrapper {
             background: white;
             border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.04);
             overflow-x: auto;
-            padding: 5px 0;
+            padding: 0 4px 4px 4px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
-            min-width: 700px;
+            min-width: 800px;
         }
         th {
             background: #f8fafc;
@@ -130,6 +269,23 @@
             font-weight: 700;
             border-bottom: 2px solid #e9edf2;
             white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: 0.2s;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+        th:hover {
+            background: #eef2f7;
+        }
+        th .sort-icon {
+            display: inline-block;
+            margin-right: 4px;
+            opacity: 0.5;
+        }
+        th.active .sort-icon {
+            opacity: 1;
         }
         td {
             padding: 12px 10px;
@@ -137,13 +293,17 @@
             text-align: center;
             vertical-align: middle;
         }
-        tr:hover { background: #f8fafc; }
-        tr:last-child td { border-bottom: none; }
+        tr:hover td {
+            background: #fafbfc;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
 
         .editable {
             width: 100%;
-            min-width: 70px;
-            padding: 8px 10px;
+            min-width: 60px;
+            padding: 6px 8px;
             border: 2px solid #e9edf2;
             border-radius: 8px;
             font-size: 14px;
@@ -157,18 +317,43 @@
             background: white;
             box-shadow: 0 0 0 4px rgba(52,152,219,0.08);
         }
-        .editable.price { font-weight: 600; color: #27ae60; }
-        .editable.inst { font-weight: 600; color: #2980b9; }
-        .editable.qty { font-weight: 600; color: #e67e22; }
-
+        .editable.price {
+            font-weight: 600;
+            color: #27ae60;
+        }
+        .editable.inst {
+            font-weight: 600;
+            color: #2980b9;
+        }
+        .editable.qty {
+            font-weight: 600;
+            color: #e67e22;
+        }
         select.editable {
             appearance: auto;
             cursor: pointer;
             background: #fafbfc;
+            min-width: 80px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status-badge.available {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-badge.unavailable {
+            background: #f8d7da;
+            color: #721c24;
         }
 
         .btn-save {
-            padding: 8px 16px;
+            padding: 6px 14px;
             background: #27ae60;
             color: white;
             border: none;
@@ -182,27 +367,89 @@
             gap: 4px;
             white-space: nowrap;
         }
-        .btn-save:hover { background: #219a52; transform: scale(1.05); }
-        .btn-save:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 40px;
+        .btn-save:hover {
+            background: #219a52;
+            transform: scale(1.05);
+        }
+        .btn-save:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-delete {
+            padding: 6px 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 30px;
             font-size: 13px;
             font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
-        .status-badge.available { background: #d4edda; color: #155724; }
-        .status-badge.unavailable { background: #f8d7da; color: #721c24; }
+        .btn-delete:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
 
         .empty-state {
             text-align: center;
             padding: 60px 20px;
             color: #95a5a6;
         }
-        .empty-state svg { margin-bottom: 15px; opacity: 0.3; }
+        .empty-state svg {
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
 
-        /* ====== TOAST ====== */
+        /* ===== PAGINATION ===== */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        .pagination-bar .info {
+            font-size: 14px;
+            color: #555;
+        }
+        .pagination-bar .info strong {
+            color: #1a2634;
+        }
+        .pagination-bar .load-more {
+            padding: 10px 28px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pagination-bar .load-more:hover {
+            background: #2980b9;
+            transform: scale(1.02);
+        }
+        .pagination-bar .load-more:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -215,8 +462,10 @@
             align-items: center;
             width: 90%;
             max-width: 500px;
+            pointer-events: none;
         }
         .toast {
+            pointer-events: auto;
             background: white;
             padding: 14px 24px;
             border-radius: 12px;
@@ -230,92 +479,285 @@
             width: 100%;
             border-right: 5px solid #3498db;
         }
-        .toast.success { border-right-color: #27ae60; }
-        .toast.error { border-right-color: #e74c3c; }
-        .toast.warning { border-right-color: #f39c12; }
-        .toast-icon { font-size: 20px; }
+        .toast.success {
+            border-right-color: #27ae60;
+        }
+        .toast.error {
+            border-right-color: #e74c3c;
+        }
+        .toast.warning {
+            border-right-color: #f39c12;
+        }
+        .toast svg {
+            flex-shrink: 0;
+        }
         @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* ====== RESPONSIVE ====== */
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-box {
+            background: white;
+            max-width: 500px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 30px;
+            animation: slideDown 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-box h2 {
+            margin-bottom: 20px;
+            color: #1a2634;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-box .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .modal-box .form-group input,
+        .modal-box .form-group select {
+            padding: 12px 16px;
+            border: 2px solid #e9edf2;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .modal-box .form-group input:focus,
+        .modal-box .form-group select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52,152,219,0.1);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-actions button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .modal-actions .btn-confirm {
+            background: #27ae60;
+            color: white;
+        }
+        .modal-actions .btn-confirm:hover {
+            background: #219a52;
+        }
+        .modal-actions .btn-cancel {
+            background: #e9edf2;
+            color: #555;
+        }
+        .modal-actions .btn-cancel:hover {
+            background: #d5dbe3;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .admin-header { flex-direction: column; align-items: stretch; text-align: center; }
-            .admin-actions { justify-content: center; }
-            .stats-bar { justify-content: center; }
-            .editable { min-width: 50px; font-size: 13px; padding: 6px 8px; }
-            table { font-size: 13px; min-width: 600px; }
-            th, td { padding: 8px 6px; }
-            .btn-save { font-size: 12px; padding: 6px 12px; }
-            .login-box { margin: 40px 15px; padding: 25px 20px; }
+            .admin-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .admin-actions {
+                justify-content: center;
+            }
+            .stats-bar {
+                justify-content: center;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .search-wrap {
+                flex: unset;
+            }
+            .pagination-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .editable {
+                min-width: 40px;
+                font-size: 13px;
+                padding: 4px 6px;
+            }
+            table {
+                font-size: 13px;
+                min-width: 600px;
+            }
+            th,
+            td {
+                padding: 8px 6px;
+            }
+            .login-box {
+                margin: 40px 15px;
+                padding: 25px 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ====== TOAST CONTAINER ====== -->
+    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
     <div class="container" id="app">
 
-        <!-- ====== LOGIN SCREEN ====== -->
+        <!-- Login Screen -->
         <div id="loginScreen" class="login-box">
-            <h2>🔐 دخول المشرف</h2>
-            <p style="color:#95a5a6; font-size:14px; margin-bottom:15px;">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
+            <h2>قفل الأمان</h2>
+            <p class="sub">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
             <input type="password" id="passwordInput" placeholder="كلمة المرور" autofocus>
-            <button onclick="login()">تسجيل الدخول</button>
+            <button onclick="login()">دخول</button>
             <p id="loginError" class="login-error"></p>
         </div>
 
-        <!-- ====== ADMIN PANEL ====== -->
+        <!-- Admin Panel -->
         <div id="adminPanel" style="display:none;">
 
             <!-- Header -->
             <div class="admin-header">
-                <h1>📋 إدارة المنتجات</h1>
+                <h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    إدارة المنتجات
+                </h1>
                 <div class="admin-actions">
-                    <button class="btn-refresh" onclick="fetchAdminData()">🔄 تحديث</button>
-                    <button class="btn-add" onclick="openAddModal()">➕ إضافة منتج</button>
-                    <button class="btn-logout" onclick="logout()">🚪 خروج</button>
+                    <button class="btn-primary" onclick="fetchAdminData()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        تحديث
+                    </button>
+                    <button class="btn-success" onclick="openAddModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        إضافة منتج
+                    </button>
+                    <button class="btn-danger" onclick="logout()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        خروج
+                    </button>
                 </div>
             </div>
 
             <!-- Stats -->
             <div class="stats-bar" id="statsBar">
-                <span class="stat-item">📦 <strong id="totalCount">0</strong> منتج</span>
-                <span class="stat-item">✅ <strong id="availableCount">0</strong> متوفر</span>
-                <span class="stat-item">❌ <strong id="unavailableCount">0</strong> غير متوفر</span>
+                <span class="stat-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    <strong id="totalCount">0</strong> منتج
+                </span>
+                <span class="stat-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <strong id="availableCount">0</strong> متوفر
+                </span>
+                <span class="stat-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                    <strong id="unavailableCount">0</strong> غير متوفر
+                </span>
+            </div>
+
+            <!-- Toolbar (Search + Filter + Sort) -->
+            <div class="toolbar" id="toolbar">
+                <div class="search-wrap">
+                    <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="searchInput" placeholder="بحث في جميع الحقول..." />
+                </div>
+
+                <select id="sortField">
+                    <option value="name">ترتيب حسب الاسم</option>
+                    <option value="cashPrice">ترتيب حسب سعر الكاش</option>
+                    <option value="installPrice">ترتيب حسب سعر القسط</option>
+                    <option value="quantity">ترتيب حسب الكمية</option>
+                    <option value="available">ترتيب حسب الحالة</option>
+                </select>
+                <select id="sortOrder">
+                    <option value="asc">تصاعدي</option>
+                    <option value="desc">تنازلي</option>
+                </select>
+
+                <div class="filter-group">
+                    <button class="active" data-filter="all">الكل</button>
+                    <button data-filter="available">متوفر</button>
+                    <button data-filter="unavailable">غير متوفر</button>
+                </div>
+
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <input type="number" id="priceMin" placeholder="سعر من" min="0" style="width:100px;" />
+                    <span>ـ</span>
+                    <input type="number" id="priceMax" placeholder="سعر إلى" min="0" style="width:100px;" />
+                </div>
             </div>
 
             <!-- Table -->
             <div class="table-wrapper">
                 <div id="adminGrid">
-                    <div class="empty-state">⏳ جاري التحميل...</div>
+                    <div class="empty-state">جاري التحميل...</div>
                 </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination-bar" id="paginationBar">
+                <div class="info">
+                    عرض <strong id="displayStart">0</strong> إلى <strong id="displayEnd">0</strong> من <strong id="totalDisplay">0</strong> منتج
+                </div>
+                <button class="load-more" id="loadMoreBtn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    تحميل المزيد (5)
+                </button>
             </div>
 
         </div>
     </div>
 
-    <!-- ====== MODAL لإضافة منتج جديد ====== -->
-    <div id="addModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); z-index:10000; justify-content:center; align-items:center; padding:20px;">
-        <div style="background:white; max-width:500px; width:100%; border-radius:20px; padding:30px; animation:slideDown 0.3s ease; max-height:90vh; overflow-y:auto;">
-            <h2 style="margin-bottom:20px;">➕ إضافة منتج جديد</h2>
-            <div style="display:flex; flex-direction:column; gap:15px;">
-                <input id="addCode" placeholder="كود الصنف *" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
-                <input id="addName" placeholder="اسم الصنف *" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
-                <input id="addCash" type="number" placeholder="سعر الكاش" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
-                <input id="addInst" type="number" placeholder="سعر القسط شهري" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
-                <input id="addQty" type="number" placeholder="الكمية" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
-                <select id="addAvailable" style="padding:12px 16px; border:2px solid #e9edf2; border-radius:10px; font-size:15px;">
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-box">
+            <h2 id="modalTitle">إضافة منتج جديد</h2>
+            <div class="form-group">
+                <input id="modalCode" placeholder="كود الصنف *" />
+                <input id="modalName" placeholder="اسم الصنف *" />
+                <input id="modalCash" type="number" placeholder="سعر الكاش" />
+                <input id="modalInst" type="number" placeholder="سعر القسط شهري" />
+                <input id="modalQty" type="number" placeholder="الكمية" />
+                <select id="modalAvailable">
                     <option value="true">متوفر</option>
                     <option value="false">غير متوفر</option>
                 </select>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <button onclick="submitAddProduct()" style="flex:1; padding:14px; background:#27ae60; color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer;">💾 حفظ</button>
-                    <button onclick="closeAddModal()" style="flex:0.5; padding:14px; background:#e9edf2; color:#555; border:none; border-radius:12px; font-size:16px; cursor:pointer;">إلغاء</button>
-                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-confirm" id="modalConfirm">حفظ</button>
+                <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
             </div>
         </div>
     </div>
@@ -325,17 +767,41 @@
             'use strict';
 
             // =========================================================
-            // 1. الإعدادات (غيّرها حسب الحاجة)
+            // 1. الإعدادات
             // =========================================================
-            // 🔥 تأكد من أن الرابط صحيح وبدون مسافات
             const API_URL = 'https://script.google.com/macros/s/AKfycbxD8yE9o2-GQd0K8WDxdpfXD0C7O3LK6d9DINFxPeB7P2i95XrWzcaFDSQE0pP0bd1Q/exec';
-            const ADMIN_PASSWORD = '123'; // غيرها لكلمة مرور أقوى
+            const ADMIN_PASSWORD = '123';
+            const PAGE_SIZE = 5;
+            const LOAD_DELAY = 1000; // 1 ثانية بين كل دفعة
 
-            let itemsData = [];
+            // =========================================================
+            // 2. الحالة (State)
+            // =========================================================
+            let allItems = [];
+            let filteredItems = [];
+            let currentPage = 0;
+            let isLoading = false;
             let isSaving = false;
 
             // =========================================================
-            // 2. دوال مساعدة (أمان - Toast - تنقية)
+            // 3. عناصر DOM
+            // =========================================================
+            const grid = document.getElementById('adminGrid');
+            const searchInput = document.getElementById('searchInput');
+            const sortField = document.getElementById('sortField');
+            const sortOrder = document.getElementById('sortOrder');
+            const priceMin = document.getElementById('priceMin');
+            const priceMax = document.getElementById('priceMax');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            const displayStart = document.getElementById('displayStart');
+            const displayEnd = document.getElementById('displayEnd');
+            const totalDisplay = document.getElementById('totalDisplay');
+            const totalCount = document.getElementById('totalCount');
+            const availableCount = document.getElementById('availableCount');
+            const unavailableCount = document.getElementById('unavailableCount');
+
+            // =========================================================
+            // 4. دوال مساعدة (أمان، Toast، SVG)
             // =========================================================
             function escapeHtml(text) {
                 if (!text) return '';
@@ -347,10 +813,23 @@
             function showToast(message, type = 'success') {
                 const container = document.getElementById('toastContainer');
                 const toast = document.createElement('div');
-                toast.className = `toast ${type}`;
-                const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-                toast.innerHTML = `<span class="toast-icon">${icons[type] || 'ℹ️'}</span><span>${escapeHtml(message)}</span>`;
+                toast.className = 'toast ' + type;
+
+                let icon = '';
+                if (type === 'success') {
+                    icon =
+                        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+                } else if (type === 'error') {
+                    icon =
+                        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+                } else {
+                    icon =
+                        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+                }
+
+                toast.innerHTML = icon + '<span>' + escapeHtml(message) + '</span>';
                 container.appendChild(toast);
+
                 setTimeout(() => {
                     toast.style.opacity = '0';
                     toast.style.transform = 'translateY(-20px)';
@@ -359,7 +838,7 @@
             }
 
             // =========================================================
-            // 3. تسجيل الدخول / الخروج
+            // 5. تسجيل الدخول / الخروج
             // =========================================================
             window.login = function() {
                 const pass = document.getElementById('passwordInput').value;
@@ -370,7 +849,7 @@
                     fetchAdminData();
                     showToast('تم تسجيل الدخول بنجاح', 'success');
                 } else {
-                    document.getElementById('loginError').textContent = '❌ كلمة المرور خاطئة';
+                    document.getElementById('loginError').textContent = 'كلمة المرور خاطئة';
                     showToast('كلمة المرور خاطئة', 'error');
                 }
             };
@@ -383,50 +862,106 @@
             };
 
             // =========================================================
-            // 4. جلب البيانات من الـ API
+            // 6. جلب البيانات
             // =========================================================
             window.fetchAdminData = async function() {
                 try {
-                    const grid = document.getElementById('adminGrid');
-                    grid.innerHTML = '<div class="empty-state">⏳ جاري التحميل...</div>';
+                    grid.innerHTML = '<div class="empty-state">جاري التحميل...</div>';
 
-                    const response = await fetch(`${API_URL}?action=getMenu`);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const response = await fetch(API_URL + '?action=getMenu');
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
                     const result = await response.json();
 
                     if (result.error) throw new Error(result.error);
 
-                    itemsData = result.data || [];
-                    renderAdminTable();
+                    allItems = result.data || [];
+                    currentPage = 0;
+                    applyFiltersAndSort();
                     updateStats();
-
-                    showToast(`تم تحميل ${itemsData.length} منتج`, 'success');
+                    showToast('تم تحميل ' + allItems.length + ' منتج', 'success');
                 } catch (error) {
                     console.error('Fetch error:', error);
-                    document.getElementById('adminGrid').innerHTML = `
+                    grid.innerHTML = `
                         <div class="empty-state" style="color:#e74c3c;">
-                            ❌ فشل التحميل: ${escapeHtml(error.message)}
-                            <br><button onclick="fetchAdminData()" style="margin-top:15px;padding:10px 30px;background:#3498db;color:white;border:none;border-radius:30px;cursor:pointer;">🔄 إعادة المحاولة</button>
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                            <p>فشل التحميل: ${escapeHtml(error.message)}</p>
+                            <button onclick="fetchAdminData()" style="margin-top:15px;padding:10px 30px;background:#3498db;color:white;border:none;border-radius:30px;cursor:pointer;">إعادة المحاولة</button>
                         </div>
                     `;
-                    showToast('فشل تحميل البيانات: ' + error.message, 'error');
+                    showToast('فشل تحميل البيانات', 'error');
                 }
             };
 
             // =========================================================
-            // 5. عرض الجدول (باستخدام innerHTML مع تنظيف)
+            // 7. تطبيق الفلتر، البحث، الترتيب
             // =========================================================
-            function renderAdminTable() {
-                const container = document.getElementById('adminGrid');
+            function applyFiltersAndSort() {
+                // بحث
+                let searchTerm = searchInput.value.trim().toLowerCase();
+                let items = allItems;
 
-                if (!itemsData || itemsData.length === 0) {
-                    container.innerHTML = `
+                if (searchTerm) {
+                    items = items.filter(item => {
+                        return Object.values(item).some(val =>
+                            String(val).toLowerCase().includes(searchTerm)
+                        );
+                    });
+                }
+
+                // فلتر الحالة
+                const activeFilter = document.querySelector('.filter-group .active');
+                if (activeFilter) {
+                    const filter = activeFilter.dataset.filter;
+                    if (filter === 'available') {
+                        items = items.filter(i => i.available === true || i.available === 'true');
+                    } else if (filter === 'unavailable') {
+                        items = items.filter(i => i.available !== true && i.available !== 'true');
+                    }
+                }
+
+                // فلتر السعر
+                const minPrice = parseFloat(priceMin.value) || 0;
+                const maxPrice = parseFloat(priceMax.value) || Infinity;
+                items = items.filter(item => {
+                    const cash = parseFloat(item.cashPrice) || 0;
+                    return cash >= minPrice && cash <= maxPrice;
+                });
+
+                // ترتيب
+                const field = sortField.value;
+                const order = sortOrder.value === 'asc' ? 1 : -1;
+
+                items.sort((a, b) => {
+                    let va = a[field] ?? '';
+                    let vb = b[field] ?? '';
+                    if (typeof va === 'string') va = va.toLowerCase();
+                    if (typeof vb === 'string') vb = vb.toLowerCase();
+                    if (va < vb) return -1 * order;
+                    if (va > vb) return 1 * order;
+                    return 0;
+                });
+
+                filteredItems = items;
+                currentPage = 0;
+                renderTablePage();
+            }
+
+            // =========================================================
+            // 8. عرض الجدول مع Pagination (5 منتجات لكل دفعة)
+            // =========================================================
+            function renderTablePage() {
+                const start = currentPage * PAGE_SIZE;
+                const end = Math.min(start + PAGE_SIZE, filteredItems.length);
+                const pageItems = filteredItems.slice(start, end);
+
+                if (pageItems.length === 0 && filteredItems.length === 0) {
+                    grid.innerHTML = `
                         <div class="empty-state">
                             <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-                            <p>لا توجد منتجات حالياً</p>
-                            <button class="btn-add" onclick="openAddModal()" style="margin-top:15px;">➕ إضافة منتج</button>
+                            <p>لا توجد منتجات تطابق المعايير</p>
                         </div>
                     `;
+                    updatePaginationInfo();
                     return;
                 }
 
@@ -441,40 +976,37 @@
                                 <th>سعر القسط</th>
                                 <th>الكمية</th>
                                 <th>التوافر</th>
-                                <th>الإجراء</th>
+                                <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
 
-                itemsData.forEach((item, index) => {
-                    // ننظف المعرف لاستخدامه في DOM (نزيل أي أحرف خاصة)
-                    const safeId = String(item.id).replace(/[^a-zA-Z0-9]/g, '') || 'id_' + index;
-                    const isAvailable = item.available === true || item.available === 'true';
+                pageItems.forEach((item, idx) => {
+                    const safeId = String(item.id).replace(/[^a-zA-Z0-9]/g, '') || 'id_' + idx;
+                    const isAvailable = (item.available === true || item.available === 'true');
 
                     html += `
                         <tr>
-                            <td>${index + 1}</td>
+                            <td>${start + idx + 1}</td>
                             <td><strong>${escapeHtml(item.id)}</strong></td>
                             <td style="text-align:right;">${escapeHtml(item.name)}</td>
-                            <td>
-                                <input class="editable price" type="number" id="cash_${safeId}" value="${item.cashPrice || 0}" step="0.5" />
-                            </td>
-                            <td>
-                                <input class="editable inst" type="number" id="inst_${safeId}" value="${item.installPrice || 0}" step="0.5" />
-                            </td>
-                            <td>
-                                <input class="editable qty" type="number" id="qty_${safeId}" value="${item.quantity || 0}" step="1" min="0" />
-                            </td>
+                            <td><input class="editable price" type="number" id="cash_${safeId}" value="${item.cashPrice || 0}" step="0.5" /></td>
+                            <td><input class="editable inst" type="number" id="inst_${safeId}" value="${item.installPrice || 0}" step="0.5" /></td>
+                            <td><input class="editable qty" type="number" id="qty_${safeId}" value="${item.quantity || 0}" step="1" min="0" /></td>
                             <td>
                                 <select class="editable" id="status_${safeId}">
-                                    <option value="true" ${isAvailable ? 'selected' : ''}>✅ متوفر</option>
-                                    <option value="false" ${!isAvailable ? 'selected' : ''}>❌ غير متوفر</option>
+                                    <option value="true" ${isAvailable ? 'selected' : ''}>متوفر</option>
+                                    <option value="false" ${!isAvailable ? 'selected' : ''}>غير متوفر</option>
                                 </select>
                             </td>
                             <td>
                                 <button class="btn-save" onclick="updateItem('${escapeHtml(item.id)}', '${safeId}')" id="saveBtn_${safeId}">
-                                    💾 حفظ
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                    حفظ
+                                </button>
+                                <button class="btn-delete" onclick="deleteItem('${escapeHtml(item.id)}')">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                                 </button>
                             </td>
                         </tr>
@@ -482,37 +1014,82 @@
                 });
 
                 html += `</tbody></table>`;
-                container.innerHTML = html;
+                grid.innerHTML = html;
+                updatePaginationInfo();
             }
 
             // =========================================================
-            // 6. تحديث الإحصائيات
+            // 9. تحديث معلومات الترقيم
             // =========================================================
-            function updateStats() {
-                const total = itemsData.length;
-                const available = itemsData.filter(i => i.available === true || i.available === 'true').length;
-                const unavailable = total - available;
+            function updatePaginationInfo() {
+                const total = filteredItems.length;
+                const start = currentPage * PAGE_SIZE + 1;
+                const end = Math.min(start + PAGE_SIZE - 1, total);
 
-                document.getElementById('totalCount').textContent = total;
-                document.getElementById('availableCount').textContent = available;
-                document.getElementById('unavailableCount').textContent = unavailable;
+                displayStart.textContent = total > 0 ? start : 0;
+                displayEnd.textContent = total > 0 ? end : 0;
+                totalDisplay.textContent = total;
+
+                if (end >= total) {
+                    loadMoreBtn.disabled = true;
+                    loadMoreBtn.innerHTML = `
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                        تم تحميل الكل
+                    `;
+                } else {
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.innerHTML = `
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                        تحميل المزيد (5)
+                    `;
+                }
             }
 
             // =========================================================
-            // 7. تحديث منتج (Save)
+            // 10. تحميل المزيد (تدريجي بتأخير 1 ثانية)
+            // =========================================================
+            window.loadMore = function() {
+                if (isLoading) return;
+                const total = filteredItems.length;
+                const loaded = (currentPage + 1) * PAGE_SIZE;
+                if (loaded >= total) {
+                    showToast('تم تحميل جميع المنتجات', 'info');
+                    return;
+                }
+
+                isLoading = true;
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    جاري التحميل...
+                `;
+
+                setTimeout(() => {
+                    currentPage++;
+                    renderTablePage();
+                    isLoading = false;
+                    showToast('تم تحميل دفعة جديدة', 'success');
+                }, LOAD_DELAY);
+            };
+
+            loadMoreBtn.addEventListener('click', window.loadMore);
+
+            // =========================================================
+            // 11. تحديث المنتج (Save)
             // =========================================================
             window.updateItem = async function(originalId, safeId) {
                 if (isSaving) return;
                 isSaving = true;
 
-                const saveBtn = document.getElementById(`saveBtn_${safeId}`);
-                if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = '⏳ جاري...'; }
+                const saveBtn = document.getElementById('saveBtn_' + safeId);
+                if (saveBtn) { saveBtn.disabled = true;
+                    saveBtn.innerHTML = 'جاري...'; }
 
                 try {
-                    const cashPrice = parseFloat(document.getElementById(`cash_${safeId}`).value) || 0;
-                    const installPrice = parseFloat(document.getElementById(`inst_${safeId}`).value) || 0;
-                    const quantity = parseInt(document.getElementById(`qty_${safeId}`).value) || 0;
-                    const available = document.getElementById(`status_${safeId}`).value === 'true';
+                    const cashPrice = parseFloat(document.getElementById('cash_' + safeId).value) || 0;
+                    const installPrice = parseFloat(document.getElementById('inst_' + safeId).value) || 0;
+                    const quantity = parseInt(document.getElementById('qty_' + safeId).value) || 0;
+                    const available = document.getElementById('status_' + safeId).value === 'true';
 
                     const payload = {
                         action: 'updateItem',
@@ -523,7 +1100,6 @@
                         available: available
                     };
 
-                    // نستخدم mode: 'no-cors' لتجنب مشاكل CORS، لكن لا نقرأ الرد
                     await fetch(API_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -531,8 +1107,8 @@
                         body: JSON.stringify(payload)
                     });
 
-                    // نحدث البيانات محلياً لتجنب إعادة التحميل الكامل (سرعة)
-                    const item = itemsData.find(i => i.id === originalId);
+                    // تحديث محلي
+                    const item = allItems.find(i => i.id === originalId);
                     if (item) {
                         item.cashPrice = cashPrice;
                         item.installPrice = installPrice;
@@ -540,54 +1116,77 @@
                         item.available = available;
                     }
 
-                    showToast(`✅ تم تحديث المنتج ${originalId} بنجاح`, 'success');
-
-                    // نحدث الإحصائيات والجدول (إعادة رسم الجدول كامل عشان يظهر التغيير)
-                    // بدلاً من renderAdminTable() كاملة، نحدث فقط الخلايا المعنية لتوفير الأداء، لكن للبساطة:
-                    fetchAdminData(); // يعيد تحميل كل شيء للتأكد من التزامن مع السيرفر
+                    showToast('تم تحديث المنتج بنجاح', 'success');
+                    applyFiltersAndSort(); // إعادة رسم الجدول مع الفلاتر الحالية
 
                 } catch (error) {
-                    console.error('Update error:', error);
-                    showToast('❌ فشل التحديث: ' + error.message, 'error');
+                    showToast('فشل التحديث: ' + error.message, 'error');
                 } finally {
                     isSaving = false;
-                    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '💾 حفظ'; }
+                    if (saveBtn) { saveBtn.disabled = false;
+                        saveBtn.innerHTML =
+                            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> حفظ'; }
                 }
             };
 
             // =========================================================
-            // 8. إضافة منتج جديد (Modal)
+            // 12. حذف المنتج
             // =========================================================
-            window.openAddModal = function() {
-                document.getElementById('addModal').style.display = 'flex';
-                document.getElementById('addCode').focus();
+            window.deleteItem = async function(id) {
+                if (!confirm('هل أنت متأكد من حذف المنتج ' + id + '؟')) return;
+
+                try {
+                    const payload = { action: 'deleteItem', id: id };
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    allItems = allItems.filter(i => i.id !== id);
+                    applyFiltersAndSort();
+                    updateStats();
+                    showToast('تم حذف المنتج بنجاح', 'success');
+                } catch (error) {
+                    showToast('فشل الحذف: ' + error.message, 'error');
+                }
             };
 
-            window.closeAddModal = function() {
-                document.getElementById('addModal').style.display = 'none';
-                // تنظيف الحقول
-                ['addCode', 'addName', 'addCash', 'addInst', 'addQty'].forEach(id => {
-                    document.getElementById(id).value = '';
-                });
-                document.getElementById('addAvailable').value = 'true';
+            // =========================================================
+            // 13. إضافة منتج (Modal)
+            // =========================================================
+            window.openAddModal = function() {
+                document.getElementById('modalTitle').textContent = 'إضافة منتج جديد';
+                document.getElementById('modalCode').value = '';
+                document.getElementById('modalName').value = '';
+                document.getElementById('modalCash').value = '';
+                document.getElementById('modalInst').value = '';
+                document.getElementById('modalQty').value = '';
+                document.getElementById('modalAvailable').value = 'true';
+                document.getElementById('modalConfirm').onclick = submitAddProduct;
+                document.getElementById('productModal').classList.add('open');
+            };
+
+            window.closeModal = function() {
+                document.getElementById('productModal').classList.remove('open');
             };
 
             window.submitAddProduct = async function() {
-                const code = document.getElementById('addCode').value.trim();
-                const name = document.getElementById('addName').value.trim();
-                const cash = parseFloat(document.getElementById('addCash').value) || 0;
-                const inst = parseFloat(document.getElementById('addInst').value) || 0;
-                const qty = parseInt(document.getElementById('addQty').value) || 0;
-                const avail = document.getElementById('addAvailable').value === 'true';
+                const code = document.getElementById('modalCode').value.trim();
+                const name = document.getElementById('modalName').value.trim();
+                const cash = parseFloat(document.getElementById('modalCash').value) || 0;
+                const inst = parseFloat(document.getElementById('modalInst').value) || 0;
+                const qty = parseInt(document.getElementById('modalQty').value) || 0;
+                const avail = document.getElementById('modalAvailable').value === 'true';
 
                 if (!code || !name) {
-                    showToast('⚠️ الكود واسم الصنف مطلوبان', 'warning');
+                    showToast('الكود واسم الصنف مطلوبان', 'warning');
                     return;
                 }
 
-                // التحقق من عدم وجود الكود مكرر
-                if (itemsData.some(i => i.id === code)) {
-                    showToast('⚠️ هذا الكود موجود بالفعل', 'warning');
+                if (allItems.some(i => i.id === code)) {
+                    showToast('هذا الكود موجود بالفعل', 'warning');
                     return;
                 }
 
@@ -609,34 +1208,62 @@
                         body: JSON.stringify(payload)
                     });
 
-                    showToast(`✅ تم إضافة المنتج ${code} بنجاح`, 'success');
-                    closeAddModal();
-                    fetchAdminData(); // إعادة تحميل القائمة
-
+                    showToast('تم إضافة المنتج بنجاح', 'success');
+                    closeModal();
+                    fetchAdminData();
                 } catch (error) {
-                    showToast('❌ فشل الإضافة: ' + error.message, 'error');
+                    showToast('فشل الإضافة: ' + error.message, 'error');
                 }
             };
 
-            // إغلاق المودال بالضغط على Escape
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    const modal = document.getElementById('addModal');
-                    if (modal.style.display === 'flex') closeAddModal();
-                }
+            // =========================================================
+            // 14. تحديث الإحصائيات
+            // =========================================================
+            function updateStats() {
+                const total = allItems.length;
+                const avail = allItems.filter(i => i.available === true || i.available === 'true').length;
+                totalCount.textContent = total;
+                availableCount.textContent = avail;
+                unavailableCount.textContent = total - avail;
+            }
+
+            // =========================================================
+            // 15. ربط أحداث البحث والفلتر والترتيب (مع Debounce)
+            // =========================================================
+            let searchTimeout = null;
+
+            function triggerSearch() {
+                if (searchTimeout) clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    applyFiltersAndSort();
+                }, 300);
+            }
+
+            searchInput.addEventListener('input', triggerSearch);
+            sortField.addEventListener('change', triggerSearch);
+            sortOrder.addEventListener('change', triggerSearch);
+            priceMin.addEventListener('input', triggerSearch);
+            priceMax.addEventListener('input', triggerSearch);
+
+            // فلتر الحالة
+            document.querySelectorAll('.filter-group button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-group button').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    triggerSearch();
+                });
             });
 
             // =========================================================
-            // 9. دعم تسجيل الدخول بضغط Enter
+            // 16. دعم تسجيل الدخول بـ Enter
             // =========================================================
             document.getElementById('passwordInput').addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') login();
             });
 
             // =========================================================
-            // 10. بدء التشغيل (نفحص إذا كان المستخدم مسجل سابقاً؟ لا، نطلب تسجيل الدخول)
+            // 17. بدء التشغيل
             // =========================================================
-            // نعرض شاشة تسجيل الدخول افتراضياً
             document.getElementById('loginScreen').style.display = 'block';
             document.getElementById('adminPanel').style.display = 'none';
 
