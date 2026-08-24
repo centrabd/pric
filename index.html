@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', 'Tahoma', sans-serif;
         }
         body {
-            background: #f0f4f9;
+            background: #f4f7fc;
             padding: 25px 15px;
         }
         .container {
@@ -249,7 +249,6 @@
 
         <!-- شبكة المنتجات -->
         <div id="productGrid" class="grid">
-            <!-- سيتم إدراج العناصر هنا -->
             <div class="loading-spinner" id="initialLoader">
                 <span class="spinner"></span> جاري التحميل...
             </div>
@@ -261,7 +260,7 @@
 
     <script>
         (function() {
-            // ⚠️ استبدل الرابط أدناه برابط Web App الخاص بك (بدون مسافات)
+            // ⚠️ ضع هنا رابط Web App الخاص بك (بدون أي مسافات)
             const API_URL = 'https://script.google.com/macros/s/AKfycbxuurZO98FfvtUqI7P-B9eIacBwTijI6VfZGj9JrHcxXA2mppq7znI1qIJKw8gJE58f/exec';
 
             // حالة التطبيق
@@ -285,7 +284,6 @@
             const orderSelect = document.getElementById('orderSelect');
             const totalBadge = document.getElementById('totalBadge');
 
-            // بناء URL مع البارامترات
             function buildUrl() {
                 const params = new URLSearchParams();
                 params.append('action', 'getMenu');
@@ -297,7 +295,6 @@
                 return `${API_URL}?${params.toString()}`;
             }
 
-            // جلب البيانات
             async function fetchItems(reset = false) {
                 if (state.isLoading) return;
                 if (!reset && !state.hasMore) return;
@@ -306,8 +303,12 @@
                     state.offset = 0;
                     state.items = [];
                     state.hasMore = true;
-                    grid.innerHTML = '';
-                    // نضيف مؤقت تحميل
+                    // مسح الشبكة مع الاحتفاظ بالسنتينل
+                    while (grid.firstChild) {
+                        if (grid.firstChild.id === 'sentinel') break;
+                        grid.removeChild(grid.firstChild);
+                    }
+                    // إضافة محمل
                     const loader = document.createElement('div');
                     loader.className = 'loading-spinner';
                     loader.id = 'fetchLoader';
@@ -319,9 +320,17 @@
 
                 try {
                     const response = await fetch(buildUrl());
-                    const result = await response.json();
+                    
+                    // محاولة تحويل الاستجابة إلى JSON
+                    let result;
+                    try {
+                        result = await response.json();
+                    } catch (jsonError) {
+                        // لو الاستجابة مش JSON (يعني HTML)، نرمي خطأ مخصص
+                        throw new Error('الخادم لم يعد بيانات JSON (تأكد من صلاحيات Web App وأعد النشر)');
+                    }
 
-                    // معالجة الأخطاء
+                    // التحقق من وجود خطأ في الـ JSON
                     if (result.error) {
                         throw new Error(result.error);
                     }
@@ -339,34 +348,34 @@
                         state.items = [...state.items, ...newItems];
                     }
 
-                    // تحديث hasMore
                     state.hasMore = state.items.length < state.total;
-
-                    // تحديث العرض
                     renderItems(reset);
-
-                    // تحديث العداد
                     totalBadge.textContent = `إجمالي: ${state.total}`;
 
-                    // زيادة الـ offset للصفحة التالية
                     if (!reset) {
                         state.offset += state.limit;
                     } else {
                         state.offset = state.limit;
                     }
-
                     state.initialLoadDone = true;
 
                 } catch (error) {
                     console.error('Fetch error:', error);
-                    // إزالة مؤقت التحميل
                     const loader = document.getElementById('fetchLoader');
                     if (loader) loader.remove();
 
-                    // عرض رسالة خطأ
+                    // عرض رسالة خطأ واضحة
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'error-box';
-                    errorDiv.innerHTML = `❌ فشل التحميل: ${error.message}<br><small>تأكد من صلاحيات Web App (Anyone) وصحة الرابط</small>`;
+                    errorDiv.innerHTML = `
+                        ❌ فشل التحميل: ${error.message}
+                        <br><small style="display:block; margin-top:10px;">
+                        ✅ تأكد من:
+                        <br>1. صلاحيات Web App = "أي شخص"
+                        <br>2. إعادة نشر الكود كـ "إصدار جديد"
+                        <br>3. الرابط صحيح ولا يحتوي على مسافات
+                        </small>
+                    `;
                     grid.appendChild(errorDiv);
                     state.hasMore = false;
                 } finally {
@@ -374,16 +383,13 @@
                 }
             }
 
-            // عرض العناصر
             function renderItems(reset) {
                 if (reset) {
-                    // إزالة كل شيء عدا sentinel
                     while (grid.firstChild) {
                         if (grid.firstChild.id === 'sentinel') break;
                         grid.removeChild(grid.firstChild);
                     }
                 } else {
-                    // إزالة رسالة "لا توجد نتائج" أو "خطأ" السابقة
                     const toRemove = grid.querySelectorAll('.no-results, .error-box, #fetchLoader');
                     toRemove.forEach(el => el.remove());
                 }
@@ -396,14 +402,11 @@
                     return;
                 }
 
-                // إضافة البطاقات الجديدة فقط (آخر 20 عنصر مضافين)
-                // لكن نفضل إعادة رسم الكل عشان الترتيب يتغير
                 if (reset) {
                     state.items.forEach(item => {
                         grid.appendChild(createCard(item));
                     });
                 } else {
-                    // نضيف العناصر الجديدة فقط (آخر دفعة)
                     const startIndex = state.items.length - state.limit;
                     const newBatch = state.items.slice(startIndex);
                     newBatch.forEach(item => {
@@ -411,12 +414,10 @@
                     });
                 }
 
-                // تحديث sentinel مكانه
                 const existingSentinel = document.getElementById('sentinel');
                 if (existingSentinel) grid.appendChild(existingSentinel);
             }
 
-            // إنشاء بطاقة منتج
             function createCard(item) {
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -455,7 +456,7 @@
                 return card;
             }
 
-            // مراقبة التمرير (Infinite Scroll)
+            // مراقبة التمرير
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting && state.hasMore && !state.isLoading) {
@@ -466,23 +467,20 @@
 
             observer.observe(sentinel);
 
-            // أحداث البحث والترتيب (تعيد التحميل من الصفر)
+            // أحداث البحث والترتيب
             function resetAndFetch() {
                 state.search = searchInput.value;
                 state.sort = sortSelect.value;
                 state.order = orderSelect.value;
-                // إعادة تعيين كل شيء
-                const oldItems = state.items;
-                state.items = [];
                 state.offset = 0;
+                state.items = [];
                 state.hasMore = true;
                 state.initialLoadDone = false;
-                // مسح الشبكة مع الاحتفاظ بالسنتينل
+
                 while (grid.firstChild) {
                     if (grid.firstChild.id === 'sentinel') break;
                     grid.removeChild(grid.firstChild);
                 }
-                // إضافة محمل
                 const loader = document.createElement('div');
                 loader.className = 'loading-spinner';
                 loader.id = 'fetchLoader';
@@ -492,21 +490,12 @@
                 fetchItems(true);
             }
 
-            // ربط الأحداث
             searchInput.addEventListener('input', resetAndFetch);
             sortSelect.addEventListener('change', resetAndFetch);
             orderSelect.addEventListener('change', resetAndFetch);
 
             // تحميل أولي
             fetchItems(true);
-
-            // لو فشل بسبب CORS أو الرابط، نعرض رسالة واضحة
-            window.addEventListener('unhandledrejection', (e) => {
-                if (e.reason && e.reason.message) {
-                    // تجاهل لتجنب تكرار الرسائل
-                }
-            });
-
         })();
     </script>
 </body>
