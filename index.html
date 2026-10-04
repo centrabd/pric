@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="كتالوج سنتر عبدالله - الإصدار 2.2.0">
+<meta name="description" content="كتالوج سنتر عبدالله - الإصدار 2.3.0">
 <meta name="theme-color" content="#3498db">
-<title>كتالوج سنتر عبدالله - الإصدار 2.2.0</title>
+<title>كتالوج سنتر عبدالله - الإصدار 2.3.0</title>
 
 <style>
 /* ================================================================
@@ -51,7 +51,7 @@
     --transition-fast: 0.2s ease;
     --transition-base: 0.3s ease;
 
-    --z-modal: 9999; --z-cart: 9999; --z-toast: 10001;
+    --z-modal: 9999; --z-cart: 9999; --z-toast: 10001; --z-confirm: 10002;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -64,6 +64,9 @@
     }
 }
 
+/* ================================================================
+   [02] BASE
+   ================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; }
 
@@ -150,9 +153,7 @@ body {
     background: var(--bg-badge); padding: 2px 8px;
     border-radius: 20px;
 }
-.header-title .title-update {
-    color: var(--color-success);
-}
+.header-title .title-update { color: var(--color-success); }
 .header-actions { display: flex; gap: var(--space-sm); }
 .header-btn {
     background: var(--bg-input); border: 2px solid var(--border-color);
@@ -308,32 +309,21 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ⭐ صورة المنتج في البطاقة - pointer-events: none لمنع فتح الرابط */
 .card .product-image-wrap {
-    width: 100%;
-    height: 180px;
-    background: var(--bg-muted);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    margin-bottom: var(--space-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%; height: 180px;
+    background: var(--bg-muted); border-radius: var(--radius-md);
+    overflow: hidden; margin-bottom: var(--space-md);
+    display: flex; align-items: center; justify-content: center;
     position: relative;
-    pointer-events: none;   /* ⭐ يمنع النقر على الصورة */
-    user-select: none;
-    -webkit-touch-callout: none;  /* يمنع القائمة على iOS */
-}
-.card .product-image-wrap::after {
-    content: ''; position: absolute; inset: 0;
-}
-.card .product-image {
-    width: 100%; height: 100%;
-    object-fit: contain;
-    display: block;
     pointer-events: none;
     user-select: none;
-    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+}
+.card .product-image-wrap::after { content: ''; position: absolute; inset: 0; }
+.card .product-image {
+    width: 100%; height: 100%; object-fit: contain;
+    display: block;
+    pointer-events: none; user-select: none; -webkit-user-drag: none;
     transition: transform var(--transition-base);
 }
 .card:hover .product-image { transform: scale(1.05); }
@@ -342,8 +332,7 @@ body {
     position: absolute; top: 10px; left: 10px;
     background: linear-gradient(135deg, #f39c12, #e67e22);
     color: #fff; font-size: 10px; font-weight: 800;
-    padding: 3px 10px; border-radius: 20px;
-    z-index: 2;
+    padding: 3px 10px; border-radius: 20px; z-index: 2;
 }
 
 .card .code {
@@ -505,32 +494,21 @@ body {
 }
 .modal-close:hover { background: var(--bg-muted); color: var(--text-primary); }
 
-/* ⭐ صورة عالية الجودة في المودال */
 .modal-image-wrap {
-    width: 100%;
-    background: var(--bg-muted);
+    width: 100%; background: var(--bg-muted);
     border-radius: var(--radius-lg);
-    overflow: hidden;
-    margin-bottom: var(--space-lg);
-    min-height: 250px;
-    max-height: 450px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden; margin-bottom: var(--space-lg);
+    min-height: 250px; max-height: 450px;
+    display: flex; align-items: center; justify-content: center;
     position: relative;
-    pointer-events: none;
-    user-select: none;
+    pointer-events: none; user-select: none;
 }
 .modal-image-wrap.hidden { display: none; }
 .modal-image {
-    max-width: 100%;
-    max-height: 450px;
-    width: auto; height: auto;
-    object-fit: contain;
+    max-width: 100%; max-height: 450px;
+    width: auto; height: auto; object-fit: contain;
     display: block;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-drag: none;
+    pointer-events: none; user-select: none; -webkit-user-drag: none;
 }
 .modal-image-wrap.no-image::after {
     content: 'لا توجد صورة';
@@ -593,11 +571,9 @@ body {
     display: flex; align-items: center; justify-content: center;
 }
 
-/* ⭐ مفتاح كاش/تقسيط */
 .cart-type-toggle {
     display: flex; gap: 4px;
-    padding: 4px;
-    background: var(--bg-muted);
+    padding: 4px; background: var(--bg-muted);
     border-radius: var(--radius-full);
     margin-bottom: var(--space-md);
 }
@@ -643,7 +619,6 @@ body {
 .cart-item-actions span { min-width: 24px; text-align: center; font-weight: 700; }
 .cart-empty { text-align: center; padding: var(--space-2xl) var(--space-lg); color: var(--text-muted); }
 
-/* ⭐ شريط تقدم التقسيط */
 .installment-progress {
     padding: var(--space-md);
     background: linear-gradient(135deg, #fff8e7, #fef0d6);
@@ -679,7 +654,6 @@ body {
 }
 .installment-progress.complete .progress-hint { color: #155724; }
 
-/* ⭐ لوحة خطة التقسيط */
 .plan-panel {
     padding: var(--space-md);
     background: var(--bg-muted);
@@ -714,7 +688,7 @@ body {
     flex: 1; accent-color: var(--color-warning);
 }
 .plan-duration .duration-value {
-    min-width: 70px; text-align: center;
+    min-width: 90px; text-align: center;
     font-weight: 700; color: var(--color-warning);
     font-size: var(--font-md);
 }
@@ -782,6 +756,58 @@ body {
 }
 
 /* ================================================================
+   [12.5] CONFIRM MODAL ⭐ جديد
+   ================================================================ */
+.confirm-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    z-index: var(--z-confirm);
+    justify-content: center; align-items: center;
+    padding: var(--space-xl);
+}
+.confirm-modal.open { display: flex; }
+.confirm-box {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    max-width: 400px; width: 100%;
+    text-align: center;
+    animation: slideUp 0.3s ease;
+    box-shadow: var(--shadow-xl);
+}
+.confirm-icon {
+    font-size: 48px; margin-bottom: 12px; line-height: 1;
+}
+.confirm-title {
+    font-size: var(--font-xl); margin-bottom: 10px;
+    color: var(--text-primary); font-weight: 800;
+}
+.confirm-message {
+    color: var(--text-secondary);
+    margin-bottom: 22px;
+    font-size: var(--font-base);
+    line-height: 1.7;
+}
+.confirm-actions { display: flex; gap: 10px; }
+.confirm-actions button {
+    flex: 1; padding: 12px;
+    border: none; border-radius: var(--radius-md);
+    font-size: var(--font-md); font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    transition: var(--transition-fast);
+}
+.confirm-cancel {
+    background: var(--bg-badge); color: var(--text-primary);
+}
+.confirm-cancel:hover { background: #d5dbe3; }
+.confirm-ok { background: var(--color-primary); color: #fff; }
+.confirm-ok:hover { background: var(--color-primary-dark); }
+.confirm-ok.danger { background: var(--color-danger); }
+.confirm-ok.danger:hover { background: #c0392b; }
+
+/* ================================================================
    [13] RESPONSIVE
    ================================================================ */
 @media (max-width: 768px) {
@@ -797,6 +823,8 @@ body {
     .card .product-image-wrap { height: 140px; }
     .modal-image-wrap { max-height: 300px; min-height: 180px; }
     .modal-image { max-height: 300px; }
+    .confirm-box { padding: 22px; }
+    .confirm-icon { font-size: 40px; }
 }
 @media (max-width: 480px) {
     .grid { grid-template-columns: 1fr; }
@@ -819,7 +847,7 @@ body {
                 كتالوج سنتر عبدالله
             </span>
             <span class="title-meta">
-                <span class="title-version">الإصدار 2.2.0</span>
+                <span class="title-version">الإصدار 2.3.0</span>
                 <span class="title-update" id="lastUpdateLabel"></span>
             </span>
         </h1>
@@ -904,7 +932,6 @@ body {
     <div id="sentinel" class="sentinel" aria-hidden="true"></div>
 </div>
 
-<!-- ⭐ السلة الجانبية -->
 <div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
 <aside class="cart-sidebar" id="cartSidebar" role="complementary" aria-label="سلة التسوق">
     <header class="cart-header">
@@ -914,13 +941,11 @@ body {
         </button>
     </header>
 
-    <!-- ⭐ مفتاح كاش / تقسيط -->
     <div class="cart-type-toggle" id="cartTypeToggle">
         <button data-type="cash" class="active">دفع كاش</button>
         <button data-type="installment">تقسيط</button>
     </div>
 
-    <!-- ⭐ شريط تقدم التقسيط -->
     <div class="installment-progress hidden" id="installmentProgress">
         <div class="progress-label">
             <span>الحد الأدنى للتقسيط</span>
@@ -932,7 +957,6 @@ body {
         <div class="progress-hint" id="progressHint">أضف منتجات للوصول إلى 2500 ج.م</div>
     </div>
 
-    <!-- ⭐ لوحة خطة التقسيط -->
     <div class="plan-panel hidden" id="planPanel">
         <h4>خطة التقسيط</h4>
         <div class="plan-row" id="planFrequency">
@@ -961,7 +985,6 @@ body {
     </button>
 </aside>
 
-<!-- ⭐ المودال مع الصورة -->
 <div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-box">
         <button class="modal-close" id="modalClose" aria-label="إغلاق">
@@ -984,13 +1007,26 @@ body {
     </div>
 </div>
 
+<!-- ⭐ مودال التأكيد -->
+<div class="confirm-modal" id="confirmModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="confirm-box">
+        <div class="confirm-icon" id="confirmIcon">⚠️</div>
+        <h3 class="confirm-title" id="confirmTitle">تأكيد</h3>
+        <p class="confirm-message" id="confirmMessage"></p>
+        <div class="confirm-actions">
+            <button class="confirm-cancel" id="confirmCancel">إلغاء</button>
+            <button class="confirm-ok" id="confirmOk">تأكيد</button>
+        </div>
+    </div>
+</div>
+
 <script>
 /* ================================================================
    [JS-01] CONFIG
    ================================================================ */
 const CONFIG = Object.freeze({
     APP_NAME: 'كتالوج سنتر عبدالله',
-    APP_VERSION: '2.2.0',
+    APP_VERSION: '2.3.0',
     API_URL: 'https://script.google.com/macros/s/AKfycbxmOOhVu82_f8p5IeKdTjzGvKbdto-mJti5rGaMxlC8QHzVcsbXdW3IOg0oT7ycMCP7/exec',
     WHATSAPP_PHONE: '201234567890',
     PAGE_SIZE: 20,
@@ -1011,7 +1047,9 @@ const CONFIG = Object.freeze({
     // ⭐ إعدادات التقسيط
     INSTALLMENT_MIN_TOTAL: 2500,
     INSTALLMENT_MIN_DAILY: 50,
-    INSTALLMENT_MIN_MONTHLY: 400
+    INSTALLMENT_MIN_MONTHLY: 400,
+    INSTALLMENT_MAX_MONTHS: 15,
+    INSTALLMENT_MAX_DAYS: 450
 });
 
 /* ================================================================
@@ -1308,6 +1346,50 @@ const Connection = (function() {
 })();
 
 /* ================================================================
+   [JS-06.5] CONFIRM - مودال التأكيد ⭐ جديد
+   ================================================================ */
+const Confirm = (function() {
+    'use strict';
+    const modal = document.getElementById('confirmModal');
+    const iconEl = document.getElementById('confirmIcon');
+    const titleEl = document.getElementById('confirmTitle');
+    const msgEl = document.getElementById('confirmMessage');
+    const okBtn = document.getElementById('confirmOk');
+    const cancelBtn = document.getElementById('confirmCancel');
+    let resolver = null;
+
+    function ask(title, message, options) {
+        options = options || {};
+        return new Promise((resolve) => {
+            resolver = resolve;
+            iconEl.textContent = options.icon || '⚠️';
+            titleEl.textContent = title;
+            msgEl.textContent = message;
+            okBtn.textContent = options.okLabel || 'تأكيد';
+            okBtn.className = 'confirm-ok' + (options.danger ? ' danger' : '');
+            modal.classList.add('open');
+            modal.setAttribute('aria-hidden', 'false');
+            setTimeout(() => okBtn.focus(), 100);
+        });
+    }
+
+    function close(result) {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        if (resolver) { resolver(result); resolver = null; }
+    }
+
+    okBtn.addEventListener('click', () => close(true));
+    cancelBtn.addEventListener('click', () => close(false));
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(false); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) close(false);
+    });
+
+    return { ask };
+})();
+
+/* ================================================================
    [JS-07] WISHLIST
    ================================================================ */
 const Wishlist = (function() {
@@ -1341,7 +1423,7 @@ const Wishlist = (function() {
 })();
 
 /* ================================================================
-   [JS-08] CART (مع منطق التقسيط)
+   [JS-08] CART
    ================================================================ */
 const Cart = (function() {
     'use strict';
@@ -1349,6 +1431,8 @@ const Cart = (function() {
     const MIN_TOTAL = CONFIG.INSTALLMENT_MIN_TOTAL;
     const MIN_DAILY = CONFIG.INSTALLMENT_MIN_DAILY;
     const MIN_MONTHLY = CONFIG.INSTALLMENT_MIN_MONTHLY;
+    const MAX_DAYS = CONFIG.INSTALLMENT_MAX_DAYS;
+    const MAX_MONTHS = CONFIG.INSTALLMENT_MAX_MONTHS;
 
     function getAll() { return Utils.safeGetItem(CONFIG.CART_KEY, []); }
 
@@ -1437,14 +1521,25 @@ const Cart = (function() {
         );
     }
 
-    // ⭐ حساب خطة التقسيط الحالية
+    // ⭐ حساب خطة التقسيط مع الحد الأقصى للمدة
     function calculatePlan() {
         const subtotal = getSubtotal();
         const plan = getPlan();
         const frequency = plan.frequency;
         const minPayment = frequency === 'daily' ? MIN_DAILY : MIN_MONTHLY;
-        const maxDuration = minPayment > 0 ? Math.floor(subtotal / minPayment) : 1;
-        const safeMaxDuration = Math.max(1, maxDuration);
+
+        // الحد الأقصى المطلق (15 شهر / 450 يوم)
+        const absoluteMax = frequency === 'daily' ? MAX_DAYS : MAX_MONTHS;
+
+        // الحد الأقصى حسب الميزانية (الإجمالي ÷ الحد الأدنى للقسط)
+        const byBudget = minPayment > 0 ? Math.floor(subtotal / minPayment) : 1;
+
+        // الحد الفعلي = الأصغر بين الاثنين
+        const safeMaxDuration = Math.max(1, Math.min(absoluteMax, byBudget));
+
+        // هل الإجمالي كافٍ لتغطية الحد الأقصى؟
+        const reachedMaxLimit = byBudget >= absoluteMax;
+
         const duration = Math.min(Math.max(1, plan.duration || 1), safeMaxDuration);
         const payment = subtotal > 0 ? (subtotal / duration) : 0;
 
@@ -1452,7 +1547,9 @@ const Cart = (function() {
             subtotal: subtotal,
             frequency: frequency,
             minPayment: minPayment,
+            absoluteMax: absoluteMax,
             maxDuration: safeMaxDuration,
+            reachedMaxLimit: reachedMaxLimit,
             duration: duration,
             payment: payment,
             meetsMinimum: subtotal >= MIN_TOTAL
@@ -1533,7 +1630,7 @@ const Cart = (function() {
             container.appendChild(div);
         });
 
-        // 2) تحديث النوع (كاش / تقسيط)
+        // 2) تحديث النوع
         const type = getType();
         if (typeToggle) {
             typeToggle.querySelectorAll('button').forEach(btn => {
@@ -1541,12 +1638,11 @@ const Cart = (function() {
             });
         }
 
-        // 3) تحديث شريط التقدم ولوحة الخطة
+        // 3) شريط التقدم + لوحة الخطة
         const subtotal = getSubtotal();
         if (totalEl) totalEl.textContent = `${Utils.formatNumber(subtotal)} ج.م`;
 
         if (type === 'installment' && list.length > 0) {
-            // شريط التقدم
             if (progressEl) {
                 progressEl.classList.remove('hidden');
                 const pct = Math.min(100, (subtotal / MIN_TOTAL) * 100);
@@ -1563,7 +1659,6 @@ const Cart = (function() {
                 }
             }
 
-            // لوحة الخطة
             if (planPanel) {
                 if (subtotal >= MIN_TOTAL) {
                     planPanel.classList.remove('hidden');
@@ -1573,7 +1668,6 @@ const Cart = (function() {
                 }
             }
 
-            // تعطيل زر الإرسال لو الإجمالي أقل من الحد الأدنى
             if (checkoutBtn) checkoutBtn.disabled = subtotal < MIN_TOTAL;
 
         } else {
@@ -1583,12 +1677,10 @@ const Cart = (function() {
         }
     }
 
-    // ⭐ رسم خطة التقسيط
     function renderPlan() {
         const calc = calculatePlan();
         const freq = calc.frequency;
 
-        // الأزرار
         const freqContainer = document.getElementById('planFrequency');
         if (freqContainer) {
             freqContainer.querySelectorAll('button').forEach(btn => {
@@ -1596,7 +1688,6 @@ const Cart = (function() {
             });
         }
 
-        // شريط المدة
         const durationSlider = document.getElementById('planDuration');
         const durationValue = document.getElementById('planDurationValue');
         const periodLabel = document.getElementById('planPeriodLabel');
@@ -1609,7 +1700,10 @@ const Cart = (function() {
             durationSlider.value = String(calc.duration);
         }
         if (durationValue) {
-            durationValue.textContent = `${calc.duration} ${freq === 'daily' ? 'يوم' : 'شهر'}`;
+            const suffix = freq === 'daily' ? 'يوم' : 'شهر';
+            let text = `${calc.duration} ${suffix}`;
+            if (calc.duration >= calc.absoluteMax) text += ' (الأقصى)';
+            durationValue.textContent = text;
         }
         if (periodLabel) {
             periodLabel.textContent = freq === 'daily' ? 'يوم' : 'شهر';
@@ -1618,10 +1712,15 @@ const Cart = (function() {
             paymentEl.textContent = Utils.formatNumber(Math.round(calc.payment));
         }
         if (errorEl) {
-            if (calc.payment < calc.minPayment) {
+            if (calc.reachedMaxLimit && calc.duration >= calc.absoluteMax) {
+                errorEl.textContent = `وصلت للحد الأقصى (${calc.absoluteMax} ${freq === 'daily' ? 'يوم' : 'شهر'})`;
+                errorEl.style.color = 'var(--color-warning)';
+            } else if (calc.payment < calc.minPayment) {
                 errorEl.textContent = `الحد الأدنى للقسط ${freq === 'daily' ? 'اليومي' : 'الشهري'} هو ${Utils.formatNumber(calc.minPayment)} ج.م`;
+                errorEl.style.color = 'var(--color-danger)';
             } else {
                 errorEl.textContent = '';
+                errorEl.style.color = '';
             }
         }
     }
@@ -1629,11 +1728,12 @@ const Cart = (function() {
     function setFrequency(freq) {
         const plan = getPlan();
         plan.frequency = freq === 'monthly' ? 'monthly' : 'daily';
-        // نعيد ضبط المدة حسب القيمة الحالية
         const subtotal = getSubtotal();
         const minPayment = plan.frequency === 'daily' ? MIN_DAILY : MIN_MONTHLY;
-        const maxDuration = Math.max(1, Math.floor(subtotal / minPayment));
-        plan.duration = Math.min(plan.duration || maxDuration, maxDuration);
+        const absoluteMax = plan.frequency === 'daily' ? MAX_DAYS : MAX_MONTHS;
+        const byBudget = Math.max(1, Math.floor(subtotal / minPayment));
+        const safeMax = Math.min(absoluteMax, byBudget);
+        plan.duration = Math.min(plan.duration || safeMax, safeMax);
         setPlan(plan);
     }
 
@@ -1643,7 +1743,6 @@ const Cart = (function() {
         setPlan(plan);
     }
 
-    // ⭐ بناء رسالة واتساب مع تفاصيل الخطة
     function buildOrderMessage() {
         const list = getAll();
         if (list.length === 0) return '';
@@ -1848,7 +1947,7 @@ const FilterSort = (function() {
 })();
 
 /* ================================================================
-   [JS-12] CARD (مع صورة محمية)
+   [JS-12] CARD
    ================================================================ */
 const Card = (function() {
     'use strict';
@@ -1876,7 +1975,6 @@ const Card = (function() {
             card.appendChild(priority);
         }
 
-        // ⭐ صورة المنتج (محمية من النقر)
         if (item.image) {
             const imgWrap = document.createElement('div');
             imgWrap.className = 'product-image-wrap';
@@ -1888,7 +1986,6 @@ const Card = (function() {
             img.src = item.image;
             img.addEventListener('error', () => { img.src = PLACEHOLDER; });
             imgWrap.appendChild(img);
-            // منع فتح الرابط نهائياً
             imgWrap.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); }, true);
             imgWrap.addEventListener('contextmenu', (e) => e.preventDefault());
             card.appendChild(imgWrap);
@@ -1978,7 +2075,7 @@ const Card = (function() {
 })();
 
 /* ================================================================
-   [JS-13] MODAL (مع صورة عالية الجودة)
+   [JS-13] MODAL
    ================================================================ */
 const Modal = (function() {
     'use strict';
@@ -2002,7 +2099,6 @@ const Modal = (function() {
     function open(item) {
         lastFocused = document.activeElement;
 
-        // ⭐ الصورة بجودة عالية
         if (item.image && els.imageWrap && els.image) {
             els.imageWrap.classList.remove('hidden');
             els.imageWrap.classList.remove('no-image');
@@ -2402,18 +2498,33 @@ const App = (function() {
         cartOverlay.classList.remove('open');
     }
 
-    /* -------- Cart Type Toggle -------- */
+    /* -------- Cart Type Toggle (مع تأكيد) ⭐ -------- */
     document.querySelectorAll('#cartTypeToggle button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const type = btn.dataset.type;
-            if (type === 'installment') {
-                // نسمح بالتبديل للتقسيط حتى لو السلة أقل من الحد الأدنى — الشريط سيظهر الحاجة
-                Cart.setType('installment');
-                Toast.show('تم التحويل لوضع التقسيط', 'success');
-            } else {
-                Cart.setType('cash');
-                Toast.show('تم التحويل لوضع الكاش', 'success');
+        btn.addEventListener('click', async () => {
+            const newType = btn.dataset.type;
+            const currentType = Cart.getType();
+            if (newType === currentType) return;
+
+            const cart = Cart.getAll();
+            const newLabel = newType === 'installment' ? 'التقسيط' : 'الكاش';
+            const currentLabel = currentType === 'installment' ? 'التقسيط' : 'الكاش';
+
+            // لو السلة فيها منتجات، نطلب تأكيد
+            if (cart.length > 0) {
+                const ok = await Confirm.ask(
+                    'تأكيد تغيير نوع الدفع',
+                    `سيتم تبديل السلة من "${currentLabel}" إلى "${newLabel}". هل تريد المتابعة؟`,
+                    {
+                        icon: '🔄',
+                        okLabel: `تحويل إلى ${newLabel}`,
+                        danger: newType === 'cash'
+                    }
+                );
+                if (!ok) return;
             }
+
+            Cart.setType(newType);
+            Toast.show(`تم التحويل لوضع ${newLabel}`, 'success');
         });
     });
 
