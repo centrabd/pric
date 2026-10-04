@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="كتالوج منتجات - استعرض أحدث المنتجات والأسعار">
+<meta name="description" content="كتالوج منتجات - يعمل أوفلاين">
 <meta name="theme-color" content="#3498db">
 <title>كتالوج المنتجات</title>
 
 <style>
 /* ================================================================
-   [01] VARIABLES - المتغيرات العامة (عدّل الألوان من هنا)
+   [01] VARIABLES - المتغيرات العامة
    ================================================================ */
 :root {
-    /* الألوان الأساسية */
     --color-primary: #3498db;
     --color-primary-dark: #2980b9;
     --color-success: #27ae60;
@@ -22,62 +21,42 @@
     --color-whatsapp-dark: #1da851;
     --color-info: #2980b9;
 
-    /* الخلفيات */
     --bg-main: #f0f4f9;
     --bg-card: #ffffff;
     --bg-input: #f8fafc;
     --bg-muted: #f0f2f5;
     --bg-badge: #e9edf2;
 
-    /* النصوص */
     --text-primary: #1a2634;
     --text-secondary: #555;
     --text-muted: #95a5a6;
 
-    /* الحدود */
     --border-color: #e9edf2;
     --border-hover: #3498db;
 
-    /* الظلال */
     --shadow-sm: 0 2px 10px rgba(0,0,0,0.04);
     --shadow-md: 0 4px 15px rgba(0,0,0,0.04);
     --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
     --shadow-xl: 0 10px 30px rgba(0,0,0,0.15);
 
-    /* الزوايا */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 20px;
     --radius-full: 40px;
 
-    /* المسافات */
-    --space-xs: 4px;
-    --space-sm: 8px;
-    --space-md: 12px;
-    --space-lg: 16px;
-    --space-xl: 24px;
-    --space-2xl: 32px;
+    --space-xs: 4px; --space-sm: 8px; --space-md: 12px;
+    --space-lg: 16px; --space-xl: 24px; --space-2xl: 32px;
 
-    /* الخطوط */
-    --font-sm: 12px;
-    --font-base: 14px;
-    --font-md: 15px;
-    --font-lg: 17px;
-    --font-xl: 20px;
-    --font-2xl: 24px;
+    --font-sm: 12px; --font-base: 14px; --font-md: 15px;
+    --font-lg: 17px; --font-xl: 20px; --font-2xl: 24px;
 
-    /* الحركة */
     --transition-fast: 0.2s ease;
     --transition-base: 0.3s ease;
 
-    /* الطبقات */
-    --z-modal: 9999;
-    --z-cart: 9999;
-    --z-toast: 10001;
+    --z-modal: 9999; --z-cart: 9999; --z-toast: 10001;
 }
 
-/* الوضع الداكن التلقائي */
 @media (prefers-color-scheme: dark) {
     :root {
         --bg-main: #1a1d23;
@@ -92,9 +71,8 @@
     }
 }
 
-
 /* ================================================================
-   [02] BASE - إعادة الضبط والأساسيات
+   [02] BASE - الأساسيات
    ================================================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; }
@@ -137,9 +115,36 @@ body {
 
 .container { max-width: 1400px; margin: auto; }
 
+/* ================================================================
+   [03] CONNECTION BANNER - مؤشر الاتصال
+   ================================================================ */
+.connection-banner {
+    display: none;
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    font-weight: 600;
+    text-align: center;
+    animation: slideDown 0.3s ease;
+}
+.connection-banner.show { display: block; }
+.connection-banner.offline {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+.connection-banner.syncing {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
 
 /* ================================================================
-   [03] HEADER - رأس الصفحة
+   [04] HEADER - رأس الصفحة
    ================================================================ */
 .header {
     display: flex; justify-content: space-between; align-items: center;
@@ -148,14 +153,11 @@ body {
     background: var(--bg-card); padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
 }
-
 .header-title {
     font-size: var(--font-2xl); color: var(--text-primary);
     display: flex; align-items: center; gap: var(--space-sm);
 }
-
 .header-actions { display: flex; gap: var(--space-sm); }
-
 .header-btn {
     background: var(--bg-input); border: 2px solid var(--border-color);
     padding: var(--space-sm) var(--space-lg);
@@ -166,7 +168,6 @@ body {
     font-family: inherit; font-size: var(--font-base);
 }
 .header-btn:hover { border-color: var(--border-hover); color: var(--border-hover); }
-
 .badge-count {
     background: var(--color-danger); color: #fff;
     border-radius: 20px; padding: 2px 8px;
@@ -174,31 +175,49 @@ body {
     min-width: 22px; text-align: center;
 }
 
-
 /* ================================================================
-   [04] CONTROLS - البحث والترتيب
+   [05] SEARCH & FILTERS - البحث والفلاتر المتقدمة
    ================================================================ */
-.controls {
-    display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center;
+.search-panel {
     background: var(--bg-card); padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
     margin-bottom: var(--space-lg);
 }
-
-.controls input[type="text"] {
+.search-row {
+    display: flex; flex-wrap: wrap; gap: var(--space-md); align-items: center;
+}
+.search-input-wrap {
     flex: 2; min-width: 220px;
-    padding: 10px 18px;
+    position: relative;
+    display: flex; align-items: center;
+}
+.search-input-wrap svg {
+    position: absolute; right: 14px;
+    color: var(--text-muted); pointer-events: none;
+}
+.search-input-wrap input {
+    width: 100%;
+    padding: 10px 40px 10px 18px;
     border: 2px solid var(--border-color);
     border-radius: var(--radius-full);
     font-size: var(--font-md); outline: none;
     background: var(--bg-input); transition: var(--transition-base);
     color: var(--text-primary); font-family: inherit;
 }
-.controls input[type="text"]:focus {
+.search-input-wrap input:focus {
     border-color: var(--color-primary); background: var(--bg-card);
 }
+.clear-search {
+    position: absolute; left: 8px;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-muted); font-size: 20px;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: none;
+}
+.clear-search.show { display: flex; align-items: center; justify-content: center; }
+.clear-search:hover { background: var(--bg-muted); color: var(--color-danger); }
 
-.controls select {
+.search-row select {
     padding: 10px 16px;
     border: 2px solid var(--border-color);
     border-radius: var(--radius-full);
@@ -207,19 +226,89 @@ body {
     transition: var(--transition-base); color: var(--text-primary);
     font-family: inherit;
 }
-.controls select:focus {
+.search-row select:focus {
     border-color: var(--color-primary); background: var(--bg-card);
 }
+
+.filter-toggle {
+    padding: 10px 20px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-full);
+    background: var(--bg-input); cursor: pointer;
+    font-weight: 600; color: var(--text-primary);
+    font-family: inherit; font-size: var(--font-base);
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: var(--transition-base);
+}
+.filter-toggle:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.filter-toggle.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
 
 .total-info {
     background: var(--bg-badge); padding: 6px 16px;
     border-radius: var(--radius-full);
     font-size: var(--font-base); font-weight: 600; color: var(--text-primary);
+    margin-right: auto;
 }
 
+/* Advanced Filters Panel */
+.filters-panel {
+    display: none;
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
+    border-top: 2px dashed var(--border-color);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-lg);
+}
+.filters-panel.open {
+    display: grid;
+    animation: slideDown 0.3s ease;
+}
+.filter-group { display: flex; flex-direction: column; gap: var(--space-sm); }
+.filter-group label {
+    font-size: var(--font-base); font-weight: 700;
+    color: var(--text-secondary);
+}
+.filter-group .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+    padding: 6px 14px; border-radius: var(--radius-full);
+    border: 2px solid var(--border-color);
+    background: var(--bg-input); cursor: pointer;
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    transition: var(--transition-fast);
+    font-family: inherit;
+}
+.chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.chip.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+
+.range-inputs {
+    display: flex; align-items: center; gap: var(--space-sm);
+}
+.range-inputs input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-base); outline: none;
+    background: var(--bg-input); color: var(--text-primary);
+    font-family: inherit;
+    transition: var(--transition-base);
+}
+.range-inputs input:focus { border-color: var(--color-primary); background: var(--bg-card); }
+.range-inputs span { color: var(--text-muted); font-weight: 700; }
+
+.reset-filters {
+    padding: 8px 16px; border-radius: var(--radius-full);
+    background: var(--color-danger); color: #fff;
+    border: none; cursor: pointer;
+    font-weight: 600; font-family: inherit;
+    font-size: var(--font-base);
+    align-self: flex-end;
+    transition: var(--transition-fast);
+}
+.reset-filters:hover { opacity: 0.9; }
 
 /* ================================================================
-   [05] GRID - الشبكة العامة
+   [06] GRID - الشبكة
    ================================================================ */
 .grid {
     display: grid;
@@ -227,12 +316,10 @@ body {
     gap: var(--space-xl);
     min-height: 100px;
 }
-
 .sentinel { height: 1px; width: 100%; }
 
-
 /* ================================================================
-   [06] CARD - بطاقة المنتج (✏️ عدّل التصميم من هنا)
+   [07] CARD - بطاقة المنتج
    ================================================================ */
 .card {
     background: var(--bg-card); border-radius: var(--radius-lg);
@@ -242,12 +329,22 @@ body {
     transition: transform var(--transition-base), box-shadow var(--transition-base);
     will-change: transform;
     animation: cardFadeIn 0.4s ease backwards;
+    position: relative;
 }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 
 @keyframes cardFadeIn {
     from { opacity: 0; transform: translateY(15px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.card .priority-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: #fff; font-size: 10px; font-weight: 800;
+    padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .card .code {
@@ -257,15 +354,18 @@ body {
     border-radius: 30px; align-self: flex-start;
     margin-bottom: var(--space-sm); font-weight: 600;
 }
-
 .card h3 {
     font-size: var(--font-lg); color: var(--text-primary);
     margin-bottom: var(--space-sm); line-height: 1.4;
-    min-height: 46px;
-    cursor: pointer;
+    min-height: 46px; cursor: pointer;
     transition: color var(--transition-fast);
 }
 .card h3:hover { color: var(--color-primary); }
+.card h3 mark {
+    background: rgba(52,152,219,0.25);
+    color: var(--color-primary);
+    padding: 0 2px; border-radius: 3px;
+}
 
 .card .prices { display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-bottom: var(--space-sm); }
 .card .prices span {
@@ -277,6 +377,7 @@ body {
 
 .card .qty { font-size: 13px; color: var(--text-secondary); margin-bottom: var(--space-sm); }
 .card .qty strong { color: var(--color-warning); }
+.card .qty strong.low-stock { color: var(--color-danger); }
 
 .card .status-badge {
     display: inline-flex; align-items: center; gap: 4px;
@@ -310,9 +411,8 @@ body {
 .card .btn-wishlist:hover { background: #fde8e8; }
 .card .btn-wishlist.in-wishlist { background: #fde8e8; color: var(--color-danger); }
 
-
 /* ================================================================
-   [07] SKELETON - هياكل التحميل
+   [08] SKELETON - هياكل التحميل
    ================================================================ */
 .skeleton-card {
     background: var(--bg-card); border-radius: var(--radius-lg);
@@ -331,21 +431,18 @@ body {
 .skeleton-line.price { height: 18px; width: 60%; }
 .skeleton-line.qty { height: 16px; width: 40%; }
 .skeleton-line.status { height: 20px; width: 50%; }
-
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
 }
 
-
 /* ================================================================
-   [08] LOAD MORE - زر المزيد ورسالة النهاية
+   [09] LOAD MORE - زر المزيد
    ================================================================ */
 .load-more-area {
     display: flex; justify-content: center; align-items: center;
     padding: var(--space-xl) 0; min-height: 70px;
 }
-
 .load-more-btn {
     padding: var(--space-md) var(--space-2xl);
     background: var(--color-primary); color: #fff;
@@ -362,7 +459,6 @@ body {
     box-shadow: 0 8px 20px rgba(52,152,219,0.4);
 }
 .load-more-btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
-
 .spinner {
     display: inline-block; width: 20px; height: 20px;
     border: 3px solid rgba(255,255,255,0.3);
@@ -370,12 +466,10 @@ body {
     animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .end-message {
     text-align: center; color: var(--text-muted);
     font-size: var(--font-base); padding: var(--space-xl); font-weight: 600;
 }
-
 .error-box {
     text-align: center; padding: var(--space-2xl);
     color: var(--color-danger); background: #fde8e8;
@@ -387,22 +481,23 @@ body {
     border: none; border-radius: 30px; cursor: pointer; font-weight: 700;
     font-family: inherit;
 }
-
+.no-results {
+    text-align: center; padding: var(--space-2xl);
+    color: var(--text-muted); grid-column: 1 / -1;
+}
 
 /* ================================================================
-   [09] MODAL - نافذة تفاصيل المنتج
+   [10] MODAL - نافذة التفاصيل
    ================================================================ */
 .modal-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     z-index: var(--z-modal);
     justify-content: center; align-items: center;
     padding: var(--space-xl);
 }
 .modal-overlay.open { display: flex; }
-
 .modal-box {
     background: var(--bg-card); border-radius: var(--radius-xl);
     max-width: 550px; width: 100%;
@@ -415,7 +510,6 @@ body {
     from { transform: translateY(30px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
-
 .modal-close {
     position: absolute; top: 12px; left: 18px;
     background: none; border: none; cursor: pointer;
@@ -424,12 +518,10 @@ body {
     display: flex; align-items: center; justify-content: center;
 }
 .modal-close:hover { background: var(--bg-muted); color: var(--text-primary); }
-
 .modal-box h2 {
     font-size: var(--font-xl); margin-bottom: var(--space-md);
     color: var(--text-primary); padding-left: 40px;
 }
-
 .modal-box .detail-row {
     display: flex; justify-content: space-between;
     padding: 10px 0; border-bottom: 1px solid var(--bg-muted);
@@ -437,7 +529,6 @@ body {
 }
 .modal-box .detail-row:last-of-type { border-bottom: none; }
 .modal-box .detail-row strong { color: var(--text-primary); }
-
 .modal-actions { display: flex; gap: var(--space-sm); margin-top: var(--space-xl); flex-wrap: wrap; }
 .modal-actions button {
     flex: 1; min-width: 100px;
@@ -452,16 +543,14 @@ body {
 .modal-actions .btn-secondary { background: var(--bg-badge); color: var(--text-primary); }
 .modal-actions .btn-secondary:hover { background: #d5dbe3; }
 
-
 /* ================================================================
-   [10] CART - سلة التسوق الجانبية
+   [11] CART - السلة الجانبية
    ================================================================ */
 .cart-overlay {
     display: none; position: fixed; inset: 0;
     background: rgba(0,0,0,0.4); z-index: 9998;
 }
 .cart-overlay.open { display: block; }
-
 .cart-sidebar {
     position: fixed; top: 0; left: -420px;
     width: 400px; max-width: 90vw; height: 100%;
@@ -472,7 +561,6 @@ body {
     overscroll-behavior: contain;
 }
 .cart-sidebar.open { left: 0; }
-
 .cart-header {
     display: flex; justify-content: space-between; align-items: center;
     padding-bottom: var(--space-lg);
@@ -487,7 +575,6 @@ body {
     transition: var(--transition-fast);
 }
 .cart-header button:hover { background: var(--bg-muted); color: var(--text-primary); }
-
 .cart-items { flex: 1; overflow-y: auto; }
 .cart-item {
     display: flex; justify-content: space-between; align-items: center;
@@ -505,9 +592,7 @@ body {
 }
 .cart-item-actions button:hover { background: var(--color-primary); color: #fff; }
 .cart-item-actions span { min-width: 24px; text-align: center; font-weight: 700; }
-
 .cart-empty { text-align: center; padding: var(--space-2xl) var(--space-lg); color: var(--text-muted); }
-
 .cart-total {
     padding-top: var(--space-lg);
     border-top: 2px solid var(--bg-muted);
@@ -515,7 +600,6 @@ body {
     font-size: var(--font-lg); font-weight: 700;
     color: var(--text-primary); margin-bottom: var(--space-md);
 }
-
 .cart-checkout {
     width: 100%; padding: var(--space-lg);
     background: var(--color-whatsapp); color: #fff;
@@ -528,9 +612,8 @@ body {
 .cart-checkout:hover:not(:disabled) { background: var(--color-whatsapp-dark); }
 .cart-checkout:disabled { opacity: 0.5; cursor: not-allowed; }
 
-
 /* ================================================================
-   [11] TOAST - الإشعارات
+   [12] TOAST - الإشعارات
    ================================================================ */
 .toast-container {
     position: fixed; top: var(--space-xl); right: var(--space-xl);
@@ -553,25 +636,24 @@ body {
 .toast.success { border-right-color: var(--color-success); }
 .toast.error { border-right-color: var(--color-danger); }
 .toast.warning { border-right-color: var(--color-warning); }
-
 @keyframes slideInRight {
     from { transform: translateX(100px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
 
-
 /* ================================================================
-   [12] RESPONSIVE - التجاوب مع الشاشات
+   [13] RESPONSIVE - التجاوب
    ================================================================ */
 @media (max-width: 768px) {
     body { padding: var(--space-lg); }
     .header { flex-direction: column; }
-    .controls { flex-direction: column; align-items: stretch; }
-    .controls input[type="text"] { min-width: unset; }
+    .search-row { flex-direction: column; align-items: stretch; }
+    .search-input-wrap { min-width: unset; }
     .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-md); }
     .cart-sidebar { width: 100%; left: -100%; }
     .toast-container { top: 10px; right: 10px; left: 10px; }
     .toast { max-width: unset; }
+    .total-info { margin-right: 0; text-align: center; }
 }
 @media (max-width: 480px) {
     .grid { grid-template-columns: 1fr; }
@@ -580,19 +662,15 @@ body {
 </head>
 <body>
 
-<!-- ================================================================
-     [HTML-01] SKIP LINK & TOAST
-     ================================================================ -->
+<!-- [HTML-01] SKIP LINK & BANNERS -->
 <a href="#productGrid" class="skip-link">تخطي إلى المحتوى</a>
 <div class="toast-container" id="toastContainer" role="log" aria-live="polite"></div>
 
-
-<!-- ================================================================
-     [HTML-02] MAIN CONTAINER
-     ================================================================ -->
 <div class="container">
+    <!-- [HTML-02] CONNECTION BANNER -->
+    <div class="connection-banner" id="connectionBanner" role="status" aria-live="polite"></div>
 
-    <!-- [HTML-02.1] الهيدر -->
+    <!-- [HTML-03] HEADER -->
     <header class="header" role="banner">
         <h1 class="header-title">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -610,36 +688,92 @@ body {
         </div>
     </header>
 
-    <!-- [HTML-02.2] أدوات البحث والترتيب -->
-    <section class="controls" role="search" aria-label="أدوات البحث والترتيب">
-        <input type="text" id="searchInput" placeholder="ابحث بالكود أو اسم الصنف..." autocomplete="off" aria-label="بحث" />
-        <select id="sortSelect" aria-label="ترتيب حسب">
-            <option value="name">ترتيب حسب الاسم</option>
-            <option value="cashPrice">ترتيب حسب سعر الكاش</option>
-            <option value="installPrice">ترتيب حسب سعر القسط</option>
-            <option value="quantity">ترتيب حسب الكمية</option>
-        </select>
-        <select id="orderSelect" aria-label="اتجاه الترتيب">
-            <option value="asc">تصاعدي</option>
-            <option value="desc">تنازلي</option>
-        </select>
-        <span class="total-info" id="totalBadge" aria-live="polite">إجمالي: 0</span>
+    <!-- [HTML-04] SEARCH & FILTERS -->
+    <section class="search-panel" role="search" aria-label="أدوات البحث والترتيب">
+        <div class="search-row">
+            <div class="search-input-wrap">
+                <input type="text" id="searchInput" placeholder="ابحث بالكود أو اسم الصنف..." autocomplete="off" aria-label="بحث" />
+                <button class="clear-search" id="clearSearch" aria-label="مسح البحث">×</button>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+
+            <select id="sortSelect" aria-label="ترتيب حسب">
+                <option value="priority">الأولوية (المخزون)</option>
+                <option value="name">الاسم</option>
+                <option value="cashPrice">سعر الكاش</option>
+                <option value="installPrice">سعر القسط</option>
+                <option value="quantity">الكمية</option>
+                <option value="id">الكود</option>
+            </select>
+
+            <select id="orderSelect" aria-label="اتجاه الترتيب">
+                <option value="desc">تنازلي</option>
+                <option value="asc">تصاعدي</option>
+            </select>
+
+            <button class="filter-toggle" id="filterToggle">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                فلاتر
+            </button>
+
+            <span class="total-info" id="totalBadge" aria-live="polite">إجمالي: 0</span>
+        </div>
+
+        <!-- [HTML-05] Advanced Filters Panel -->
+        <div class="filters-panel" id="filtersPanel">
+            <div class="filter-group">
+                <label>التوفر</label>
+                <div class="chips" id="availChips">
+                    <button class="chip active" data-avail="all">الكل</button>
+                    <button class="chip" data-avail="available">متوفر</button>
+                    <button class="chip" data-avail="unavailable">غير متوفر</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>سعر الكاش</label>
+                <div class="range-inputs">
+                    <input type="number" id="priceMin" placeholder="من" min="0" step="10" />
+                    <span>—</span>
+                    <input type="number" id="priceMax" placeholder="إلى" min="0" step="10" />
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>الكمية المتاحة</label>
+                <div class="range-inputs">
+                    <input type="number" id="qtyMin" placeholder="من" min="0" step="1" />
+                    <span>—</span>
+                    <input type="number" id="qtyMax" placeholder="إلى" min="0" step="1" />
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>خيارات سريعة</label>
+                <div class="chips">
+                    <button class="chip" id="lowStockChip">مخزون منخفض</button>
+                    <button class="chip" id="inStockChip">متوفر فقط</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>&nbsp;</label>
+                <button class="reset-filters" id="resetFilters">إعادة تعيين الفلاتر</button>
+            </div>
+        </div>
     </section>
 
-    <!-- [HTML-02.3] شبكة المنتجات -->
+    <!-- [HTML-06] PRODUCT GRID -->
     <main id="productGrid" class="grid" role="main" aria-label="شبكة المنتجات"></main>
 
-    <!-- [HTML-02.4] منطقة زر "عرض المزيد" -->
+    <!-- [HTML-07] LOAD MORE -->
     <div class="load-more-area" id="loadMoreArea"></div>
 
-    <!-- [HTML-02.5] Sentinel للتمرير اللانهائي -->
+    <!-- [HTML-08] SENTINEL -->
     <div id="sentinel" class="sentinel" aria-hidden="true"></div>
 </div>
 
-
-<!-- ================================================================
-     [HTML-03] CART SIDEBAR - سلة التسوق الجانبية
-     ================================================================ -->
+<!-- [HTML-09] CART SIDEBAR -->
 <div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
 <aside class="cart-sidebar" id="cartSidebar" role="complementary" aria-label="سلة التسوق">
     <header class="cart-header">
@@ -659,10 +793,7 @@ body {
     </button>
 </aside>
 
-
-<!-- ================================================================
-     [HTML-04] MODAL - نافذة تفاصيل المنتج
-     ================================================================ -->
+<!-- [HTML-10] MODAL -->
 <div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-box">
         <button class="modal-close" id="modalClose" aria-label="إغلاق">
@@ -685,23 +816,27 @@ body {
 
 <script>
 /* ================================================================
-   [JS-01] CONFIG - الإعدادات العامة (✏️ عدّل من هنا)
+   [JS-01] CONFIG - الإعدادات العامة
    ================================================================ */
 const CONFIG = Object.freeze({
     API_URL: 'https://script.google.com/macros/s/AKfycbxD8yE9o2-GQd0K8WDxdpfXD0C7O3LK6d9DINFxPeB7P2i95XrWzcaFDSQE0pP0bd1Q/exec',
-    WHATSAPP_PHONE: '201234567890',       // بدون +
+    WHATSAPP_PHONE: '201234567890',
     PAGE_SIZE: 20,
-    CACHE_KEY: 'products_cache_v3',
-    CACHE_TTL: 5 * 60 * 1000,             // 5 دقائق
+    DB_NAME: 'catalog_db',
+    DB_VERSION: 1,
+    DB_STORE: 'products',
+    DB_META_STORE: 'meta',
+    CACHE_TTL: 24 * 60 * 60 * 1000,        // 24 ساعة صلاحية البيانات
+    REVALIDATE_THRESHOLD: 30 * 60 * 1000,  // إعادة التحقق بعد 30 دقيقة
     CART_KEY: 'cart_v3',
     WISHLIST_KEY: 'wishlist_v3',
-    SEARCH_DEBOUNCE: 400,
-    MAX_TOASTS: 4
+    SEARCH_DEBOUNCE: 300,
+    MAX_TOASTS: 4,
+    LOW_STOCK_THRESHOLD: 3                 // حد المخزون المنخفض
 });
 
-
 /* ================================================================
-   [JS-02] UTILS - دوال مساعدة عامة
+   [JS-02] UTILS - دوال مساعدة
    ================================================================ */
 const Utils = (function() {
     'use strict';
@@ -752,41 +887,167 @@ const Utils = (function() {
         while (el && el.firstChild) el.removeChild(el.firstChild);
     }
 
-    return { escapeHtml, debounce, formatNumber, toNumber, safeGetItem, safeSetItem, safeRemove, clearElement };
-})();
+    // تمييز نتائج البحث في النص
+    function highlightText(text, query) {
+        if (!query || !text) return escapeHtml(text);
+        const escaped = escapeHtml(text);
+        const safeQuery = String(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${safeQuery})`, 'gi');
+        return escaped.replace(regex, '<mark>$1</mark>');
+    }
 
+    // فحص تساوي مصفوفتين من المنتجات (hash بسيط)
+    function itemsHash(items) {
+        if (!Array.isArray(items) || items.length === 0) return 'empty';
+        // نجمع الكود + السعر + الكمية لأول 20 عنصر + الطول الإجمالي
+        let hash = items.length + '-';
+        const sample = items.slice(0, 20);
+        sample.forEach(i => {
+            hash += `${i.id}:${i.cashPrice}:${i.quantity}|`;
+        });
+        return hash;
+    }
+
+    return {
+        escapeHtml, debounce, formatNumber, toNumber,
+        safeGetItem, safeSetItem, safeRemove, clearElement,
+        highlightText, itemsHash
+    };
+})();
 
 /* ================================================================
-   [JS-03] CACHE - إدارة الكاش في localStorage
+   [JS-03] DB - IndexedDB (تخزين أوفلاين)
    ================================================================ */
-const Cache = (function() {
+const DB = (function() {
     'use strict';
 
-    function get() {
-        try {
-            const raw = localStorage.getItem(CONFIG.CACHE_KEY);
-            if (!raw) return null;
-            const data = JSON.parse(raw);
-            if (Date.now() - data.timestamp > CONFIG.CACHE_TTL) return null;
-            return data;
-        } catch (e) { return null; }
+    let dbInstance = null;
+
+    // فتح قاعدة البيانات
+    function open() {
+        if (dbInstance) return Promise.resolve(dbInstance);
+
+        return new Promise((resolve, reject) => {
+            if (!('indexedDB' in window)) {
+                reject(new Error('IndexedDB غير مدعوم في هذا المتصفح'));
+                return;
+            }
+
+            const req = indexedDB.open(CONFIG.DB_NAME, CONFIG.DB_VERSION);
+
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(CONFIG.DB_STORE)) {
+                    const store = db.createObjectStore(CONFIG.DB_STORE, { keyPath: 'id' });
+                    store.createIndex('name', 'name', { unique: false });
+                    store.createIndex('cashPrice', 'cashPrice', { unique: false });
+                    store.createIndex('quantity', 'quantity', { unique: false });
+                    store.createIndex('available', 'available', { unique: false });
+                }
+                if (!db.objectStoreNames.contains(CONFIG.DB_META_STORE)) {
+                    db.createObjectStore(CONFIG.DB_META_STORE, { keyPath: 'key' });
+                }
+            };
+
+            req.onsuccess = (e) => {
+                dbInstance = e.target.result;
+                resolve(dbInstance);
+            };
+
+            req.onerror = () => reject(new Error('فشل فتح قاعدة البيانات: ' + req.error));
+        });
     }
 
-    function set(items, total) {
-        try {
-            localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify({
-                items, total, timestamp: Date.now()
-            }));
-        } catch (e) { /* storage full */ }
+    // حفظ المنتجات (استبدال كامل - أسرع من التحديث الفردي)
+    async function saveProducts(items) {
+        const db = await open();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(CONFIG.DB_STORE, 'readwrite');
+            const store = tx.objectStore(CONFIG.DB_STORE);
+
+            // مسح كل البيانات القديمة أولاً
+            store.clear();
+
+            // إضافة كل المنتجات
+            items.forEach(item => {
+                store.put({
+                    id: String(item.id),
+                    name: String(item.name),
+                    cashPrice: Utils.toNumber(item.cashPrice),
+                    installPrice: Utils.toNumber(item.installPrice),
+                    quantity: Utils.toNumber(item.quantity),
+                    available: !!item.available
+                });
+            });
+
+            tx.oncomplete = () => resolve(items.length);
+            tx.onerror = () => reject(tx.error);
+        });
     }
 
-    function clear() {
-        try { localStorage.removeItem(CONFIG.CACHE_KEY); } catch (e) {}
+    // جلب كل المنتجات
+    async function getAllProducts() {
+        const db = await open();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(CONFIG.DB_STORE, 'readonly');
+            const store = tx.objectStore(CONFIG.DB_STORE);
+            const req = store.getAll();
+
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => reject(req.error);
+        });
     }
 
-    return { get, set, clear };
+    // عدد المنتجات
+    async function countProducts() {
+        const db = await open();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(CONFIG.DB_STORE, 'readonly');
+            const store = tx.objectStore(CONFIG.DB_STORE);
+            const req = store.count();
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    // حفظ/قراءة meta (hash + timestamp)
+    async function setMeta(key, value) {
+        const db = await open();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(CONFIG.DB_META_STORE, 'readwrite');
+            tx.objectStore(CONFIG.DB_META_STORE).put({ key, value });
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+        });
+    }
+
+    async function getMeta(key) {
+        const db = await open();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(CONFIG.DB_META_STORE, 'readonly');
+            const req = tx.objectStore(CONFIG.DB_META_STORE).get(key);
+            req.onsuccess = () => resolve(req.result ? req.result.value : null);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    // مسح كل شيء
+    async function clearAll() {
+        const db = await open();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction([CONFIG.DB_STORE, CONFIG.DB_META_STORE], 'readwrite');
+            tx.objectStore(CONFIG.DB_STORE).clear();
+            tx.objectStore(CONFIG.DB_META_STORE).clear();
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+        });
+    }
+
+    return {
+        open, saveProducts, getAllProducts, countProducts,
+        setMeta, getMeta, clearAll
+    };
 })();
-
 
 /* ================================================================
    [JS-04] STATE - الحالة العامة
@@ -795,14 +1056,23 @@ const State = (function() {
     'use strict';
 
     const state = {
-        items: [],
-        offset: 0,
+        allItems: [],       // كل المنتجات بعد الجلب
+        filteredItems: [],  // بعد البحث والفلاتر
+        visibleCount: 0,    // عدد المعروض حالياً
         total: 0,
-        hasMore: true,
         isLoading: false,
-        search: '',
-        sort: 'name',
-        order: 'asc',
+        isOffline: false,
+        filters: {
+            search: '',
+            availability: 'all',
+            priceMin: null,
+            priceMax: null,
+            qtyMin: null,
+            qtyMax: null,
+            lowStockOnly: false
+        },
+        sort: 'priority',
+        order: 'desc',
         abortController: null
     };
 
@@ -811,9 +1081,8 @@ const State = (function() {
     return { get };
 })();
 
-
 /* ================================================================
-   [JS-05] TOAST - الإشعارات المنبثقة
+   [JS-05] TOAST - الإشعارات
    ================================================================ */
 const Toast = (function() {
     'use strict';
@@ -821,17 +1090,14 @@ const Toast = (function() {
 
     function show(message, type = 'success', duration = 3000) {
         if (!container) return;
-
         while (container.children.length >= CONFIG.MAX_TOASTS) {
             container.removeChild(container.firstChild);
         }
-
         const toast = document.createElement('div');
         toast.className = 'toast ' + type;
         toast.textContent = message;
         toast.setAttribute('role', 'status');
         container.appendChild(toast);
-
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(100px)';
@@ -842,35 +1108,68 @@ const Toast = (function() {
     return { show };
 })();
 
+/* ================================================================
+   [JS-06] CONNECTION - إدارة حالة الاتصال
+   ================================================================ */
+const Connection = (function() {
+    'use strict';
+    const banner = document.getElementById('connectionBanner');
+    let wasOffline = false;
+
+    function update() {
+        const state = State.get();
+        state.isOffline = !navigator.onLine;
+
+        if (state.isOffline) {
+            banner.textContent = '⚠️ أنت غير متصل بالإنترنت - يتم عرض البيانات المخزنة';
+            banner.className = 'connection-banner show offline';
+            wasOffline = true;
+        } else if (wasOffline) {
+            // عاد الاتصال
+            banner.textContent = '🔄 جاري مزامنة البيانات...';
+            banner.className = 'connection-banner show syncing';
+            setTimeout(() => {
+                banner.className = 'connection-banner';
+            }, 3000);
+            wasOffline = false;
+            // إعادة تحميل من السيرفر
+            if (window.App && window.App.refreshFromServer) {
+                window.App.refreshFromServer();
+            }
+        } else {
+            banner.className = 'connection-banner';
+        }
+    }
+
+    window.addEventListener('online', update);
+    window.addEventListener('offline', update);
+
+    return { update };
+})();
 
 /* ================================================================
-   [JS-06] WISHLIST - منطق المفضلة
+   [JS-07] WISHLIST - المفضلة
    ================================================================ */
 const Wishlist = (function() {
     'use strict';
 
     function getAll() { return Utils.safeGetItem(CONFIG.WISHLIST_KEY, []); }
-
     function save(items) {
         Utils.safeSetItem(CONFIG.WISHLIST_KEY, items);
         updateBadge();
     }
-
     function isIn(id) {
         return getAll().some(i => String(i.id) === String(id));
     }
-
     function toggle(item) {
         const list = getAll();
         const idx = list.findIndex(i => String(i.id) === String(item.id));
         let added;
         if (idx > -1) {
-            list.splice(idx, 1);
-            added = false;
+            list.splice(idx, 1); added = false;
         } else {
             list.push({
-                id: String(item.id),
-                name: String(item.name),
+                id: String(item.id), name: String(item.name),
                 cashPrice: Utils.toNumber(item.cashPrice),
                 installPrice: Utils.toNumber(item.installPrice),
                 quantity: Utils.toNumber(item.quantity)
@@ -880,35 +1179,27 @@ const Wishlist = (function() {
         save(list);
         return added;
     }
-
-    function clear() { save([]); }
-
     function updateBadge() {
         const el = document.getElementById('wishlistCount');
         if (el) el.textContent = getAll().length;
     }
 
-    return { getAll, isIn, toggle, clear, updateBadge };
+    return { getAll, isIn, toggle, updateBadge };
 })();
 
-
 /* ================================================================
-   [JS-07] CART - منطق السلة
+   [JS-08] CART - السلة
    ================================================================ */
 const Cart = (function() {
     'use strict';
 
     function getAll() { return Utils.safeGetItem(CONFIG.CART_KEY, []); }
-
     function save(items) {
         Utils.safeSetItem(CONFIG.CART_KEY, items);
         updateBadge();
         render();
     }
-
-    function isIn(id) {
-        return getAll().some(i => String(i.id) === String(id));
-    }
+    function isIn(id) { return getAll().some(i => String(i.id) === String(id)); }
 
     function add(item) {
         if (!item.available) {
@@ -925,8 +1216,7 @@ const Cart = (function() {
             existing.quantity = Utils.toNumber(existing.quantity) + 1;
         } else {
             list.push({
-                id: String(item.id),
-                name: String(item.name),
+                id: String(item.id), name: String(item.name),
                 cashPrice: Utils.toNumber(item.cashPrice),
                 installPrice: Utils.toNumber(item.installPrice),
                 quantity: 1,
@@ -942,10 +1232,7 @@ const Cart = (function() {
     }
 
     function toggle(item) {
-        if (isIn(item.id)) {
-            remove(item.id);
-            return false;
-        }
+        if (isIn(item.id)) { remove(item.id); return false; }
         return add(item);
     }
 
@@ -962,8 +1249,6 @@ const Cart = (function() {
         item.quantity = newQty;
         save(list);
     }
-
-    function clear() { save([]); }
 
     function getTotal() {
         return getAll().reduce(
@@ -1047,12 +1332,11 @@ const Cart = (function() {
         if (totalEl) totalEl.textContent = `${Utils.formatNumber(getTotal())} ج.م`;
     }
 
-    return { getAll, isIn, add, remove, toggle, changeQty, clear, getTotal, updateBadge, render };
+    return { getAll, isIn, add, remove, toggle, changeQty, getTotal, updateBadge, render };
 })();
 
-
 /* ================================================================
-   [JS-08] WHATSAPP - إرسال الطلبات
+   [JS-09] WHATSAPP - إرسال الطلبات
    ================================================================ */
 const WhatsApp = (function() {
     'use strict';
@@ -1087,43 +1371,139 @@ const WhatsApp = (function() {
     return { order, buildMessage };
 })();
 
-
 /* ================================================================
-   [JS-09] API - طلبات الشبكة
+   [JS-10] API - طلبات الشبكة
    ================================================================ */
 const Api = (function() {
     'use strict';
 
-    function buildUrl(offset, search, sort, order) {
+    function buildUrl() {
+        // نطلب كل المنتجات دفعة واحدة (limit كبير) - الكود الخلفي يدعم 500
         const params = new URLSearchParams({
             action: 'getMenu',
-            offset: String(offset),
-            limit: String(CONFIG.PAGE_SIZE),
-            search: search || '',
-            sort: sort || 'name',
-            order: order || 'asc'
+            offset: '0',
+            limit: '500'
         });
         return `${CONFIG.API_URL}?${params.toString()}`;
     }
 
-    async function fetchPage(offset, search, sort, order, signal) {
-        const res = await fetch(buildUrl(offset, search, sort, order), { signal });
+    async function fetchAll(signal) {
+        const res = await fetch(buildUrl(), { signal });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const result = await res.json();
         if (result.error) throw new Error(result.error);
         return {
-            items: result.data || [],
+            items: (result.data || []).map(normalize),
             total: result.total || 0
         };
     }
 
-    return { fetchPage, buildUrl };
+    function normalize(item) {
+        return {
+            id: String(item.id || ''),
+            name: String(item.name || ''),
+            cashPrice: Utils.toNumber(item.cashPrice),
+            installPrice: Utils.toNumber(item.installPrice),
+            quantity: Utils.toNumber(item.quantity),
+            available: item.available === true || item.available === 'true'
+        };
+    }
+
+    return { fetchAll };
 })();
 
+/* ================================================================
+   [JS-11] FILTER & SORT - الفلترة والترتيب
+   ================================================================ */
+const FilterSort = (function() {
+    'use strict';
+
+    function apply(items, filters, sort, order) {
+        let result = items.slice();
+
+        // 1. بحث (كود + اسم)
+        if (filters.search) {
+            const q = filters.search.toLowerCase().trim();
+            result = result.filter(i =>
+                i.id.toLowerCase().includes(q) ||
+                i.name.toLowerCase().includes(q)
+            );
+        }
+
+        // 2. التوفر
+        if (filters.availability === 'available') {
+            result = result.filter(i => i.available);
+        } else if (filters.availability === 'unavailable') {
+            result = result.filter(i => !i.available);
+        }
+
+        // 3. السعر
+        if (filters.priceMin != null) {
+            result = result.filter(i => i.cashPrice >= filters.priceMin);
+        }
+        if (filters.priceMax != null) {
+            result = result.filter(i => i.cashPrice <= filters.priceMax);
+        }
+
+        // 4. الكمية
+        if (filters.qtyMin != null) {
+            result = result.filter(i => i.quantity >= filters.qtyMin);
+        }
+        if (filters.qtyMax != null) {
+            result = result.filter(i => i.quantity <= filters.qtyMax);
+        }
+
+        // 5. مخزون منخفض فقط
+        if (filters.lowStockOnly) {
+            result = result.filter(i => i.available && i.quantity <= CONFIG.LOW_STOCK_THRESHOLD);
+        }
+
+        // 6. الترتيب
+        result = sortItems(result, sort, order);
+
+        return result;
+    }
+
+    function sortItems(items, sort, order) {
+        const dir = order === 'asc' ? 1 : -1;
+
+        return items.sort((a, b) => {
+            // أولوية خاصة: حسب المخزون
+            if (sort === 'priority') {
+                // 1. المتوفر أولاً (available=true -> 0, false -> 1)
+                const availA = a.available ? 0 : 1;
+                const availB = b.available ? 0 : 1;
+                if (availA !== availB) return (availA - availB) * dir;
+
+                // 2. الكمية الأعلى أولاً
+                if (b.quantity !== a.quantity) return (b.quantity - a.quantity) * dir;
+
+                // 3. الاسم ككسر أخير
+                return a.name.localeCompare(b.name, 'ar');
+            }
+
+            let va = a[sort];
+            let vb = b[sort];
+
+            // للمقارنة النصية
+            if (typeof va === 'string' && typeof vb === 'string') {
+                return va.localeCompare(vb, 'ar') * dir;
+            }
+
+            // للمقارنة الرقمية
+            va = Number(va) || 0;
+            vb = Number(vb) || 0;
+            if (va < vb) return -1 * dir;
+            if (va > vb) return 1 * dir;
+            return 0;
+        });
+    }
+
+    return { apply };
+})();
 
 /* ================================================================
-   [JS-10] CARD - بناء بطاقة المنتج
-   ✏️ عدّل تصميم البطاقة من هنا بسهولة
+   [JS-12] CARD - بطاقة المنتج
    ================================================================ */
 const Card = (function() {
     'use strict';
@@ -1133,22 +1513,34 @@ const Card = (function() {
         return `<svg width="14" height="14" viewBox="0 0 24 24" fill="${fill}" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
     }
 
-    function create(item, index = 0) {
+    function create(item, index, searchQuery) {
         const card = document.createElement('article');
         card.className = 'card';
         card.setAttribute('role', 'article');
         card.setAttribute('aria-label', item.name);
-        card.style.animationDelay = `${index * 0.03}s`;
+        card.style.animationDelay = `${Math.min(index, 10) * 0.03}s`;
 
-        // كود المنتج
+        // شارة الأولوية (للمخزون الجيد)
+        if (item.available && item.quantity > CONFIG.LOW_STOCK_THRESHOLD) {
+            const priority = document.createElement('div');
+            priority.className = 'priority-badge';
+            priority.textContent = 'متوفر';
+            card.appendChild(priority);
+        }
+
+        // الكود
         const code = document.createElement('div');
         code.className = 'code';
         code.textContent = item.id;
         card.appendChild(code);
 
-        // الاسم
+        // الاسم (مع تمييز البحث)
         const name = document.createElement('h3');
-        name.textContent = item.name;
+        if (searchQuery) {
+            name.innerHTML = Utils.highlightText(item.name, searchQuery);
+        } else {
+            name.textContent = item.name;
+        }
         name.setAttribute('role', 'button');
         name.setAttribute('tabindex', '0');
         name.addEventListener('click', () => Modal.open(item));
@@ -1176,7 +1568,8 @@ const Card = (function() {
         // الكمية
         const qty = document.createElement('div');
         qty.className = 'qty';
-        qty.innerHTML = `الكمية: <strong>${Utils.formatNumber(item.quantity)}</strong>`;
+        const low = item.available && item.quantity <= CONFIG.LOW_STOCK_THRESHOLD;
+        qty.innerHTML = `الكمية: <strong class="${low ? 'low-stock' : ''}">${Utils.formatNumber(item.quantity)}</strong>`;
         card.appendChild(qty);
 
         // الحالة
@@ -1229,9 +1622,8 @@ const Card = (function() {
     return { create };
 })();
 
-
 /* ================================================================
-   [JS-11] MODAL - نافذة تفاصيل المنتج
+   [JS-13] MODAL - نافذة التفاصيل
    ================================================================ */
 const Modal = (function() {
     'use strict';
@@ -1293,24 +1685,32 @@ const Modal = (function() {
     return { open, close };
 })();
 
-
 /* ================================================================
-   [JS-12] APP - نقطة التشغيل الرئيسية
+   [JS-14] APP - نقطة التشغيل الرئيسية
    ================================================================ */
-(function App() {
+const App = (function() {
     'use strict';
 
+    const state = State.get();
     const grid = document.getElementById('productGrid');
     const loadMoreArea = document.getElementById('loadMoreArea');
     const sentinel = document.getElementById('sentinel');
     const searchInput = document.getElementById('searchInput');
+    const clearSearch = document.getElementById('clearSearch');
     const sortSelect = document.getElementById('sortSelect');
     const orderSelect = document.getElementById('orderSelect');
     const totalBadge = document.getElementById('totalBadge');
+    const filterToggle = document.getElementById('filterToggle');
+    const filtersPanel = document.getElementById('filtersPanel');
+    const priceMin = document.getElementById('priceMin');
+    const priceMax = document.getElementById('priceMax');
+    const qtyMin = document.getElementById('qtyMin');
+    const qtyMax = document.getElementById('qtyMax');
+    const lowStockChip = document.getElementById('lowStockChip');
+    const inStockChip = document.getElementById('inStockChip');
+    const resetFilters = document.getElementById('resetFilters');
 
-    const state = State.get();
-
-    // ---------- Grid helpers ----------
+    /* -------- Grid Helpers -------- */
     function clearGrid() { Utils.clearElement(grid); }
 
     function showSkeletons(count = 6) {
@@ -1326,170 +1726,315 @@ const Modal = (function() {
         grid.appendChild(fragment);
     }
 
-    function renderItems(items, append = false) {
-        if (!append) clearGrid();
-        const fragment = document.createDocumentFragment();
-        items.forEach((item, i) => {
-            fragment.appendChild(Card.create(item, append ? 0 : i));
-        });
-        grid.appendChild(fragment);
-    }
-
     function updateTotalBadge() {
         if (totalBadge) {
-            totalBadge.textContent = `إجمالي: ${Utils.formatNumber(state.total)} (معروض: ${Utils.formatNumber(state.items.length)})`;
+            const filtered = state.filteredItems.length;
+            const visible = state.visibleCount;
+            totalBadge.textContent = `إجمالي: ${Utils.formatNumber(state.total)} | معروض: ${Utils.formatNumber(visible)} من ${Utils.formatNumber(filtered)}`;
         }
     }
 
-    // ---------- Load More ----------
+    /* -------- Render Items -------- */
+    function renderPage(append = false) {
+        if (!append) {
+            clearGrid();
+            state.visibleCount = 0;
+        }
+
+        const start = state.visibleCount;
+        const end = Math.min(start + CONFIG.PAGE_SIZE, state.filteredItems.length);
+        const itemsToRender = state.filteredItems.slice(start, end);
+
+        if (itemsToRender.length === 0 && state.filteredItems.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'no-results';
+            empty.textContent = 'لا توجد منتجات تطابق الفلاتر';
+            grid.appendChild(empty);
+            state.visibleCount = 0;
+            renderLoadMoreButton();
+            updateTotalBadge();
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        itemsToRender.forEach((item, i) => {
+            fragment.appendChild(Card.create(item, append ? 0 : i, state.filters.search));
+        });
+        grid.appendChild(fragment);
+
+        state.visibleCount = end;
+        renderLoadMoreButton();
+        updateTotalBadge();
+    }
+
+    /* -------- Load More -------- */
     function renderLoadMoreButton() {
         if (!loadMoreArea) return;
         Utils.clearElement(loadMoreArea);
 
-        if (state.isLoading) {
-            const btn = document.createElement('button');
-            btn.className = 'load-more-btn';
-            btn.disabled = true;
-            const spinner = document.createElement('span');
-            spinner.className = 'spinner';
-            btn.appendChild(spinner);
-            btn.appendChild(document.createTextNode(' جاري التحميل...'));
-            loadMoreArea.appendChild(btn);
+        if (state.visibleCount >= state.filteredItems.length) {
+            if (state.filteredItems.length > 0) {
+                const end = document.createElement('div');
+                end.className = 'end-message';
+                end.textContent = 'تم عرض جميع المنتجات';
+                loadMoreArea.appendChild(end);
+            }
             return;
         }
 
-        if (!state.hasMore && state.items.length > 0) {
-            const end = document.createElement('div');
-            end.className = 'end-message';
-            end.textContent = 'تم عرض جميع المنتجات';
-            loadMoreArea.appendChild(end);
-            return;
-        }
-
-        if (state.hasMore) {
-            const btn = document.createElement('button');
-            btn.className = 'load-more-btn';
-            btn.textContent = `عرض المزيد (${CONFIG.PAGE_SIZE})`;
-            btn.addEventListener('click', fetchNextPage);
-            loadMoreArea.appendChild(btn);
-        }
+        const btn = document.createElement('button');
+        btn.className = 'load-more-btn';
+        const remaining = state.filteredItems.length - state.visibleCount;
+        btn.textContent = `عرض المزيد (${Math.min(CONFIG.PAGE_SIZE, remaining)} من ${remaining})`;
+        btn.addEventListener('click', () => renderPage(true));
+        loadMoreArea.appendChild(btn);
     }
 
-    // ---------- Fetch ----------
-    async function fetchFirstPage() {
+    /* -------- Apply Filters & Sort -------- */
+    function applyFiltersAndSort() {
+        state.filteredItems = FilterSort.apply(
+            state.allItems,
+            state.filters,
+            state.sort,
+            state.order
+        );
+        renderPage(false);
+    }
+
+    /* -------- Fetch from Server -------- */
+    async function refreshFromServer() {
         if (state.abortController) state.abortController.abort();
         state.abortController = new AbortController();
 
-        state.isLoading = true;
-        state.offset = 0;
-        state.items = [];
+        try {
+            const result = await Api.fetchAll(state.abortController.signal);
+            const newHash = Utils.itemsHash(result.items);
+            const oldHash = await DB.getMeta('hash');
 
-        // عرض الكاش فوراً
-        const cached = Cache.get();
-        if (cached && cached.items && cached.items.length > 0) {
-            state.items = cached.items;
-            state.total = cached.total;
-            state.hasMore = state.items.length < state.total;
-            renderItems(state.items, false);
-            updateTotalBadge();
-            renderLoadMoreButton();
-            state.isLoading = false;
-            revalidateInBackground();
-            return;
+            state.allItems = result.items;
+            state.total = result.total;
+
+            // حفظ في IndexedDB
+            await DB.saveProducts(result.items);
+            await DB.setMeta('hash', newHash);
+            await DB.setMeta('lastSync', Date.now());
+
+            if (newHash !== oldHash) {
+                Toast.show(`تم تحديث ${result.items.length} منتج`, 'success');
+            }
+
+            applyFiltersAndSort();
+            return true;
+        } catch (err) {
+            if (err.name === 'AbortError') return false;
+            console.error('Fetch error:', err);
+            // فشل الاتصال بالسيرفر - نعتمد على IndexedDB
+            if (state.allItems.length === 0) {
+                await loadFromDB();
+            } else {
+                Toast.show('فشل تحديث البيانات - يتم عرض المخزنة', 'warning');
+            }
+            return false;
         }
+    }
 
+    /* -------- Load from IndexedDB -------- */
+    async function loadFromDB() {
+        try {
+            const items = await DB.getAllProducts();
+            if (items.length === 0) return false;
+
+            state.allItems = items;
+            state.total = items.length;
+
+            const lastSync = await DB.getMeta('lastSync');
+            if (lastSync) {
+                const ago = Math.round((Date.now() - lastSync) / 60000);
+                if (ago > 0) {
+                    Toast.show(`عرض البيانات المخزنة (آخر تحديث: ${ago} دقيقة)`, 'info');
+                }
+            }
+
+            applyFiltersAndSort();
+            return true;
+        } catch (e) {
+            console.error('DB load error:', e);
+            return false;
+        }
+    }
+
+    /* -------- Initial Load -------- */
+    async function initLoad() {
+        state.isLoading = true;
         showSkeletons(6);
-        renderLoadMoreButton();
 
-        try {
-            const result = await Api.fetchPage(
-                state.offset, state.search, state.sort, state.order,
-                state.abortController.signal
-            );
-            state.items = result.items;
-            state.total = result.total;
-            state.hasMore = state.items.length < state.total;
-            Cache.set(result.items, result.total);
-            renderItems(state.items, false);
-            updateTotalBadge();
-        } catch (err) {
-            if (err.name === 'AbortError') return;
-            showError(err.message);
-            Toast.show('فشل التحميل', 'error');
-        } finally {
-            state.isLoading = false;
-            renderLoadMoreButton();
+        // 1. جرّب IndexedDB أولاً (سريع جداً)
+        const loadedFromDB = await loadFromDB();
+
+        // 2. لو مفيش بيانات مخزنة أو انتهت صلاحيتها، اجلب من السيرفر
+        const lastSync = await DB.getMeta('lastSync');
+        const shouldSync = !lastSync ||
+                          (Date.now() - lastSync) > CONFIG.REVALIDATE_THRESHOLD ||
+                          !loadedFromDB;
+
+        if (shouldSync) {
+            if (loadedFromDB) {
+                // نعرض المخزنة فوراً وفي الخلفية نجيب الجديد
+                refreshFromServer();
+            } else {
+                // أول مرة - ننتظر الجلب
+                const ok = await refreshFromServer();
+                if (!ok) {
+                    showError('فشل التحميل - تحقق من اتصالك بالإنترنت');
+                }
+            }
         }
+
+        state.isLoading = false;
     }
 
-    async function fetchNextPage() {
-        if (state.isLoading || !state.hasMore) return;
-
-        state.isLoading = true;
-        state.offset = state.items.length;
-        renderLoadMoreButton();
-
-        try {
-            const result = await Api.fetchPage(
-                state.offset, state.search, state.sort, state.order
-            );
-            state.items = state.items.concat(result.items);
-            state.total = result.total;
-            state.hasMore = state.items.length < state.total;
-            renderItems(result.items, true);
-            updateTotalBadge();
-        } catch (err) {
-            Toast.show('فشل التحميل الإضافي: ' + err.message, 'error');
-        } finally {
-            state.isLoading = false;
-            renderLoadMoreButton();
-        }
-    }
-
-    async function revalidateInBackground() {
-        try {
-            const result = await Api.fetchPage(0, state.search, state.sort, state.order);
-            Cache.set(result.items, result.total);
-        } catch (e) { /* silent */ }
-    }
-
+    /* -------- Error State -------- */
     function showError(msg) {
         clearGrid();
         const box = document.createElement('div');
         box.className = 'error-box';
         const p = document.createElement('p');
-        p.textContent = 'فشل التحميل: ' + msg;
+        p.textContent = msg;
         const btn = document.createElement('button');
         btn.textContent = 'إعادة المحاولة';
-        btn.addEventListener('click', fetchFirstPage);
+        btn.addEventListener('click', initLoad);
         box.appendChild(p);
         box.appendChild(btn);
         grid.appendChild(box);
     }
 
-    // ---------- Search/Sort ----------
-    const debouncedSearch = Utils.debounce(() => {
-        state.search = searchInput.value.trim();
-        state.sort = sortSelect.value;
-        state.order = orderSelect.value;
-        fetchFirstPage();
+    /* -------- Filters & Search Events -------- */
+    const debouncedFilter = Utils.debounce(() => {
+        applyFiltersAndSort();
     }, CONFIG.SEARCH_DEBOUNCE);
 
-    searchInput.addEventListener('input', debouncedSearch);
-    sortSelect.addEventListener('change', debouncedSearch);
-    orderSelect.addEventListener('change', debouncedSearch);
+    // بحث
+    searchInput.addEventListener('input', () => {
+        state.filters.search = searchInput.value.trim();
+        clearSearch.classList.toggle('show', state.filters.search.length > 0);
+        debouncedFilter();
+    });
+    clearSearch.addEventListener('click', () => {
+        searchInput.value = '';
+        state.filters.search = '';
+        clearSearch.classList.remove('show');
+        debouncedFilter();
+        searchInput.focus();
+    });
 
-    // ---------- Infinite Scroll ----------
+    // ترتيب
+    sortSelect.addEventListener('change', () => {
+        state.sort = sortSelect.value;
+        applyFiltersAndSort();
+    });
+    orderSelect.addEventListener('change', () => {
+        state.order = orderSelect.value;
+        applyFiltersAndSort();
+    });
+
+    // فتح/غلق لوحة الفلاتر
+    filterToggle.addEventListener('click', () => {
+        filtersPanel.classList.toggle('open');
+        filterToggle.classList.toggle('active');
+    });
+
+    // فلتر التوفر
+    document.querySelectorAll('#availChips .chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            document.querySelectorAll('#availChips .chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            state.filters.availability = chip.dataset.avail;
+            debouncedFilter();
+        });
+    });
+
+    // النطاق السعري
+    priceMin.addEventListener('input', () => {
+        const v = priceMin.value === '' ? null : Number(priceMin.value);
+        state.filters.priceMin = isNaN(v) ? null : v;
+        debouncedFilter();
+    });
+    priceMax.addEventListener('input', () => {
+        const v = priceMax.value === '' ? null : Number(priceMax.value);
+        state.filters.priceMax = isNaN(v) ? null : v;
+        debouncedFilter();
+    });
+
+    // نطاق الكمية
+    qtyMin.addEventListener('input', () => {
+        const v = qtyMin.value === '' ? null : Number(qtyMin.value);
+        state.filters.qtyMin = isNaN(v) ? null : v;
+        debouncedFilter();
+    });
+    qtyMax.addEventListener('input', () => {
+        const v = qtyMax.value === '' ? null : Number(qtyMax.value);
+        state.filters.qtyMax = isNaN(v) ? null : v;
+        debouncedFilter();
+    });
+
+    // مخزون منخفض
+    lowStockChip.addEventListener('click', () => {
+        state.filters.lowStockOnly = !state.filters.lowStockOnly;
+        lowStockChip.classList.toggle('active', state.filters.lowStockOnly);
+        debouncedFilter();
+    });
+
+    // متوفر فقط
+    inStockChip.addEventListener('click', () => {
+        const isActive = inStockChip.classList.toggle('active');
+        if (isActive) {
+            document.querySelectorAll('#availChips .chip').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-avail="available"]').classList.add('active');
+            state.filters.availability = 'available';
+        } else {
+            document.querySelectorAll('#availChips .chip').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-avail="all"]').classList.add('active');
+            state.filters.availability = 'all';
+        }
+        debouncedFilter();
+    });
+
+    // إعادة تعيين
+    resetFilters.addEventListener('click', () => {
+        state.filters = {
+            search: '', availability: 'all',
+            priceMin: null, priceMax: null,
+            qtyMin: null, qtyMax: null, lowStockOnly: false
+        };
+        searchInput.value = '';
+        clearSearch.classList.remove('show');
+        priceMin.value = '';
+        priceMax.value = '';
+        qtyMin.value = '';
+        qtyMax.value = '';
+        lowStockChip.classList.remove('active');
+        inStockChip.classList.remove('active');
+        document.querySelectorAll('#availChips .chip').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-avail="all"]').classList.add('active');
+        sortSelect.value = 'priority';
+        orderSelect.value = 'desc';
+        state.sort = 'priority';
+        state.order = 'desc';
+        applyFiltersAndSort();
+        Toast.show('تم إعادة تعيين الفلاتر', 'success');
+    });
+
+    /* -------- Infinite Scroll -------- */
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting && state.hasMore && !state.isLoading && state.items.length > 0) {
-                fetchNextPage();
+            if (entry.isIntersecting && state.visibleCount < state.filteredItems.length) {
+                renderPage(true);
             }
         });
     }, { rootMargin: '300px 0px' });
     observer.observe(sentinel);
 
-    // ---------- Cart Sidebar ----------
+    /* -------- Cart Sidebar -------- */
     const cartSidebar = document.getElementById('cartSidebar');
     const cartOverlay = document.getElementById('cartOverlay');
 
@@ -1515,7 +2060,7 @@ const Modal = (function() {
         WhatsApp.order(list);
     });
 
-    // ---------- Wishlist Button ----------
+    /* -------- Wishlist Button -------- */
     document.getElementById('wishlistBtn').addEventListener('click', () => {
         const list = Wishlist.getAll();
         if (list.length === 0) {
@@ -1525,13 +2070,24 @@ const Modal = (function() {
         Toast.show(`لديك ${list.length} منتج في المفضلة`, 'success');
     });
 
-    // ---------- Init ----------
-    Cart.updateBadge();
-    Cart.render();
-    Wishlist.updateBadge();
-    fetchFirstPage();
-
+    /* -------- Public API -------- */
+    return {
+        init: function() {
+            Cart.updateBadge();
+            Cart.render();
+            Wishlist.updateBadge();
+            Connection.update();
+            initLoad();
+        },
+        refreshFromServer
+    };
 })();
+
+/* ================================================================
+   [JS-15] BOOTSTRAP - بدء التطبيق
+   ================================================================ */
+window.App = App;
+window.App.init();
 </script>
 </body>
 </html>
