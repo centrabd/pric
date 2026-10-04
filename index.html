@@ -2349,28 +2349,41 @@ const App = (function() {
         } catch (e) { return false; }
     }
 
-    async function initLoad() {
-        state.isLoading = true;
-        showSkeletons(6);
+   
+   async function initLoad() {
+    state.isLoading = true;
+    showSkeletons(6);
 
-        const loadedFromDB = await loadFromDB();
-        const lastSync = await DB.getMeta('lastSync');
-        const shouldSync = !lastSync ||
-                          (Date.now() - lastSync) > CONFIG.REVALIDATE_THRESHOLD ||
-                          !loadedFromDB;
+    const loadedFromDB = await loadFromDB();
+    const lastSync = await DB.getMeta('lastSync');
+    const shouldSync = !lastSync ||
+                      (Date.now() - lastSync) > CONFIG.REVALIDATE_THRESHOLD ||
+                      !loadedFromDB;
 
-        if (shouldSync) {
-            if (loadedFromDB) {
-                refreshFromServer().then(res => {
-                    if (res && res.success) Connection.setBanner('✅ تم تحديث البيانات', 'success', 2500);
-                });
-            } else {
-                const res = await refreshFromServer();
-                if (!res || !res.success) {
-                    showError('تعذر تحميل البيانات - ' + (res && res.reason === 'offline' ? 'أنت غير متصل' : 'تحقق من الاتصال'));
-                }
-            }
+    if (shouldSync) {
+        if (loadedFromDB) {
+            refreshFromServer().then(res => {
+                if (res && res.success) Connection.setBanner('✅ تم تحديث البيانات', 'success', 2500);
+            });
         } else {
+            const res = await refreshFromServer();
+            if (!res || !res.success) {
+                // ⭐ اعرض السبب الحقيقي
+                const reason = res && res.reason ? res.reason : 'unknown';
+                showError('تعذر تحميل البيانات — السبب: ' + reason);
+            }
+        }
+    } else {
+        updateLastUpdateLabel();
+    }
+
+    state.isLoading = false;
+}
+   
+   
+   
+   
+   else {
             updateLastUpdateLabel();
         }
 
