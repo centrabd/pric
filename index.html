@@ -756,7 +756,7 @@ body {
 }
 
 /* ================================================================
-   [12.5] CONFIRM MODAL ⭐ جديد
+   [12.5] CONFIRM MODAL
    ================================================================ */
 .confirm-modal {
     display: none;
@@ -847,7 +847,7 @@ body {
                 كتالوج سنتر عبدالله
             </span>
             <span class="title-meta">
-                <span class="title-version">الإصدار 2.3.0</span>
+                <span class="title-version">الإصدار 2.3.1</span>
                 <span class="title-update" id="lastUpdateLabel"></span>
             </span>
         </h1>
@@ -1007,7 +1007,6 @@ body {
     </div>
 </div>
 
-<!-- ⭐ مودال التأكيد -->
 <div class="confirm-modal" id="confirmModal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="confirm-box">
         <div class="confirm-icon" id="confirmIcon">⚠️</div>
@@ -1026,7 +1025,7 @@ body {
    ================================================================ */
 const CONFIG = Object.freeze({
     APP_NAME: 'كتالوج سنتر عبدالله',
-    APP_VERSION: '4.2.0',
+    APP_VERSION: '2.3.1',
     API_URL: 'https://script.google.com/macros/s/AKfycbxlqaoEsU9wnyufLN3-rT_U3-XZgGWKaWaVDbjdDMxdd-PXgd4_3XjxIo3zAhOA8eE4/exec',
     WHATSAPP_PHONE: '201065786569',
     PAGE_SIZE: 25,
@@ -1044,7 +1043,6 @@ const CONFIG = Object.freeze({
     SEARCH_DEBOUNCE: 300,
     MAX_TOASTS: 4,
     LOW_STOCK_THRESHOLD: 3,
-    // ⭐ إعدادات التقسيط
     INSTALLMENT_MIN_TOTAL: 2500,
     INSTALLMENT_MIN_DAILY: 50,
     INSTALLMENT_MIN_MONTHLY: 400,
@@ -1346,7 +1344,7 @@ const Connection = (function() {
 })();
 
 /* ================================================================
-   [JS-06.5] CONFIRM - مودال التأكيد ⭐ جديد
+   [JS-06.5] CONFIRM
    ================================================================ */
 const Confirm = (function() {
     'use strict';
@@ -1521,23 +1519,15 @@ const Cart = (function() {
         );
     }
 
-    // ⭐ حساب خطة التقسيط مع الحد الأقصى للمدة
     function calculatePlan() {
         const subtotal = getSubtotal();
         const plan = getPlan();
         const frequency = plan.frequency;
         const minPayment = frequency === 'daily' ? MIN_DAILY : MIN_MONTHLY;
 
-        // الحد الأقصى المطلق (15 شهر / 450 يوم)
         const absoluteMax = frequency === 'daily' ? MAX_DAYS : MAX_MONTHS;
-
-        // الحد الأقصى حسب الميزانية (الإجمالي ÷ الحد الأدنى للقسط)
         const byBudget = minPayment > 0 ? Math.floor(subtotal / minPayment) : 1;
-
-        // الحد الفعلي = الأصغر بين الاثنين
         const safeMaxDuration = Math.max(1, Math.min(absoluteMax, byBudget));
-
-        // هل الإجمالي كافٍ لتغطية الحد الأقصى؟
         const reachedMaxLimit = byBudget >= absoluteMax;
 
         const duration = Math.min(Math.max(1, plan.duration || 1), safeMaxDuration);
@@ -1571,7 +1561,6 @@ const Cart = (function() {
 
         if (!container) return;
 
-        // 1) رسم عناصر السلة
         const list = getAll();
         Utils.clearElement(container);
 
@@ -1630,7 +1619,6 @@ const Cart = (function() {
             container.appendChild(div);
         });
 
-        // 2) تحديث النوع
         const type = getType();
         if (typeToggle) {
             typeToggle.querySelectorAll('button').forEach(btn => {
@@ -1638,7 +1626,6 @@ const Cart = (function() {
             });
         }
 
-        // 3) شريط التقدم + لوحة الخطة
         const subtotal = getSubtotal();
         if (totalEl) totalEl.textContent = `${Utils.formatNumber(subtotal)} ج.م`;
 
@@ -2349,41 +2336,29 @@ const App = (function() {
         } catch (e) { return false; }
     }
 
-   
-   async function initLoad() {
-    state.isLoading = true;
-    showSkeletons(6);
+    async function initLoad() {
+        state.isLoading = true;
+        showSkeletons(6);
 
-    const loadedFromDB = await loadFromDB();
-    const lastSync = await DB.getMeta('lastSync');
-    const shouldSync = !lastSync ||
-                      (Date.now() - lastSync) > CONFIG.REVALIDATE_THRESHOLD ||
-                      !loadedFromDB;
+        const loadedFromDB = await loadFromDB();
+        const lastSync = await DB.getMeta('lastSync');
+        const shouldSync = !lastSync ||
+                          (Date.now() - lastSync) > CONFIG.REVALIDATE_THRESHOLD ||
+                          !loadedFromDB;
 
-    if (shouldSync) {
-        if (loadedFromDB) {
-            refreshFromServer().then(res => {
-                if (res && res.success) Connection.setBanner('✅ تم تحديث البيانات', 'success', 2500);
-            });
-        } else {
-            const res = await refreshFromServer();
-            if (!res || !res.success) {
-                // ⭐ اعرض السبب الحقيقي
-                const reason = res && res.reason ? res.reason : 'unknown';
-                showError('تعذر تحميل البيانات — السبب: ' + reason);
+        if (shouldSync) {
+            if (loadedFromDB) {
+                refreshFromServer().then(res => {
+                    if (res && res.success) Connection.setBanner('✅ تم تحديث البيانات', 'success', 2500);
+                });
+            } else {
+                const res = await refreshFromServer();
+                if (!res || !res.success) {
+                    const reason = res && res.reason ? res.reason : 'unknown';
+                    showError('تعذر تحميل البيانات — السبب: ' + reason);
+                }
             }
-        }
-    } else {
-        updateLastUpdateLabel();
-    }
-
-    state.isLoading = false;
-}
-   
-   
-   
-   
-   else {
+        } else {
             updateLastUpdateLabel();
         }
 
@@ -2511,7 +2486,7 @@ const App = (function() {
         cartOverlay.classList.remove('open');
     }
 
-    /* -------- Cart Type Toggle (مع تأكيد) ⭐ -------- */
+    /* -------- Cart Type Toggle -------- */
     document.querySelectorAll('#cartTypeToggle button').forEach(btn => {
         btn.addEventListener('click', async () => {
             const newType = btn.dataset.type;
@@ -2522,7 +2497,6 @@ const App = (function() {
             const newLabel = newType === 'installment' ? 'التقسيط' : 'الكاش';
             const currentLabel = currentType === 'installment' ? 'التقسيط' : 'الكاش';
 
-            // لو السلة فيها منتجات، نطلب تأكيد
             if (cart.length > 0) {
                 const ok = await Confirm.ask(
                     'تأكيد تغيير نوع الدفع',
