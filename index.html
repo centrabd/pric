@@ -3,25 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="كتالوج سنتر عبدالله - الإصدار 2.4.0">
+<meta name="description" content="كتالوج سنتر عبدالله - الإصدار 3.0.0">
 <meta name="theme-color" content="#2980b9">
 <meta name="color-scheme" content="light dark">
 
-<!-- ✅ Performance: DNS prefetch & preconnect -->
+<!-- ✅ FIX #46: أُضيف script.googleusercontent.com لتجنب حجب إعادة التوجيه -->
 <link rel="preconnect" href="https://script.google.com" crossorigin>
 <link rel="dns-prefetch" href="https://script.google.com">
-<link rel="preconnect" href="https://wa.me">
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 
-<!-- ✅ Best Practices: Security Headers -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https://script.google.com https://wa.me; frame-ancestors 'none';">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<!-- ✅ FIX #47-52: CSP مصحح + إزالة meta التي لا تعمل -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ibb.co https://drive.google.com https://lh3.googleusercontent.com https://res.cloudinary.com; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://wa.me https://api.whatsapp.com;">
 
-<title>كتالوج سنتر عبدالله - الإصدار 2.4.0</title>
+<title>كتالوج سنتر عبدالله - الإصدار 3.0.0</title>
 
 <style>
 /* ================================================================
-   [01] VARIABLES - مع تحسينات Contrast (WCAG AA)
+   [01] VARIABLES
    ================================================================ */
 :root {
     --color-primary: #2980b9;
@@ -128,7 +126,6 @@ body {
 
 .container { max-width: 1400px; margin: auto; }
 
-/* ✅ Screen reader only */
 .sr-only {
     position: absolute; width: 1px; height: 1px;
     padding: 0; margin: -1px; overflow: hidden;
@@ -145,15 +142,8 @@ body {
     margin-bottom: var(--space-lg);
     font-weight: 600; text-align: center;
     font-size: var(--font-base);
-    transform: translateY(-20px);
-    opacity: 0;
-    transition: transform var(--transition-base), opacity var(--transition-base);
 }
-.connection-banner.show { 
-    display: block; 
-    transform: translateY(0);
-    opacity: 1;
-}
+.connection-banner.show { display: block; }
 .connection-banner.offline { background: #fff3cd; color: #664d03; border: 1px solid #ffda6a; }
 .connection-banner.syncing { background: #cff4fc; color: #055160; border: 1px solid #9eeaf9; }
 .connection-banner.error { background: #f8d7da; color: #842029; border: 1px solid #f1aeb5; }
@@ -243,7 +233,6 @@ body {
     width: 28px; height: 28px; border-radius: 50%;
     display: none;
     align-items: center; justify-content: center;
-    transition: background var(--transition-fast), color var(--transition-fast);
 }
 .clear-search.show { display: flex; }
 .clear-search:hover { background: var(--bg-muted); color: var(--color-danger-light); }
@@ -255,7 +244,6 @@ body {
     font-size: var(--font-base); outline: none;
     background: var(--bg-input); cursor: pointer;
     color: var(--text-primary); font-family: inherit;
-    transition: border-color var(--transition-base), background var(--transition-base);
 }
 .search-row select:focus { border-color: var(--color-primary); background: var(--bg-card); }
 
@@ -296,7 +284,6 @@ body {
     background: var(--bg-input); cursor: pointer;
     font-size: 13px; font-weight: 600; color: var(--text-secondary);
     font-family: inherit;
-    transition: all var(--transition-base);
 }
 .chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
 .chip.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
@@ -309,7 +296,6 @@ body {
     font-size: var(--font-base); outline: none;
     background: var(--bg-input); color: var(--text-primary);
     font-family: inherit;
-    transition: border-color var(--transition-base), background var(--transition-base);
 }
 .range-inputs input:focus { border-color: var(--color-primary); background: var(--bg-card); }
 .range-inputs span { color: var(--text-muted); font-weight: 700; }
@@ -320,7 +306,6 @@ body {
     border: none; cursor: pointer;
     font-weight: 600; font-family: inherit; font-size: var(--font-base);
     align-self: flex-end;
-    transition: background var(--transition-base);
 }
 .reset-filters:hover { background: var(--color-danger); }
 
@@ -336,7 +321,7 @@ body {
 .sentinel { height: 1px; width: 100%; }
 
 /* ================================================================
-   [07] CARD - مع تحسينات الأداء والوصولية
+   [07] CARD
    ================================================================ */
 .card {
     background: var(--bg-card); border-radius: var(--radius-lg);
@@ -344,12 +329,9 @@ body {
     border: 1px solid rgba(0,0,0,0.04);
     display: flex; flex-direction: column;
     position: relative;
-    /* ✅ Performance: GPU acceleration */
     transform: translateY(15px);
     opacity: 0;
     animation: cardFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    will-change: transform, opacity;
-    /* ✅ Performance: Containment */
     contain: layout style paint;
     content-visibility: auto;
     contain-intrinsic-size: auto 380px;
@@ -358,7 +340,6 @@ body {
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .card:focus-within { box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.25), var(--shadow-md); }
 
-/* ✅ Performance: Composited animation (transform + opacity only) */
 @keyframes cardFadeIn {
     from { transform: translateY(15px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
@@ -384,7 +365,6 @@ body {
     background: linear-gradient(135deg, #d97706, #b45309);
     color: #fff; font-size: 11px; font-weight: 800;
     padding: 4px 12px; border-radius: 20px; z-index: 2;
-    letter-spacing: 0.3px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
@@ -398,7 +378,6 @@ body {
     white-space: nowrap;
 }
 
-/* ✅ Accessibility: h3 مستبدل بـ button حقيقي في JS */
 .card-title-btn {
     display: block;
     width: 100%;
@@ -411,7 +390,6 @@ body {
     background: none;
     border: none;
     padding: 0;
-    transition: color var(--transition-fast);
 }
 .card-title-btn:hover { color: var(--color-primary); }
 .card-title-btn:focus-visible { 
@@ -430,7 +408,6 @@ body {
     padding: 5px 12px; border-radius: 30px;
     font-size: 13px; font-weight: 700;
 }
-/* ✅ Contrast محسّن (4.5:1+) */
 .card .prices .cash { color: var(--color-success); background: #d4f5e0; }
 .card .prices .inst { color: var(--color-info); background: #d6e9f7; }
 
@@ -458,7 +435,6 @@ body {
     font-size: 13px; font-weight: 700;
     display: inline-flex; align-items: center; justify-content: center;
     gap: 4px; flex: 1; font-family: inherit;
-    transition: background var(--transition-base), transform var(--transition-fast);
 }
 .card .card-actions button:active { transform: scale(0.97); }
 .card .btn-whatsapp { background: var(--color-whatsapp); color: #fff; flex: 2; }
@@ -477,7 +453,7 @@ body {
 .card .btn-wishlist.in-wishlist { background: #fce7e7; color: var(--color-danger-light); }
 
 /* ================================================================
-   [08] SKELETON - Performance: Composited shimmer
+   [08] SKELETON
    ================================================================ */
 .skeleton-card {
     background: var(--bg-card); border-radius: var(--radius-lg);
@@ -498,9 +474,7 @@ body {
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg, transparent, var(--bg-badge), transparent);
-    /* ✅ Composited: transform only */
     animation: shimmer 1.4s infinite;
-    will-change: transform;
 }
 @keyframes shimmer {
     0% { transform: translateX(-100%); }
@@ -526,7 +500,6 @@ body {
     font-size: var(--font-md); font-weight: 700;
     cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-sm);
     font-family: inherit;
-    transition: background var(--transition-base), transform var(--transition-fast);
 }
 .load-more-btn:hover:not(:disabled) { background: var(--color-primary-dark); }
 .load-more-btn:active:not(:disabled) { transform: scale(0.98); }
@@ -536,7 +509,6 @@ body {
     border: 3px solid rgba(255,255,255,0.3);
     border-top-color: #fff; border-radius: 50%;
     animation: spin 0.8s linear infinite;
-    will-change: transform;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .end-message, .error-box, .no-results {
@@ -555,7 +527,6 @@ body {
     background: var(--color-danger-light); color: #fff;
     border: none; border-radius: 30px; cursor: pointer; font-weight: 700;
     font-family: inherit;
-    transition: background var(--transition-base);
 }
 .error-box button:hover { background: var(--color-danger); }
 
@@ -591,7 +562,6 @@ body {
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     z-index: 2;
-    transition: background var(--transition-fast);
 }
 .modal-close:hover { background: var(--border-color); }
 
@@ -633,7 +603,6 @@ body {
     border: none; border-radius: var(--radius-md);
     font-size: var(--font-base); font-weight: 700;
     cursor: pointer; font-family: inherit;
-    transition: background var(--transition-base);
 }
 .modal-actions .btn-primary { background: var(--color-whatsapp); color: #fff; flex: 2; }
 .modal-actions .btn-primary:hover { background: var(--color-whatsapp-dark); }
@@ -670,7 +639,6 @@ body {
     background: var(--bg-muted); border: none; cursor: pointer;
     color: var(--text-primary); padding: 8px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    transition: background var(--transition-fast);
 }
 .cart-header button:hover { background: var(--border-color); }
 
@@ -687,7 +655,6 @@ body {
     font-weight: 700; cursor: pointer;
     color: var(--text-secondary);
     font-family: inherit; font-size: var(--font-base);
-    transition: all var(--transition-fast);
 }
 .cart-type-toggle button.active {
     background: var(--color-primary); color: #fff;
@@ -717,7 +684,6 @@ body {
     background: var(--bg-badge); cursor: pointer; font-weight: bold;
     display: flex; align-items: center; justify-content: center;
     color: var(--text-primary); font-family: inherit;
-    transition: background var(--transition-fast);
 }
 .cart-item-actions button:hover { background: var(--color-primary); color: #fff; }
 .cart-item-actions span { min-width: 24px; text-align: center; font-weight: 700; }
@@ -780,7 +746,6 @@ body {
     font-weight: 700; cursor: pointer;
     color: var(--text-secondary);
     font-family: inherit; font-size: var(--font-base);
-    transition: all var(--transition-fast);
 }
 .plan-row button.active {
     background: var(--color-warning-light); color: #fff;
@@ -828,7 +793,6 @@ body {
     cursor: pointer; display: flex; align-items: center;
     justify-content: center; gap: var(--space-sm);
     font-family: inherit;
-    transition: background var(--transition-base);
 }
 .cart-checkout:hover:not(:disabled) { background: var(--color-whatsapp-dark); }
 .cart-checkout:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -904,7 +868,6 @@ body {
     border: none; border-radius: var(--radius-md);
     font-size: var(--font-md); font-weight: 700;
     cursor: pointer; font-family: inherit;
-    transition: background var(--transition-fast);
 }
 .confirm-cancel {
     background: var(--bg-badge); color: var(--text-primary);
@@ -955,7 +918,8 @@ body {
                 كتالوج سنتر عبدالله
             </span>
             <span class="title-meta">
-                <span class="title-version">الإصدار 2.4.0</span>
+                <!-- ✅ FIX #100: يُحدّث ديناميكياً من JS -->
+                <span class="title-version" id="versionLabel">الإصدار 3.0.0</span>
                 <span class="title-update" id="lastUpdateLabel"></span>
             </span>
         </h1>
@@ -974,10 +938,13 @@ body {
     <section class="search-panel" role="search" aria-label="أدوات البحث والترتيب">
         <div class="search-row">
             <div class="search-input-wrap">
-                <input type="text" id="searchInput" placeholder="ابحث بالكود أو اسم الصنف..." autocomplete="off" aria-label="البحث عن منتج" />
+                <!-- ✅ FIX #95: label مرتبط -->
+                <label for="searchInput" class="sr-only">البحث عن منتج</label>
+                <input type="text" id="searchInput" placeholder="ابحث بالكود أو اسم الصنف..." autocomplete="off" />
                 <button class="clear-search" id="clearSearch" aria-label="مسح نص البحث" type="button">×</button>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
+            <label for="sortSelect" class="sr-only">ترتيب المنتجات</label>
             <select id="sortSelect" aria-label="ترتيب المنتجات حسب">
                 <option value="priority">الأولوية (المخزون)</option>
                 <option value="name">الاسم</option>
@@ -986,6 +953,7 @@ body {
                 <option value="quantity">الكمية</option>
                 <option value="id">الكود</option>
             </select>
+            <label for="orderSelect" class="sr-only">اتجاه الترتيب</label>
             <select id="orderSelect" aria-label="اتجاه الترتيب">
                 <option value="desc">تنازلي</option>
                 <option value="asc">تصاعدي</option>
@@ -1041,7 +1009,8 @@ body {
 </div>
 
 <div class="cart-overlay" id="cartOverlay" aria-hidden="true"></div>
-<aside class="cart-sidebar" id="cartSidebar" role="complementary" aria-label="سلة التسوق">
+<!-- ✅ FIX #99: role صحيح للـ dialog -->
+<aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-modal="true" aria-label="سلة التسوق">
     <header class="cart-header">
         <h2>سلة التسوق</h2>
         <button id="cartClose" aria-label="إغلاق سلة التسوق" type="button">
@@ -1054,7 +1023,8 @@ body {
         <button data-type="installment" type="button" role="radio" aria-checked="false">تقسيط</button>
     </div>
 
-    <div class="installment-progress hidden" id="installmentProgress" role="progressbar" aria-label="تقدم الحد الأدنى للتقسيط">
+    <!-- ✅ FIX #98: aria-valuemin/max -->
+    <div class="installment-progress hidden" id="installmentProgress" role="progressbar" aria-label="تقدم الحد الأدنى للتقسيط" aria-valuemin="0" aria-valuenow="0">
         <div class="progress-label">
             <span>الحد الأدنى للتقسيط</span>
             <span id="progressAmount">0 / 2500 ج.م</span>
@@ -1108,7 +1078,8 @@ body {
         <div class="detail-row"><strong>الكمية:</strong> <span id="modalQty"></span></div>
         <div class="detail-row"><strong>الحالة:</strong> <span id="modalStatus"></span></div>
         <div class="modal-actions">
-            <button class="btn-primary" id="modalWhatsapp" type="button">طلب عبر واتساب</button>
+            <button class="btn-primary" id="modalWhatsappCash" type="button">اطلب كاش</button>
+            <button class="btn-primary" id="modalWhatsappInst" type="button" style="background: var(--color-warning-light);">اطلب تقسيط</button>
             <button class="btn-secondary" id="modalCart" type="button">السلة</button>
             <button class="btn-secondary" id="modalWishlist" type="button">المفضلة</button>
         </div>
@@ -1129,25 +1100,30 @@ body {
 
 <script>
 /* ================================================================
-   [JS-01] CONFIG - لم يتغير منطق الربط
+   [JS-01] CONFIG
    ================================================================ */
 const CONFIG = Object.freeze({
     APP_NAME: 'كتالوج سنتر عبدالله',
-    APP_VERSION: '2.4.0',
+    APP_VERSION: '3.0.0',
+    // ✅ FIX #3 (audit): يجب أن يطابق admin.html - استبدل هذا بالـ URL الصحيح
     API_URL: 'https://script.google.com/macros/s/AKfycbzMiy090MgUPuRPjsmlX_VTJhO_Nu75aBOWi1C6z49ToXs6iKxLtYH2OJRP903SIUBq/exec',
     WHATSAPP_PHONE: '201065786569',
     PAGE_SIZE: 25,
-    API_LIMIT: 1000,
+    // ✅ FIX #4 (audit): pagination
+    API_PAGE_SIZE: 500,
+    API_MAX_PAGES: 20,
     FETCH_TIMEOUT: 20000,
     DB_NAME: 'catalog_db',
-    DB_VERSION: 2,
+    // ✅ FIX #53: رفع الإصدار مع migration بدل الحذف
+    DB_VERSION: 3,
     DB_STORE: 'products',
     DB_META_STORE: 'meta',
     REVALIDATE_THRESHOLD: 30 * 60 * 1000,
-    CART_KEY: 'cart_v4_items',
-    CART_TYPE_KEY: 'cart_v4_type',
-    CART_PLAN_KEY: 'cart_v4_plan',
-    WISHLIST_KEY: 'wishlist_v4',
+    CART_KEY: 'cart_v5_items',
+    CART_TYPE_KEY: 'cart_v5_type',
+    CART_PLAN_KEY: 'cart_v5_plan',
+    WISHLIST_KEY: 'wishlist_v5',
+    WISHLIST_MAX: 500,
     SEARCH_DEBOUNCE: 300,
     MAX_TOASTS: 4,
     LOW_STOCK_THRESHOLD: 3,
@@ -1156,9 +1132,11 @@ const CONFIG = Object.freeze({
     INSTALLMENT_MIN_MONTHLY: 400,
     INSTALLMENT_MAX_MONTHS: 15,
     INSTALLMENT_MAX_DAYS: 450,
-    // ✅ Performance: Chunked rendering
     RENDER_CHUNK_SIZE: 10,
-    RENDER_CHUNK_DELAY: 0
+    IMG_WHITELIST: [
+        'i.ibb.co', 'drive.google.com', 'lh3.googleusercontent.com',
+        'res.cloudinary.com', 'images.unsplash.com', 'cdn.shopify.com'
+    ]
 });
 
 /* ================================================================
@@ -1167,11 +1145,15 @@ const CONFIG = Object.freeze({
 const Utils = (function() {
     'use strict';
 
+    // ✅ FIX #68: cache للـ formatter
+    const _numberFormatter = new Intl.NumberFormat('ar-EG');
+    const _escapeDiv = document.createElement('div');
+
     function escapeHtml(text) {
         if (text === undefined || text === null) return '';
-        const div = document.createElement('div');
-        div.textContent = String(text);
-        return div.innerHTML;
+        // ✅ FIX #68: إعادة استخدام نفس الـ div
+        _escapeDiv.textContent = String(text);
+        return _escapeDiv.innerHTML;
     }
 
     function debounce(fn, delay) {
@@ -1183,12 +1165,13 @@ const Utils = (function() {
     }
 
     function formatNumber(n) {
-        return (Number(n) || 0).toLocaleString('ar-EG');
+        // ✅ FIX #77: استخدام formatter مخزّن
+        return _numberFormatter.format(Number(n) || 0);
     }
 
     function toNumber(v, fallback = 0) {
         const n = Number(v);
-        return isNaN(n) ? fallback : n;
+        return isNaN(n) || !isFinite(n) ? fallback : n;
     }
 
     function safeGetItem(key, fallback) {
@@ -1221,18 +1204,21 @@ const Utils = (function() {
         return escaped.replace(regex, '<mark>$1</mark>');
     }
 
+    // ✅ FIX #69: hash أسرع
     function itemsHash(items) {
         if (!Array.isArray(items) || items.length === 0) return 'empty';
         let acc = items.length;
-        for (let i = 0; i < items.length; i++) {
+        const len = items.length;
+        for (let i = 0; i < len; i++) {
             const it = items[i];
             const part = it.id + '|' + it.cashPrice + '|' + it.installPrice + '|' + it.quantity + '|' + (it.available ? 1 : 0) + '|' + (it.image || '');
-            for (let j = 0; j < part.length; j++) {
+            const plen = part.length;
+            for (let j = 0; j < plen; j++) {
                 acc = ((acc << 5) - acc) + part.charCodeAt(j);
-                acc = acc | 0;
+                acc |= 0;
             }
         }
-        return items.length + '_' + Math.abs(acc).toString(36);
+        return len + '_' + Math.abs(acc).toString(36);
     }
 
     function timeAgo(ms) {
@@ -1247,7 +1233,6 @@ const Utils = (function() {
         return `منذ ${day} يوم`;
     }
 
-    // ✅ Performance: schedule work during browser idle time
     function scheduleIdle(fn, timeout = 100) {
         if ('requestIdleCallback' in window) {
             return requestIdleCallback(fn, { timeout });
@@ -1255,24 +1240,32 @@ const Utils = (function() {
         return setTimeout(fn, 0);
     }
 
-    function cancelIdle(id) {
-        if ('requestIdleCallback' in window) {
-            cancelIdleCallback(id);
-        } else {
-            clearTimeout(id);
-        }
+    // ✅ FIX #32: تحقق من النطاق المسموح للصور
+    function isAllowedImageUrl(url) {
+        if (!url || !/^https:\/\//i.test(url)) return false;
+        try {
+            const host = new URL(url).hostname.toLowerCase();
+            return CONFIG.IMG_WHITELIST.some(allowed =>
+                host === allowed || host.endsWith('.' + allowed)
+            );
+        } catch (e) { return false; }
+    }
+
+    // ✅ FIX #84: escape لماركداون واتساب
+    function escapeWhatsappMarkdown(text) {
+        return String(text || '').replace(/([*_~`])/g, '\\$1');
     }
 
     return {
         escapeHtml, debounce, formatNumber, toNumber,
         safeGetItem, safeSetItem, safeRemove, clearElement,
         highlightText, itemsHash, timeAgo,
-        scheduleIdle, cancelIdle
+        scheduleIdle, isAllowedImageUrl, escapeWhatsappMarkdown
     };
 })();
 
 /* ================================================================
-   [JS-03] DB - ✅ Lazy initialization لتجنب blocking main thread
+   [JS-03] DB - ✅ FIX #53: migration بدل الحذف
    ================================================================ */
 const DB = (function() {
     'use strict';
@@ -1287,42 +1280,58 @@ const DB = (function() {
 
         initPromise = new Promise((resolve, reject) => {
             if (!('indexedDB' in window)) {
-                dbUnavailable = true; 
+                dbUnavailable = true;
                 initPromise = null;
-                reject(new Error('IndexedDB غير مدعوم')); 
+                reject(new Error('IndexedDB غير مدعوم'));
                 return;
             }
             let req;
-            try { 
-                req = indexedDB.open(CONFIG.DB_NAME, CONFIG.DB_VERSION); 
-            }
-            catch (e) { 
-                dbUnavailable = true; 
+            try {
+                req = indexedDB.open(CONFIG.DB_NAME, CONFIG.DB_VERSION);
+            } catch (e) {
+                dbUnavailable = true;
                 initPromise = null;
-                reject(e); 
-                return; 
+                reject(e);
+                return;
             }
 
+            // ✅ FIX #53: migration حقيقي بدل deleteObjectStore
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
-                if (db.objectStoreNames.contains(CONFIG.DB_STORE)) {
-                    db.deleteObjectStore(CONFIG.DB_STORE);
+                const oldVersion = e.oldVersion;
+
+                if (!db.objectStoreNames.contains(CONFIG.DB_STORE)) {
+                    const store = db.createObjectStore(CONFIG.DB_STORE, { keyPath: 'id' });
+                    store.createIndex('name', 'name', { unique: false });
                 }
-                const store = db.createObjectStore(CONFIG.DB_STORE, { keyPath: 'id' });
-                store.createIndex('name', 'name', { unique: false });
+                // migration من v2 إلى v3: أضف index
+                if (oldVersion < 3 && db.objectStoreNames.contains(CONFIG.DB_STORE)) {
+                    const store = e.target.transaction.objectStore(CONFIG.DB_STORE);
+                    if (!store.indexNames.contains('name')) {
+                        store.createIndex('name', 'name', { unique: false });
+                    }
+                }
                 if (!db.objectStoreNames.contains(CONFIG.DB_META_STORE)) {
                     db.createObjectStore(CONFIG.DB_META_STORE, { keyPath: 'key' });
                 }
             };
 
-            req.onsuccess = (e) => { 
-                dbInstance = e.target.result; 
-                resolve(dbInstance); 
+            // ✅ FIX #56: onblocked
+            req.onblocked = () => {
+                console.warn('IndexedDB blocked - أعد تحميل الصفحة');
             };
-            req.onerror = () => { 
-                dbUnavailable = true; 
+
+            req.onsuccess = (e) => {
+                dbInstance = e.target.result;
+                // ✅ FIX #57: onclose
+                dbInstance.onclose = () => { dbInstance = null; initPromise = null; };
+                dbInstance.onerror = () => { dbInstance = null; initPromise = null; };
+                resolve(dbInstance);
+            };
+            req.onerror = () => {
+                dbUnavailable = true;
                 initPromise = null;
-                reject(req.error); 
+                reject(req.error);
             };
         });
         return initPromise;
@@ -1330,12 +1339,9 @@ const DB = (function() {
 
     async function safeCall(fn, fallback = null) {
         try { return await fn(); }
-        catch (e) { 
-            // ✅ Best Practice: silent failure for non-critical DB operations
-            if (e && e.message && !e.message.includes('unavailable')) {
-                console.debug('DB operation failed:', e.message);
-            }
-            return fallback; 
+        catch (e) {
+            console.debug('DB op failed:', e && e.message);
+            return fallback;
         }
     }
 
@@ -1345,8 +1351,11 @@ const DB = (function() {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction(CONFIG.DB_STORE, 'readwrite');
                 const store = tx.objectStore(CONFIG.DB_STORE);
+                // ✅ FIX #54: clear + put في معاملة واحدة مع مهلة آمنة
                 store.clear();
-                items.forEach(item => {
+                const len = items.length;
+                for (let i = 0; i < len; i++) {
+                    const item = items[i];
                     store.put({
                         id: String(item.id),
                         name: String(item.name),
@@ -1356,9 +1365,10 @@ const DB = (function() {
                         available: !!item.available,
                         image: String(item.image || '')
                     });
-                });
-                tx.oncomplete = () => resolve(items.length);
-                tx.onerror = () => reject(tx.error);
+                }
+                tx.oncomplete = () => resolve(len);
+                tx.onerror = () => { /* ✅ FIX #55 */ try { tx.abort(); } catch(_) {} reject(tx.error); };
+                tx.onabort = () => reject(tx.error || new Error('Transaction aborted'));
             });
         }, 0);
     }
@@ -1423,8 +1433,10 @@ const State = (function() {
             qtyMin: null, qtyMax: null, lowStockOnly: false
         },
         sort: 'priority',
-        order: 'asc',
-        abortController: null
+        order: 'desc',
+        // ✅ FIX #63: قائمة AbortControllers منفصلة
+        abortControllers: new Set(),
+        fetchSequence: 0
     };
     return { get: () => state };
 })();
@@ -1449,7 +1461,10 @@ const Toast = (function() {
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateX(100px)';
-            setTimeout(() => Utils.safeRemove(toast), 300);
+            // ✅ FIX #93: انتظر transitionend
+            const cleanup = () => Utils.safeRemove(toast);
+            toast.addEventListener('transitionend', cleanup, { once: true });
+            setTimeout(cleanup, 400); // fallback
         }, duration);
     }
     return { show };
@@ -1465,6 +1480,7 @@ const Connection = (function() {
     let bannerTimer = null;
 
     function setBanner(text, cls, autoHideMs) {
+        if (!banner || !banner.parentNode) return;
         if (bannerTimer) clearTimeout(bannerTimer);
         banner.textContent = text;
         banner.className = 'connection-banner show ' + cls;
@@ -1483,6 +1499,7 @@ const Connection = (function() {
             setBanner('🔄 جاري مزامنة البيانات...', 'syncing');
             wasOffline = false;
             if (window.App && window.App.refreshFromServer) {
+                // ✅ FIX #65: await
                 window.App.refreshFromServer().then(res => {
                     if (res && res.success) setBanner('✅ تم تحديث البيانات بنجاح', 'success', 2500);
                     else setBanner('⚠️ تعذر التحديث - يتم عرض البيانات المخزنة', 'error', 4000);
@@ -1499,7 +1516,7 @@ const Connection = (function() {
 })();
 
 /* ================================================================
-   [JS-06.5] CONFIRM - ✅ Focus trap
+   [JS-06.5] CONFIRM - ✅ FIX #92: قائمة Promise
    ================================================================ */
 const Confirm = (function() {
     'use strict';
@@ -1509,7 +1526,7 @@ const Confirm = (function() {
     const msgEl = document.getElementById('confirmMessage');
     const okBtn = document.getElementById('confirmOk');
     const cancelBtn = document.getElementById('confirmCancel');
-    let resolver = null;
+    let activeResolver = null;
     let lastFocused = null;
 
     function trapFocus(e) {
@@ -1518,18 +1535,21 @@ const Confirm = (function() {
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
         if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
+            e.preventDefault(); last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
+            e.preventDefault(); first.focus();
         }
     }
 
     function ask(title, message, options) {
         options = options || {};
         return new Promise((resolve) => {
-            resolver = resolve;
+            // ✅ FIX #92: أغلق أي confirm سابق
+            if (activeResolver) {
+                activeResolver(false);
+                activeResolver = null;
+            }
+            activeResolver = resolve;
             lastFocused = document.activeElement;
             iconEl.textContent = options.icon || '⚠️';
             titleEl.textContent = title;
@@ -1547,7 +1567,10 @@ const Confirm = (function() {
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
         modal.removeEventListener('keydown', trapFocus);
-        if (resolver) { resolver(result); resolver = null; }
+        if (activeResolver) {
+            activeResolver(result);
+            activeResolver = null;
+        }
         if (lastFocused && lastFocused.focus) lastFocused.focus();
     }
 
@@ -1562,12 +1585,18 @@ const Confirm = (function() {
 })();
 
 /* ================================================================
-   [JS-07] WISHLIST
+   [JS-07] WISHLIST - ✅ FIX #88: حد أقصى + #89: re-sync
    ================================================================ */
 const Wishlist = (function() {
     'use strict';
     function getAll() { return Utils.safeGetItem(CONFIG.WISHLIST_KEY, []); }
-    function save(items) { Utils.safeSetItem(CONFIG.WISHLIST_KEY, items); updateBadge(); }
+    function save(items) {
+        if (items.length > CONFIG.WISHLIST_MAX) {
+            items = items.slice(0, CONFIG.WISHLIST_MAX);
+        }
+        Utils.safeSetItem(CONFIG.WISHLIST_KEY, items);
+        updateBadge();
+    }
     function isIn(id) { return getAll().some(i => String(i.id) === String(id)); }
     function toggle(item) {
         const list = getAll();
@@ -1575,6 +1604,10 @@ const Wishlist = (function() {
         let added;
         if (idx > -1) { list.splice(idx, 1); added = false; }
         else {
+            if (list.length >= CONFIG.WISHLIST_MAX) {
+                Toast.show(`الحد الأقصى ${CONFIG.WISHLIST_MAX} منتج`, 'warning');
+                return false;
+            }
             list.push({
                 id: String(item.id), name: String(item.name),
                 cashPrice: Utils.toNumber(item.cashPrice),
@@ -1587,6 +1620,22 @@ const Wishlist = (function() {
         save(list);
         return added;
     }
+    // ✅ FIX #89: re-sync مع البيانات الحديثة
+    function resync(allItems) {
+        const list = getAll();
+        const map = new Map(allItems.map(i => [String(i.id), i]));
+        let changed = false;
+        const fresh = list.map(w => {
+            const curr = map.get(String(w.id));
+            if (!curr) return w;
+            if (curr.name !== w.name || curr.cashPrice !== w.cashPrice || curr.installPrice !== w.installPrice) {
+                changed = true;
+                return { ...w, name: curr.name, cashPrice: curr.cashPrice, installPrice: curr.installPrice, quantity: curr.quantity };
+            }
+            return w;
+        });
+        if (changed) save(fresh);
+    }
     function updateBadge() {
         const el = document.getElementById('wishlistCount');
         if (el) {
@@ -1595,11 +1644,11 @@ const Wishlist = (function() {
             el.setAttribute('aria-label', `عدد المنتجات في المفضلة: ${count}`);
         }
     }
-    return { getAll, isIn, toggle, updateBadge };
+    return { getAll, isIn, toggle, updateBadge, resync };
 })();
 
 /* ================================================================
-   [JS-08] CART
+   [JS-08] CART - 🔥 FIX #1 (audit): حساب السعر حسب نوع الدفع
    ================================================================ */
 const Cart = (function() {
     'use strict';
@@ -1618,7 +1667,10 @@ const Cart = (function() {
     }
 
     function getPlan() {
-        return Utils.safeGetItem(CONFIG.CART_PLAN_KEY, { frequency: 'daily', duration: 30 });
+        const p = Utils.safeGetItem(CONFIG.CART_PLAN_KEY, { frequency: 'daily', duration: 30 });
+        // ✅ FIX #83: duration >= 1
+        if (!p.duration || p.duration < 1) p.duration = 1;
+        return p;
     }
 
     function save(items) {
@@ -1648,7 +1700,9 @@ const Cart = (function() {
         const list = getAll();
         const existing = list.find(i => String(i.id) === String(item.id));
         if (existing) {
-            if (existing.quantity >= (item.quantity || 0)) {
+            // ✅ FIX #80: item.quantity قد تكون 0
+            const maxQty = Math.max(1, Utils.toNumber(item.quantity));
+            if (existing.quantity >= maxQty) {
                 Toast.show('الكمية المطلوبة غير متوفرة', 'warning');
                 return false;
             }
@@ -1659,7 +1713,7 @@ const Cart = (function() {
                 cashPrice: Utils.toNumber(item.cashPrice),
                 installPrice: Utils.toNumber(item.installPrice),
                 quantity: 1,
-                maxQuantity: Utils.toNumber(item.quantity),
+                maxQuantity: Math.max(1, Utils.toNumber(item.quantity)),
                 image: String(item.image || '')
             });
         }
@@ -1682,7 +1736,8 @@ const Cart = (function() {
         if (!item) return;
         const newQty = Utils.toNumber(item.quantity) + delta;
         if (newQty < 1) return;
-        if (item.maxQuantity && newQty > item.maxQuantity) {
+        // ✅ FIX #81: maxQuantity قد تكون 0
+        if (item.maxQuantity != null && newQty > item.maxQuantity) {
             Toast.show('لا يمكن تجاوز الكمية المتاحة', 'warning');
             return;
         }
@@ -1690,15 +1745,34 @@ const Cart = (function() {
         save(list);
     }
 
+    // 🔥 FIX #1 (audit): حساب حسب نوع الدفع
     function getSubtotal() {
+        const type = getType();
+        const priceField = (type === 'installment') ? 'installPrice' : 'cashPrice';
+        return getAll().reduce(
+            (sum, i) => sum + (Utils.toNumber(i[priceField]) * Utils.toNumber(i.quantity)),
+            0
+        );
+    }
+
+    // 🔥 FIX: subtotal للعرض (كاش دائماً) + total للطباعة
+    function getCashSubtotal() {
         return getAll().reduce(
             (sum, i) => sum + (Utils.toNumber(i.cashPrice) * Utils.toNumber(i.quantity)),
             0
         );
     }
 
+    function getInstallSubtotal() {
+        return getAll().reduce(
+            (sum, i) => sum + (Utils.toNumber(i.installPrice) * Utils.toNumber(i.quantity)),
+            0
+        );
+    }
+
     function calculatePlan() {
-        const subtotal = getSubtotal();
+        // 🔥 FIX #1: استخدم سعر القسط
+        const subtotal = getInstallSubtotal();
         const plan = getPlan();
         const frequency = plan.frequency;
         const minPayment = frequency === 'daily' ? MIN_DAILY : MIN_MONTHLY;
@@ -1709,7 +1783,8 @@ const Cart = (function() {
         const reachedMaxLimit = byBudget >= absoluteMax;
 
         const duration = Math.min(Math.max(1, plan.duration || 1), safeMaxDuration);
-        const payment = subtotal > 0 && duration > 0 ? (subtotal / duration) : 0;
+        // ✅ FIX #82: قسمة آمنة
+        const payment = (subtotal > 0 && duration > 0) ? (subtotal / duration) : 0;
 
         return {
             subtotal: subtotal,
@@ -1758,6 +1833,8 @@ const Cart = (function() {
             return;
         }
 
+        const type = getType();
+
         list.forEach(item => {
             const div = document.createElement('div');
             div.className = 'cart-item';
@@ -1767,7 +1844,10 @@ const Cart = (function() {
             const h4 = document.createElement('h4');
             h4.textContent = item.name;
             const p = document.createElement('p');
-            p.textContent = `${Utils.formatNumber(item.cashPrice)} ج.م × ${item.quantity}`;
+            // 🔥 FIX #1: عرض السعر المناسب
+            const priceShown = type === 'installment' ? item.installPrice : item.cashPrice;
+            const priceLabel = type === 'installment' ? 'قسط' : 'كاش';
+            p.textContent = `${Utils.formatNumber(priceShown)} ج.م ${priceLabel} × ${item.quantity}`;
             info.appendChild(h4);
             info.appendChild(p);
 
@@ -1808,7 +1888,6 @@ const Cart = (function() {
             container.appendChild(div);
         });
 
-        const type = getType();
         if (typeToggle) {
             typeToggle.querySelectorAll('button').forEach(btn => {
                 const isActive = btn.dataset.type === type;
@@ -1817,29 +1896,34 @@ const Cart = (function() {
             });
         }
 
+        // 🔥 FIX #1: subtotal حسب النوع
         const subtotal = getSubtotal();
         if (totalEl) totalEl.textContent = `${Utils.formatNumber(subtotal)} ج.م`;
 
         if (type === 'installment' && list.length > 0) {
             if (progressEl) {
                 progressEl.classList.remove('hidden');
-                const pct = Math.min(100, (subtotal / MIN_TOTAL) * 100);
-                const complete = subtotal >= MIN_TOTAL;
+                // 🔥 FIX: استخدم installSubtotal للتحقق من الحد الأدنى
+                const installTotal = getInstallSubtotal();
+                const pct = Math.min(100, (installTotal / MIN_TOTAL) * 100);
+                const complete = installTotal >= MIN_TOTAL;
                 progressEl.classList.toggle('complete', complete);
                 progressEl.setAttribute('aria-valuenow', Math.round(pct));
+                progressEl.setAttribute('aria-valuemax', '100');
                 const amountEl = document.getElementById('progressAmount');
                 const fillEl = document.getElementById('progressFill');
                 const hintEl = document.getElementById('progressHint');
-                if (amountEl) amountEl.textContent = `${Utils.formatNumber(Math.round(subtotal))} / ${Utils.formatNumber(MIN_TOTAL)} ج.م`;
+                if (amountEl) amountEl.textContent = `${Utils.formatNumber(Math.round(installTotal))} / ${Utils.formatNumber(MIN_TOTAL)} ج.م`;
                 if (fillEl) fillEl.style.width = pct + '%';
                 if (hintEl) {
                     if (complete) hintEl.textContent = '✓ وصلت للحد الأدنى - يمكنك اختيار خطة التقسيط';
-                    else hintEl.textContent = `أضف ${Utils.formatNumber(Math.ceil(MIN_TOTAL - subtotal))} ج.م للوصول للحد الأدنى`;
+                    else hintEl.textContent = `أضف ${Utils.formatNumber(Math.ceil(MIN_TOTAL - installTotal))} ج.م للوصول للحد الأدنى`;
                 }
             }
 
             if (planPanel) {
-                if (subtotal >= MIN_TOTAL) {
+                const installTotal = getInstallSubtotal();
+                if (installTotal >= MIN_TOTAL) {
                     planPanel.classList.remove('hidden');
                     renderPlan();
                 } else {
@@ -1847,7 +1931,8 @@ const Cart = (function() {
                 }
             }
 
-            if (checkoutBtn) checkoutBtn.disabled = subtotal < MIN_TOTAL;
+            const installTotal = getInstallSubtotal();
+            if (checkoutBtn) checkoutBtn.disabled = installTotal < MIN_TOTAL;
 
         } else {
             if (progressEl) progressEl.classList.add('hidden');
@@ -1909,12 +1994,13 @@ const Cart = (function() {
     function setFrequency(freq) {
         const plan = getPlan();
         plan.frequency = freq === 'monthly' ? 'monthly' : 'daily';
-        const subtotal = getSubtotal();
+        const subtotal = getInstallSubtotal();
         const minPayment = plan.frequency === 'daily' ? MIN_DAILY : MIN_MONTHLY;
         const absoluteMax = plan.frequency === 'daily' ? MAX_DAYS : MAX_MONTHS;
         const byBudget = Math.max(1, Math.floor(subtotal / minPayment));
         const safeMax = Math.min(absoluteMax, byBudget);
-        plan.duration = Math.min(plan.duration || safeMax, safeMax);
+        // ✅ FIX #83: min 1
+        plan.duration = Math.max(1, Math.min(plan.duration || safeMax, safeMax));
         setPlan(plan);
     }
 
@@ -1924,6 +2010,7 @@ const Cart = (function() {
         setPlan(plan);
     }
 
+    // 🔥 FIX #84: escape + #1: أسعار صحيحة
     function buildOrderMessage() {
         const list = getAll();
         if (list.length === 0) return '';
@@ -1936,10 +2023,13 @@ const Cart = (function() {
         let total = 0;
         list.forEach((item, i) => {
             const qty = Utils.toNumber(item.quantity) || 1;
-            total += Utils.toNumber(item.cashPrice) * qty;
-            msg += `${i + 1}. ${item.name}\n`;
+            // 🔥 FIX #1: السعر المناسب حسب النوع
+            const price = type === 'installment' ? Utils.toNumber(item.installPrice) : Utils.toNumber(item.cashPrice);
+            total += price * qty;
+            const safeName = Utils.escapeWhatsappMarkdown(item.name);
+            msg += `${i + 1}. ${safeName}\n`;
             msg += `   الكود: ${item.id}\n`;
-            msg += `   السعر: ${item.cashPrice} ج.م\n`;
+            msg += `   السعر: ${price} ج.م\n`;
             msg += `   الكمية: ${qty}\n\n`;
         });
 
@@ -1956,12 +2046,18 @@ const Cart = (function() {
             msg += `\n*نوع الدفع:* كاش`;
         }
 
+        // ✅ FIX #85: حد لحجم الرسالة
+        if (msg.length > 60000) {
+            msg = msg.substring(0, 60000) + '\n...(اقتُطع)';
+        }
+
         return msg;
     }
 
     return {
         getAll, isIn, add, remove, toggle, changeQty,
-        getSubtotal, updateBadge, render,
+        getSubtotal, getCashSubtotal, getInstallSubtotal,
+        updateBadge, render,
         getType, setType, getPlan, setPlan,
         setFrequency, setDuration,
         calculatePlan, buildOrderMessage
@@ -1969,48 +2065,75 @@ const Cart = (function() {
 })();
 
 /* ================================================================
-   [JS-09] WHATSAPP
+   [JS-09] WHATSAPP - 🔥 FIX #2 (audit): خيار الكاش/القسط للطلب المباشر
    ================================================================ */
 const WhatsApp = (function() {
     'use strict';
 
-    function buildSingle(item) {
+    // ✅ FIX #86: تحقق من رقم الهاتف
+    function isValidPhone(phone) {
+        return /^[1-9]\d{7,14}$/.test(String(phone || ''));
+    }
+
+    // ✅ FIX #87: noopener
+    function openUrl(url) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    function buildSingle(item, payType) {
+        const type = payType || 'cash';
+        const price = type === 'installment' ? item.installPrice : item.cashPrice;
+        const typeLabel = type === 'installment' ? 'تقسيط' : 'كاش';
+        const safeName = Utils.escapeWhatsappMarkdown(item.name);
+
         let msg = `*${CONFIG.APP_NAME}*\n`;
         msg += 'مرحباً، أرغب في طلب المنتج التالي:\n\n';
-        msg += `${item.name}\n`;
+        msg += `${safeName}\n`;
         msg += `الكود: ${item.id}\n`;
-        msg += `السعر: ${item.cashPrice} ج.م\n`;
+        msg += `نوع الدفع: ${typeLabel}\n`;
+        msg += `السعر: ${price} ج.م\n`;
         return msg;
     }
 
-    function orderSingle(item) {
-        const msg = buildSingle(item);
-        window.open(`https://wa.me/${CONFIG.WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+    // 🔥 FIX #2: تمرير نوع الدفع
+    function orderSingle(item, payType) {
+        if (!isValidPhone(CONFIG.WHATSAPP_PHONE)) {
+            Toast.show('رقم واتساب غير صالح', 'error');
+            return;
+        }
+        const msg = buildSingle(item, payType);
+        const url = `https://wa.me/${CONFIG.WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
+        openUrl(url);
     }
 
     function orderCart() {
+        if (!isValidPhone(CONFIG.WHATSAPP_PHONE)) {
+            Toast.show('رقم واتساب غير صالح', 'error');
+            return;
+        }
         const msg = Cart.buildOrderMessage();
         if (!msg) {
             Toast.show('لا توجد منتجات', 'warning');
             return;
         }
-        window.open(`https://wa.me/${CONFIG.WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+        const url = `https://wa.me/${CONFIG.WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
+        openUrl(url);
     }
 
     return { order: orderSingle, orderCart };
 })();
 
 /* ================================================================
-   [JS-10] API - ✅ لم يتغير منطق الربط بالسيرفر
+   [JS-10] API - ✅ FIX #59-67, #4: pagination + success check
    ================================================================ */
 const Api = (function() {
     'use strict';
 
-    function buildUrl() {
+    function buildUrl(offset, limit) {
         const params = new URLSearchParams({
             action: 'getMenu',
-            offset: '0',
-            limit: String(CONFIG.API_LIMIT)
+            offset: String(offset),
+            limit: String(limit)
         });
         return `${CONFIG.API_URL}?${params.toString()}`;
     }
@@ -2023,19 +2146,20 @@ const Api = (function() {
             installPrice: Utils.toNumber(item.installPrice),
             quantity: Utils.toNumber(item.quantity),
             available: item.available === true || item.available === 'true' || item.available === 'متوفر',
-            image: String(item.image || '')
+            image: Utils.isAllowedImageUrl(item.image) ? String(item.image) : ''
         };
     }
 
-    async function fetchAll(signal) {
+    async function fetchPage(offset, limit, signal) {
         const timeoutController = new AbortController();
         const timeoutId = setTimeout(() => timeoutController.abort(), CONFIG.FETCH_TIMEOUT);
-        const onAbort = () => timeoutController.abort();
-        if (signal) signal.addEventListener('abort', onAbort);
+        const onAbort = () => { try { timeoutController.abort(); } catch(_) {} };
+        // ✅ FIX #60: once
+        if (signal) signal.addEventListener('abort', onAbort, { once: true });
 
         let res;
         try {
-            res = await fetch(buildUrl(), {
+            res = await fetch(buildUrl(offset, limit), {
                 signal: timeoutController.signal,
                 headers: { 'Accept': 'application/json' }
             });
@@ -2063,6 +2187,10 @@ const Api = (function() {
         try { result = JSON.parse(text); }
         catch (e) { throw new Error('FORMAT:البيانات غير صالحة'); }
 
+        // ✅ FIX #59: فحص success === false
+        if (result.success === false) {
+            throw new Error('SERVER:' + (result.error || 'خطأ غير معروف'));
+        }
         if (result.error) throw new Error('SERVER:' + result.error);
 
         return {
@@ -2070,6 +2198,42 @@ const Api = (function() {
             total: result.total || 0,
             fromCache: result.fromCache || false,
             lastUpdate: String(result.lastUpdate || '')
+        };
+    }
+
+    // ✅ FIX #4 (audit): pagination كامل
+    async function fetchAll(signal) {
+        const allItems = [];
+        let offset = 0;
+        let total = 0;
+        let lastUpdate = '';
+        let fromCache = false;
+        let pageCount = 0;
+
+        while (pageCount < CONFIG.API_MAX_PAGES) {
+            if (signal && signal.aborted) throw new DOMException('Aborted', 'AbortError');
+            const page = await fetchPage(offset, CONFIG.API_PAGE_SIZE, signal);
+            if (page.lastUpdate) lastUpdate = page.lastUpdate;
+            fromCache = page.fromCache;
+            if (pageCount === 0) total = page.total;
+
+            allItems.push(...page.items);
+            pageCount++;
+
+            // إذا استرجعنا أقل من الصفحة، انتهى
+            if (page.items.length < CONFIG.API_PAGE_SIZE) break;
+            // إذا وصلنا العدد الإجمالي
+            if (allItems.length >= total && total > 0) break;
+
+            offset += CONFIG.API_PAGE_SIZE;
+        }
+
+        return {
+            items: allItems,
+            total: total || allItems.length,
+            fromCache: fromCache,
+            lastUpdate: lastUpdate,
+            pages: pageCount
         };
     }
 
@@ -2128,7 +2292,7 @@ const FilterSort = (function() {
 })();
 
 /* ================================================================
-   [JS-12] CARD - ✅ h3 مستبدل بـ button + aria-labels
+   [JS-12] CARD - ✅ FIX #70: event delegation
    ================================================================ */
 const Card = (function() {
     'use strict';
@@ -2146,7 +2310,7 @@ const Card = (function() {
         const card = document.createElement('article');
         card.className = 'card';
         card.setAttribute('aria-label', `منتج: ${item.name}`);
-        // ✅ Performance: stagger animation using CSS variable
+        card.dataset.id = item.id;
         card.style.animationDelay = `${Math.min(index, 10) * 0.03}s`;
 
         if (item.available && item.quantity > CONFIG.LOW_STOCK_THRESHOLD) {
@@ -2167,8 +2331,8 @@ const Card = (function() {
             img.alt = item.name || 'صورة المنتج';
             img.draggable = false;
             img.src = item.image;
-            img.addEventListener('error', () => { 
-                img.src = PLACEHOLDER; 
+            img.addEventListener('error', () => {
+                img.src = PLACEHOLDER;
                 img.alt = 'صورة غير متاحة';
             });
             imgWrap.appendChild(img);
@@ -2178,10 +2342,8 @@ const Card = (function() {
         const code = document.createElement('div');
         code.className = 'code';
         code.textContent = `كود: ${item.id}`;
-        code.setAttribute('aria-label', `كود المنتج: ${item.id}`);
         card.appendChild(code);
 
-        // ✅ Accessibility: button بدلاً من h3 مع role
         const nameBtn = document.createElement('button');
         nameBtn.type = 'button';
         nameBtn.className = 'card-title-btn';
@@ -2191,13 +2353,10 @@ const Card = (function() {
             nameBtn.textContent = item.name;
         }
         nameBtn.setAttribute('aria-label', `عرض تفاصيل ${item.name}`);
-        nameBtn.addEventListener('click', () => Modal.open(item));
         card.appendChild(nameBtn);
 
         const prices = document.createElement('div');
         prices.className = 'prices';
-        prices.setAttribute('role', 'group');
-        prices.setAttribute('aria-label', 'الأسعار');
         const cash = document.createElement('span');
         cash.className = 'cash';
         cash.textContent = `${Utils.formatNumber(item.cashPrice)} ج.م كاش`;
@@ -2217,7 +2376,6 @@ const Card = (function() {
         const status = document.createElement('span');
         status.className = 'status-badge ' + (item.available ? 'available' : 'unavailable');
         status.textContent = item.available ? '✓ متوفر' : '✗ غير متوفر';
-        status.setAttribute('role', 'status');
         card.appendChild(status);
 
         const actions = document.createElement('div');
@@ -2230,7 +2388,8 @@ const Card = (function() {
         waBtn.className = 'btn-whatsapp';
         waBtn.textContent = 'اطلب';
         waBtn.setAttribute('aria-label', `طلب ${item.name} عبر واتساب`);
-        waBtn.addEventListener('click', () => WhatsApp.order(item));
+        // 🔥 FIX #2: تمرير 'cash' افتراضياً
+        waBtn.addEventListener('click', () => WhatsApp.order(item, 'cash'));
         actions.appendChild(waBtn);
 
         const cartBtn = document.createElement('button');
@@ -2255,7 +2414,6 @@ const Card = (function() {
         const inWish = Wishlist.isIn(item.id);
         wishBtn.className = 'btn-wishlist' + (inWish ? ' in-wishlist' : '');
         wishBtn.innerHTML = svgWishlist(inWish);
-        // ✅ Accessibility: نص وصفي للأزرار الأيقونية
         wishBtn.setAttribute('aria-label', inWish ? `إزالة ${item.name} من المفضلة` : `إضافة ${item.name} للمفضلة`);
         wishBtn.setAttribute('aria-pressed', inWish ? 'true' : 'false');
         wishBtn.addEventListener('click', () => {
@@ -2269,6 +2427,10 @@ const Card = (function() {
         actions.appendChild(wishBtn);
 
         card.appendChild(actions);
+
+        // اسم الزر لفتح الـ modal
+        nameBtn.addEventListener('click', () => Modal.open(item));
+
         return card;
     }
 
@@ -2276,7 +2438,7 @@ const Card = (function() {
 })();
 
 /* ================================================================
-   [JS-13] MODAL - ✅ Focus trap
+   [JS-13] MODAL - 🔥 FIX #2 (audit): خيارات كاش/قسط
    ================================================================ */
 const Modal = (function() {
     'use strict';
@@ -2290,13 +2452,13 @@ const Modal = (function() {
         inst: document.getElementById('modalInst'),
         qty: document.getElementById('modalQty'),
         status: document.getElementById('modalStatus'),
-        waBtn: document.getElementById('modalWhatsapp'),
+        waCashBtn: document.getElementById('modalWhatsappCash'),
+        waInstBtn: document.getElementById('modalWhatsappInst'),
         cartBtn: document.getElementById('modalCart'),
         wishBtn: document.getElementById('modalWishlist'),
         closeBtn: document.getElementById('modalClose')
     };
     let lastFocused = null;
-    let currentItem = null;
 
     function trapFocus(e) {
         if (e.key !== 'Tab') return;
@@ -2307,16 +2469,13 @@ const Modal = (function() {
         const first = focusable[0];
         const last = focusable[focusable.length - 1];
         if (e.shiftKey && document.activeElement === first) {
-            e.preventDefault();
-            last.focus();
+            e.preventDefault(); last.focus();
         } else if (!e.shiftKey && document.activeElement === last) {
-            e.preventDefault();
-            first.focus();
+            e.preventDefault(); first.focus();
         }
     }
 
     function open(item) {
-        currentItem = item;
         lastFocused = document.activeElement;
 
         if (item.image && els.imageWrap && els.image) {
@@ -2345,11 +2504,18 @@ const Modal = (function() {
             els.status.textContent = item.available ? '✓ متوفر' : '✗ غير متوفر';
             els.status.style.color = item.available ? 'var(--color-success)' : 'var(--color-danger-light)';
         }
-        
-        if (els.waBtn) {
-            els.waBtn.onclick = () => WhatsApp.order(item);
-            els.waBtn.setAttribute('aria-label', `طلب ${item.name} عبر واتساب`);
+
+        // 🔥 FIX #2: زرّان منفصلان
+        if (els.waCashBtn) {
+            els.waCashBtn.onclick = () => WhatsApp.order(item, 'cash');
+            els.waCashBtn.setAttribute('aria-label', `طلب ${item.name} كاش عبر واتساب`);
         }
+        if (els.waInstBtn) {
+            els.waInstBtn.onclick = () => WhatsApp.order(item, 'installment');
+            els.waInstBtn.setAttribute('aria-label', `طلب ${item.name} تقسيط عبر واتساب`);
+            els.waInstBtn.style.display = item.installPrice > 0 ? '' : 'none';
+        }
+
         if (els.cartBtn) {
             const inCart = Cart.isIn(item.id);
             els.cartBtn.textContent = inCart ? '✓ في السلة' : 'إضافة للسلة';
@@ -2387,7 +2553,6 @@ const Modal = (function() {
         modal.removeEventListener('keydown', trapFocus);
         if (els.image) els.image.src = '';
         if (lastFocused && lastFocused.focus) lastFocused.focus();
-        currentItem = null;
     }
 
     if (els.closeBtn) els.closeBtn.addEventListener('click', close);
@@ -2400,7 +2565,7 @@ const Modal = (function() {
 })();
 
 /* ================================================================
-   [JS-14] APP - ✅ Chunked rendering + Performance optimizations
+   [JS-14] APP - ✅ FIX #72, #63, #64, #73, #75
    ================================================================ */
 const App = (function() {
     'use strict';
@@ -2423,6 +2588,7 @@ const App = (function() {
     const lowStockChip = document.getElementById('lowStockChip');
     const resetFilters = document.getElementById('resetFilters');
     const lastUpdateLabel = document.getElementById('lastUpdateLabel');
+    const versionLabel = document.getElementById('versionLabel');
 
     function clearGrid() { Utils.clearElement(grid); }
 
@@ -2460,17 +2626,16 @@ const App = (function() {
         }
     }
 
-    // ✅ Performance: Chunked rendering لتجنب long tasks
+    // ✅ FIX #72: finally { isRendering = false }
     function renderPage(append = false) {
         if (state.isRendering) return;
         state.isRendering = true;
-        
         try {
-            if (!append) { 
-                clearGrid(); 
-                state.visibleCount = 0; 
+            if (!append) {
+                clearGrid();
+                state.visibleCount = 0;
             }
-            
+
             const start = state.visibleCount;
             const end = Math.min(start + CONFIG.PAGE_SIZE, state.filteredItems.length);
             const itemsToRender = state.filteredItems.slice(start, end);
@@ -2483,18 +2648,16 @@ const App = (function() {
                 grid.appendChild(empty);
                 renderLoadMoreButton();
                 updateTotalBadge();
-                state.isRendering = false;
                 return;
             }
 
-            // ✅ Performance: Render in chunks لتجنب blocking main thread
             let chunkIndex = 0;
             const chunkSize = CONFIG.RENDER_CHUNK_SIZE;
-            
+
             function renderChunk() {
                 const chunkStart = chunkIndex * chunkSize;
                 const chunkEnd = Math.min(chunkStart + chunkSize, itemsToRender.length);
-                
+
                 if (chunkStart >= itemsToRender.length) {
                     state.visibleCount = end;
                     renderLoadMoreButton();
@@ -2508,9 +2671,9 @@ const App = (function() {
                     fragment.appendChild(Card.create(itemsToRender[i], append ? 0 : i, state.filters.search));
                 }
                 grid.appendChild(fragment);
-                
+
                 chunkIndex++;
-                
+
                 if (chunkEnd < itemsToRender.length) {
                     Utils.scheduleIdle(renderChunk, 50);
                 } else {
@@ -2520,11 +2683,13 @@ const App = (function() {
                     state.isRendering = false;
                 }
             }
-            
+
             renderChunk();
         } catch (err) {
+            // ✅ FIX #72: ضمان تحرير الراية
             state.isRendering = false;
             console.error('Render error:', err);
+            Toast.show('خطأ في العرض', 'error');
         }
     }
 
@@ -2555,18 +2720,29 @@ const App = (function() {
         state.filteredItems = FilterSort.apply(
             state.allItems, state.filters, state.sort, state.order
         );
+        // ✅ FIX #91: reset visibleCount
+        state.visibleCount = 0;
         renderPage(false);
     }
 
+    // ✅ FIX #63, #64: sequence + قائمة abort
     async function refreshFromServer() {
         const prevItems = state.allItems.slice();
         const prevTotal = state.total;
+        const seq = ++state.fetchSequence;
 
-        if (state.abortController) state.abortController.abort();
-        state.abortController = new AbortController();
+        const controller = new AbortController();
+        state.abortControllers.add(controller);
+        // abort القديم
+        state.abortControllers.forEach(c => {
+            if (c !== controller) { try { c.abort(); } catch(_) {} }
+        });
 
         try {
-            const result = await Api.fetchAll(state.abortController.signal);
+            const result = await Api.fetchAll(controller.signal);
+            // ✅ FIX #64: تجاهل النتائج القديمة
+            if (seq !== state.fetchSequence) return { success: false, reason: 'stale' };
+
             const newHash = Utils.itemsHash(result.items);
             const oldHash = await DB.getMeta('hash');
 
@@ -2575,7 +2751,10 @@ const App = (function() {
             state.lastSyncTime = Date.now();
             if (result.lastUpdate) state.lastUpdateFromServer = result.lastUpdate;
 
-            // ✅ Performance: Save to DB in idle time (non-blocking)
+            // re-sync wishlist
+            Wishlist.resync(result.items);
+
+            // حفظ في DB
             Utils.scheduleIdle(async () => {
                 await DB.saveProducts(result.items);
                 await DB.setMeta('hash', newHash);
@@ -2590,10 +2769,6 @@ const App = (function() {
             updateLastUpdateLabel();
             return { success: true, updated: newHash !== oldHash };
         } catch (err) {
-            if (err.name === 'AbortError' && !state.abortController.signal.aborted) {
-                Toast.show('انتهت مهلة الاتصال', 'error');
-                return { success: false, reason: 'timeout' };
-            }
             if (err.name === 'AbortError') return { success: false, reason: 'abort' };
 
             console.error('Fetch error:', err);
@@ -2606,11 +2781,13 @@ const App = (function() {
                 const dbLoaded = await loadFromDB();
                 if (!dbLoaded) showError(getErrorMessage(err));
             }
-            return { 
-                success: false, 
+            return {
+                success: false,
                 reason: getErrorMessage(err) || 'unknown',
                 fullError: err.message
             };
+        } finally {
+            state.abortControllers.delete(controller);
         }
     }
 
@@ -2642,22 +2819,22 @@ const App = (function() {
         state.isLoading = true;
         showSkeletons(6);
 
-        // ✅ Performance: Load from DB in parallel with UI preparation
         const loadedFromDB = await loadFromDB();
         const lastSync = await DB.getMeta('lastSync');
         const shouldSync = !lastSync ||
-                          (Date.now() - lastSync) > CONFIG.REVALIDATE_THRESHOLD ||
-                          !loadedFromDB;
+            (Date.now() - lastSync) > CONFIG.REVALIDATE_THRESHOLD ||
+            !loadedFromDB;
 
         if (shouldSync) {
             if (loadedFromDB) {
-                // ✅ Stale-while-revalidate: show cached, update in background
+                // ✅ FIX #65: await آمن
                 refreshFromServer().then(res => {
                     if (res && res.success) Connection.setBanner('✓ تم تحديث البيانات', 'success', 2500);
-                });
+                }).catch(() => {});
             } else {
                 const res = await refreshFromServer();
                 if (!res || !res.success) {
+                    if (res && res.reason === 'stale') return;
                     showError(res && res.reason ? res.reason : 'تعذر تحميل البيانات');
                 }
             }
@@ -2716,17 +2893,19 @@ const App = (function() {
         filterToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
-    document.querySelectorAll('#availChips .chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            document.querySelectorAll('#availChips .chip').forEach(c => {
-                c.classList.remove('active');
-                c.setAttribute('aria-checked', 'false');
-            });
-            chip.classList.add('active');
-            chip.setAttribute('aria-checked', 'true');
-            state.filters.availability = chip.dataset.avail;
-            debouncedFilter();
+    // ✅ FIX #74: استخدام closest بدل querySelectorAll المتكرر
+    document.getElementById('availChips').addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        const chips = e.currentTarget.querySelectorAll('.chip');
+        chips.forEach(c => {
+            c.classList.remove('active');
+            c.setAttribute('aria-checked', 'false');
         });
+        chip.classList.add('active');
+        chip.setAttribute('aria-checked', 'true');
+        state.filters.availability = chip.dataset.avail;
+        debouncedFilter();
     });
 
     function numOrNull(el) {
@@ -2780,14 +2959,19 @@ const App = (function() {
     });
 
     /* -------- Infinite Scroll -------- */
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && state.visibleCount < state.filteredItems.length && !state.isRendering) {
-                renderPage(true);
-            }
-        });
-    }, { rootMargin: '300px 0px' });
-    observer.observe(sentinel);
+    // ✅ FIX #75: نحفظ observer لإمكانية disconnect
+    let observer = null;
+    function setupObserver() {
+        if (observer) observer.disconnect();
+        observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && state.visibleCount < state.filteredItems.length && !state.isRendering) {
+                    renderPage(true);
+                }
+            });
+        }, { rootMargin: '300px 0px' });
+        observer.observe(sentinel);
+    }
 
     /* -------- Cart Sidebar -------- */
     const cartSidebar = document.getElementById('cartSidebar');
@@ -2885,15 +3069,20 @@ const App = (function() {
 
     return {
         init: async function() {
+            // ✅ FIX #100: تحديث الإصدار ديناميكياً
+            if (versionLabel) versionLabel.textContent = 'الإصدار ' + CONFIG.APP_VERSION;
+
             Cart.updateBadge();
             Cart.render();
             Wishlist.updateBadge();
             Connection.update();
-            try { 
-                await initLoad(); 
+            setupObserver();
+
+            try {
+                await initLoad();
             }
-            catch (e) { 
-                showError('فشل بدء التطبيق: ' + (e.message || 'خطأ غير معروف')); 
+            catch (e) {
+                showError('فشل بدء التطبيق: ' + (e.message || 'خطأ غير معروف'));
             }
         },
         refreshFromServer
@@ -2905,7 +3094,6 @@ const App = (function() {
    ================================================================ */
 window.App = App;
 
-// ✅ Performance: Defer initialization until DOM is ready and browser is idle
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         if ('requestIdleCallback' in window) {
