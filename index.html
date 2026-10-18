@@ -278,6 +278,40 @@ body {
 .filter-group { display: flex; flex-direction: column; gap: var(--space-sm); }
 .filter-group label { font-size: var(--font-base); font-weight: 700; color: var(--text-primary); }
 .filter-group .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.category-panel {
+    background: var(--bg-card); padding: var(--space-lg) var(--space-xl);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+    margin-bottom: var(--space-lg);
+}
+.category-heading {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-md); margin-bottom: var(--space-md);
+}
+.category-heading h2 { font-size: var(--font-lg); font-weight: 800; }
+.category-count { color: var(--text-muted); font-size: var(--font-sm); white-space: nowrap; }
+.category-chips { display: flex; gap: var(--space-sm); overflow-x: auto; padding: 2px 2px 8px; }
+.category-chip {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border: 1px solid var(--border-color);
+    border-radius: var(--radius-full); background: var(--bg-input);
+    color: var(--text-secondary); font-family: inherit;
+    font-size: var(--font-base); font-weight: 600; cursor: pointer;
+    transition: all var(--transition-base);
+}
+.category-chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.category-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+.category-chip-count {
+    min-width: 22px; padding: 1px 6px; border-radius: var(--radius-full);
+    background: rgb(127 127 127 / 12%); font-size: var(--font-sm); text-align: center;
+}
+.category-chip.active .category-chip-count { background: rgb(255 255 255 / 20%); }
+.category-hint { margin-top: var(--space-xs); color: var(--text-muted); font-size: var(--font-sm); }
+.category-hint:empty { display: none; }
+.product-metadata {
+    color: var(--text-secondary); font-size: var(--font-sm);
+    margin: -2px 0 var(--space-sm); overflow-wrap: anywhere;
+}
+.product-category { color: var(--color-primary); font-weight: 700; }
 .chip {
     padding: 6px 14px; border-radius: var(--radius-full);
     border: 2px solid var(--border-color);
@@ -1003,6 +1037,15 @@ body {
         </div>
     </section>
 
+    <nav class="category-panel" id="categoryPanel" aria-label="تصفية المنتجات حسب التصنيف">
+        <div class="category-heading">
+            <h2>تسوق حسب التصنيف</h2>
+            <span class="category-count" id="categoryCount" aria-live="polite"></span>
+        </div>
+        <div class="category-chips" id="categoryChips" role="group" aria-label="التصنيفات"></div>
+        <p class="category-hint" id="categoryHint" role="status"></p>
+    </nav>
+
     <main id="productGrid" class="grid" role="main" aria-label="شبكة المنتجات"></main>
     <div class="load-more-area" id="loadMoreArea" role="status"></div>
     <div id="sentinel" class="sentinel" aria-hidden="true"></div>
@@ -1077,6 +1120,9 @@ body {
         <div class="detail-row"><strong>سعر القسط:</strong> <span id="modalInst"></span> ج.م</div>
         <div class="detail-row"><strong>الكمية:</strong> <span id="modalQty"></span></div>
         <div class="detail-row"><strong>الحالة:</strong> <span id="modalStatus"></span></div>
+        <div class="detail-row hidden" id="modalCategoryRow"><strong>التصنيف:</strong> <span id="modalCategory"></span></div>
+        <div class="detail-row hidden" id="modalBrandRow"><strong>العلامة التجارية:</strong> <span id="modalBrand"></span></div>
+        <div class="detail-row hidden" id="modalDescriptionRow"><strong>الوصف:</strong> <span id="modalDescription"></span></div>
         <div class="modal-actions">
             <button class="btn-primary" id="modalWhatsappCash" type="button">اطلب كاش</button>
             <button class="btn-primary" id="modalWhatsappInst" type="button" style="background: var(--color-warning-light);">اطلب تقسيط</button>
@@ -1211,7 +1257,7 @@ const Utils = (function() {
         const len = items.length;
         for (let i = 0; i < len; i++) {
             const it = items[i];
-            const part = it.id + '|' + it.cashPrice + '|' + it.installPrice + '|' + it.quantity + '|' + (it.available ? 1 : 0) + '|' + (it.image || '');
+            const part = it.id + '|' + it.cashPrice + '|' + it.installPrice + '|' + it.quantity + '|' + (it.available ? 1 : 0) + '|' + (it.image || '') + '|' + (it.category || '') + '|' + (it.description || '') + '|' + (it.brand || '');
             const plen = part.length;
             for (let j = 0; j < plen; j++) {
                 acc = ((acc << 5) - acc) + part.charCodeAt(j);
@@ -1363,7 +1409,10 @@ const DB = (function() {
                         installPrice: Utils.toNumber(item.installPrice),
                         quantity: Utils.toNumber(item.quantity),
                         available: !!item.available,
-                        image: String(item.image || '')
+                        image: String(item.image || ''),
+                        ...(Object.prototype.hasOwnProperty.call(item, 'category') ? { category: String(item.category || '') } : {}),
+                        ...(Object.prototype.hasOwnProperty.call(item, 'description') ? { description: String(item.description || '') } : {}),
+                        ...(Object.prototype.hasOwnProperty.call(item, 'brand') ? { brand: String(item.brand || '') } : {})
                     });
                 }
                 tx.oncomplete = () => resolve(len);
@@ -1430,7 +1479,8 @@ const State = (function() {
         filters: {
             search: '', availability: 'all',
             priceMin: null, priceMax: null,
-            qtyMin: null, qtyMax: null, lowStockOnly: false
+            qtyMin: null, qtyMax: null, lowStockOnly: false,
+            category: 'all'
         },
         sort: 'priority',
         order: 'asc',
@@ -2146,7 +2196,10 @@ const Api = (function() {
             installPrice: Utils.toNumber(item.installPrice),
             quantity: Utils.toNumber(item.quantity),
             available: item.available === true || item.available === 'true' || item.available === 'متوفر',
-            image: Utils.isAllowedImageUrl(item.image) ? String(item.image) : ''
+            image: Utils.isAllowedImageUrl(item.image) ? String(item.image) : '',
+            ...(Object.prototype.hasOwnProperty.call(item, 'category') ? { category: String(item.category || '').trim() } : {}),
+            ...(Object.prototype.hasOwnProperty.call(item, 'description') ? { description: String(item.description || '').trim() } : {}),
+            ...(Object.prototype.hasOwnProperty.call(item, 'brand') ? { brand: String(item.brand || '').trim() } : {})
         };
     }
 
@@ -2253,8 +2306,17 @@ const FilterSort = (function() {
             const q = filters.search.toLowerCase().trim();
             result = result.filter(i =>
                 i.id.toLowerCase().includes(q) ||
-                i.name.toLowerCase().includes(q)
+                i.name.toLowerCase().includes(q) ||
+                String(i.category || '').toLowerCase().includes(q) ||
+                String(i.description || '').toLowerCase().includes(q) ||
+                String(i.brand || '').toLowerCase().includes(q)
             );
+        }
+        if (filters.category === 'uncategorized') {
+            result = result.filter(i => !String(i.category || '').trim());
+        } else if (filters.category.startsWith('category:')) {
+            const category = filters.category.slice('category:'.length);
+            result = result.filter(i => String(i.category || '').trim() === category);
         }
         if (filters.availability === 'available') result = result.filter(i => i.available);
         else if (filters.availability === 'unavailable') result = result.filter(i => !i.available);
@@ -2355,6 +2417,22 @@ const Card = (function() {
         nameBtn.setAttribute('aria-label', `عرض تفاصيل ${item.name}`);
         card.appendChild(nameBtn);
 
+        const metadata = [];
+        if (item.category) metadata.push({ className: 'product-category', text: item.category });
+        if (item.brand) metadata.push({ className: '', text: item.brand });
+        if (metadata.length) {
+            const meta = document.createElement('div');
+            meta.className = 'product-metadata';
+            metadata.forEach((entry, index) => {
+                if (index) meta.appendChild(document.createTextNode(' · '));
+                const value = document.createElement('span');
+                value.className = entry.className;
+                value.textContent = entry.text;
+                meta.appendChild(value);
+            });
+            card.appendChild(meta);
+        }
+
         const prices = document.createElement('div');
         prices.className = 'prices';
         const cash = document.createElement('span');
@@ -2452,6 +2530,12 @@ const Modal = (function() {
         inst: document.getElementById('modalInst'),
         qty: document.getElementById('modalQty'),
         status: document.getElementById('modalStatus'),
+        categoryRow: document.getElementById('modalCategoryRow'),
+        category: document.getElementById('modalCategory'),
+        brandRow: document.getElementById('modalBrandRow'),
+        brand: document.getElementById('modalBrand'),
+        descriptionRow: document.getElementById('modalDescriptionRow'),
+        description: document.getElementById('modalDescription'),
         waCashBtn: document.getElementById('modalWhatsappCash'),
         waInstBtn: document.getElementById('modalWhatsappInst'),
         cartBtn: document.getElementById('modalCart'),
@@ -2500,6 +2584,15 @@ const Modal = (function() {
         if (els.cash) els.cash.textContent = Utils.formatNumber(item.cashPrice);
         if (els.inst) els.inst.textContent = Utils.formatNumber(item.installPrice);
         if (els.qty) els.qty.textContent = Utils.formatNumber(item.quantity);
+        [
+            [els.categoryRow, els.category, item.category],
+            [els.brandRow, els.brand, item.brand],
+            [els.descriptionRow, els.description, item.description]
+        ].forEach(([row, value, text]) => {
+            if (!row || !value) return;
+            value.textContent = text || '';
+            row.classList.toggle('hidden', !text);
+        });
         if (els.status) {
             els.status.textContent = item.available ? '✓ متوفر' : '✗ غير متوفر';
             els.status.style.color = item.available ? 'var(--color-success)' : 'var(--color-danger-light)';
@@ -2587,6 +2680,9 @@ const App = (function() {
     const qtyMax = document.getElementById('qtyMax');
     const lowStockChip = document.getElementById('lowStockChip');
     const resetFilters = document.getElementById('resetFilters');
+    const categoryChips = document.getElementById('categoryChips');
+    const categoryCount = document.getElementById('categoryCount');
+    const categoryHint = document.getElementById('categoryHint');
     const lastUpdateLabel = document.getElementById('lastUpdateLabel');
     const versionLabel = document.getElementById('versionLabel');
 
@@ -2613,6 +2709,55 @@ const App = (function() {
         let text = `${Utils.formatNumber(visible)} / ${Utils.formatNumber(filtered)}`;
         if (filtered !== total) text += ` (من ${Utils.formatNumber(total)})`;
         totalBadge.textContent = text;
+    }
+
+    function renderCategoryFilter() {
+        const counts = new Map();
+        const hasCategoryField = state.allItems.some(item =>
+            Object.prototype.hasOwnProperty.call(item, 'category')
+        );
+        if (hasCategoryField) {
+            state.allItems.forEach(item => {
+                const category = String(item.category || '').trim();
+                const key = category ? `category:${category}` : 'uncategorized';
+                counts.set(key, (counts.get(key) || 0) + 1);
+            });
+        }
+
+        Utils.clearElement(categoryChips);
+        categoryCount.textContent = `${Utils.formatNumber(state.allItems.length)} منتج`;
+        categoryHint.textContent = hasCategoryField
+            ? (state.allItems.length ? '' : 'لا توجد منتجات في البيانات الحالية.')
+            : 'أعمدة التصنيف والوصف والعلامة التجارية موجودة في الجدول، لكن الخادم الحالي لا يرسلها بعد. انشر إصدار Apps Script المحدّث.';
+
+        const options = [{ key: 'all', label: 'كل المنتجات', count: state.allItems.length }];
+        const categories = Array.from(counts.entries())
+            .filter(([key]) => key.startsWith('category:'))
+            .sort(([a], [b]) => a.slice(9).localeCompare(b.slice(9), 'ar'));
+        if (state.filters.category !== 'all' && !counts.has(state.filters.category)) {
+            state.filters.category = 'all';
+        }
+        categories.forEach(([key, count]) => options.push({
+            key, label: key.slice(9), count
+        }));
+        if (counts.has('uncategorized')) {
+            options.push({ key: 'uncategorized', label: 'غير مصنف', count: counts.get('uncategorized') });
+        }
+
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'category-chip';
+            button.dataset.category = option.key;
+            button.classList.toggle('active', state.filters.category === option.key);
+            button.setAttribute('aria-pressed', state.filters.category === option.key ? 'true' : 'false');
+            button.appendChild(document.createTextNode(option.label));
+            const count = document.createElement('span');
+            count.className = 'category-chip-count';
+            count.textContent = Utils.formatNumber(option.count);
+            button.appendChild(count);
+            categoryChips.appendChild(button);
+        });
     }
 
     function updateLastUpdateLabel() {
@@ -2717,6 +2862,7 @@ const App = (function() {
     }
 
     function applyFiltersAndSort() {
+        renderCategoryFilter();
         state.filteredItems = FilterSort.apply(
             state.allItems, state.filters, state.sort, state.order
         );
@@ -2887,6 +3033,13 @@ const App = (function() {
         applyFiltersAndSort();
     });
 
+    categoryChips.addEventListener('click', (e) => {
+        const chip = e.target.closest('.category-chip');
+        if (!chip) return;
+        state.filters.category = chip.dataset.category;
+        applyFiltersAndSort();
+    });
+
     filterToggle.addEventListener('click', () => {
         const isOpen = filtersPanel.classList.toggle('open');
         filterToggle.classList.toggle('active', isOpen);
@@ -2931,7 +3084,8 @@ const App = (function() {
         state.filters = {
             search: '', availability: 'all',
             priceMin: null, priceMax: null,
-            qtyMin: null, qtyMax: null, lowStockOnly: false
+            qtyMin: null, qtyMax: null, lowStockOnly: false,
+            category: 'all'
         };
         searchInput.value = '';
         clearSearch.classList.remove('show');

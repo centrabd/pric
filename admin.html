@@ -259,7 +259,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
-            min-width: 800px;
+            min-width: 1200px;
         }
         th {
             background: #f8fafc;
@@ -320,6 +320,10 @@
         .editable.price {
             font-weight: 600;
             color: #27ae60;
+        }
+        .editable.text {
+            min-width: 130px;
+            text-align: right;
         }
         .editable.inst {
             font-weight: 600;
@@ -779,6 +783,9 @@
             <div class="form-group">
                 <input id="modalCode" placeholder="كود الصنف *" />
                 <input id="modalName" placeholder="اسم الصنف *" />
+                <input id="modalCategory" placeholder="التصنيف" />
+                <input id="modalDescription" placeholder="الوصف" />
+                <input id="modalBrand" placeholder="العلامة التجارية" />
                 <input id="modalCash" type="number" placeholder="سعر الكاش" />
                 <input id="modalInst" type="number" placeholder="سعر القسط شهري" />
                 <input id="modalQty" type="number" placeholder="الكمية" />
@@ -1007,6 +1014,9 @@
                                 <th>#</th>
                                 <th>الكود</th>
                                 <th>اسم الصنف</th>
+                                <th>التصنيف</th>
+                                <th>الوصف</th>
+                                <th>العلامة التجارية</th>
                                 <th>سعر الكاش</th>
                                 <th>سعر القسط</th>
                                 <th>الكمية</th>
@@ -1026,6 +1036,9 @@
                             <td>${start + idx + 1}</td>
                             <td><strong>${escapeHtml(item.id)}</strong></td>
                             <td style="text-align:right;">${escapeHtml(item.name)}</td>
+                            <td><input class="editable text" type="text" id="category_${safeId}" value="${escapeHtml(item.category || '')}" aria-label="تصنيف ${escapeHtml(item.name)}" /></td>
+                            <td><input class="editable text" type="text" id="description_${safeId}" value="${escapeHtml(item.description || '')}" aria-label="وصف ${escapeHtml(item.name)}" /></td>
+                            <td><input class="editable text" type="text" id="brand_${safeId}" value="${escapeHtml(item.brand || '')}" aria-label="العلامة التجارية ${escapeHtml(item.name)}" /></td>
                             <td><input class="editable price" type="number" id="cash_${safeId}" value="${item.cashPrice || 0}" step="0.5" /></td>
                             <td><input class="editable inst" type="number" id="inst_${safeId}" value="${item.installPrice || 0}" step="0.5" /></td>
                             <td><input class="editable qty" type="number" id="qty_${safeId}" value="${item.quantity || 0}" step="1" min="0" /></td>
@@ -1149,6 +1162,9 @@
                     const installPrice = parseFloat(document.getElementById('inst_' + safeId).value) || 0;
                     const quantity = parseInt(document.getElementById('qty_' + safeId).value) || 0;
                     const available = document.getElementById('status_' + safeId).value === 'true';
+                    const category = document.getElementById('category_' + safeId).value.trim();
+                    const description = document.getElementById('description_' + safeId).value.trim();
+                    const brand = document.getElementById('brand_' + safeId).value.trim();
 
                     const payload = {
                         action: 'updateItem',
@@ -1156,7 +1172,10 @@
                         cashPrice: cashPrice,
                         installPrice: installPrice,
                         quantity: quantity,
-                        available: available
+                        available: available,
+                        category: category,
+                        description: description,
+                        brand: brand
                     };
 
                     await fetch(API_URL, {
@@ -1173,6 +1192,9 @@
                         item.installPrice = installPrice;
                         item.quantity = quantity;
                         item.available = available;
+                        item.category = category;
+                        item.description = description;
+                        item.brand = brand;
                     }
 
                     showToast('تم تحديث المنتج بنجاح', 'success');
@@ -1219,6 +1241,9 @@
                 document.getElementById('modalTitle').textContent = 'إضافة منتج جديد';
                 document.getElementById('modalCode').value = '';
                 document.getElementById('modalName').value = '';
+                document.getElementById('modalCategory').value = '';
+                document.getElementById('modalDescription').value = '';
+                document.getElementById('modalBrand').value = '';
                 document.getElementById('modalCash').value = '';
                 document.getElementById('modalInst').value = '';
                 document.getElementById('modalQty').value = '';
@@ -1234,6 +1259,9 @@
             window.submitAddProduct = async function() {
                 const code = document.getElementById('modalCode').value.trim();
                 const name = document.getElementById('modalName').value.trim();
+                const category = document.getElementById('modalCategory').value.trim();
+                const description = document.getElementById('modalDescription').value.trim();
+                const brand = document.getElementById('modalBrand').value.trim();
                 const cash = parseFloat(document.getElementById('modalCash').value) || 0;
                 const inst = parseFloat(document.getElementById('modalInst').value) || 0;
                 const qty = parseInt(document.getElementById('modalQty').value) || 0;
@@ -1257,7 +1285,10 @@
                         cashPrice: cash,
                         installPrice: inst,
                         quantity: qty,
-                        available: avail
+                        available: avail,
+                        category: category,
+                        description: description,
+                        brand: brand
                     };
 
                     await fetch(API_URL, {

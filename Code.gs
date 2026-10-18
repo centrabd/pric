@@ -1,7 +1,7 @@
 // ================================================================
 // Code.gs - كتالوج سنتر عبدالله
-// الإصدار: 5.0.0
-// آخر تحديث: 2026-10-06
+// الإصدار: 5.1.0
+// آخر تحديث: 2026-10-18
 //
 // التغييرات الرئيسية مقارنة بـ 4.3.0:
 //   🔥 [FIX #1]  حساب حجم القطعة في الكاش (÷4 بدل ÷2)
@@ -26,8 +26,8 @@
 //   🔥 [FIX #20] Logging منظّم + rollback
 // ================================================================
 
-const SERVER_VERSION = '5.0.0';
-const SHEET_ID = '1ev1AhcQmnhwYQuY5QV2drdGdiUW6zY6eXz4QabmFOMc';
+const SERVER_VERSION = '5.1.0';
+const SHEET_ID = '1ev1AhcQmnhwYQuU5QV2drdGdiUW6zY6eXz4QabmFOMc';
 const SHEET_NAME = 'Menu';
 
 // 🔥 [FIX #3] CACHE_KEY مرتبط بالإصدار
@@ -43,6 +43,9 @@ const MAX_LIMIT = 1000;
 const MAX_PAYLOAD_BYTES = 100000;
 const MAX_ID_LENGTH = 64;
 const MAX_NAME_LENGTH = 200;
+const MAX_CATEGORY_LENGTH = 100;
+const MAX_DESCRIPTION_LENGTH = 1000;
+const MAX_BRAND_LENGTH = 100;
 
 // 🔥 [FIX #4] مفتاح المصادقة (يجب أن يطابق admin.html)
 // ⚠️ غيّره إلى قيمة عشوائية قوية ثم استخدمه في admin.html
@@ -76,13 +79,23 @@ const REQUIRED_HEADERS = [
 
 const OPTIONAL_HEADERS = [
     'رابط الصورة',
-    'محذوف'       // 🔥 [FIX #6] عمود الحذف الناعم (اختياري)
+    'محذوف',      // 🔥 [FIX #6] عمود الحذف الناعم (اختياري)
+    'التصنيف',
+    'الوصف',
+    'العلامة التجارية'
 ];
 
 // أعمدة مسموح تعديلها
 const EDITABLE_FIELDS = [
     'اسم الصنف', 'سعر الكاش', 'سعر البيع قسط',
-    'الكمية', 'التوافر', 'رابط الصورة'
+    'الكمية', 'التوافر', 'رابط الصورة',
+    'التصنيف', 'الوصف', 'العلامة التجارية'
+];
+
+const OPTIONAL_TEXT_FIELDS = [
+    { key: 'category', header: 'التصنيف', maxLength: MAX_CATEGORY_LENGTH },
+    { key: 'description', header: 'الوصف', maxLength: MAX_DESCRIPTION_LENGTH },
+    { key: 'brand', header: 'العلامة التجارية', maxLength: MAX_BRAND_LENGTH }
 ];
 
 // ================================================================
@@ -585,6 +598,7 @@ function readFromSheet() {
     const col = validation.map;
     const hasImage = col['رابط الصورة'] !== undefined;
     const hasDeleted = col['محذوف'] !== undefined;
+    const textFields = OPTIONAL_TEXT_FIELDS.filter(field => col[field.header] !== undefined);
 
     const rows = sheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
 
@@ -607,7 +621,7 @@ function readFromSheet() {
 
         const imageUrl = hasImage ? sanitizeImageUrl(row[col['رابط الصورة']]) : '';
 
-        items.push({
+        const item = {
             id: id,
             name: sanitizeText(row[col['اسم الصنف']], MAX_NAME_LENGTH),
             cashPrice: toPrice(row[col['سعر الكاش']]),
@@ -615,7 +629,11 @@ function readFromSheet() {
             quantity: toInt(row[col['الكمية']]),
             available: toAvailable(row[col['التوافر']]),
             image: imageUrl
+        };
+        textFields.forEach(field => {
+            item[field.key] = sanitizeText(row[col[field.header]], field.maxLength);
         });
+        items.push(item);
     }
 
     return { items: items, lastUpdate: lastUpdate, skipped: skipped };
@@ -965,6 +983,17 @@ function handleUpdateItem(data) {
         newRow[col['رابط الصورة']] = sanitizeImageUrl(data.image);
     }
 
+    for (let i = 0; i < OPTIONAL_TEXT_FIELDS.length; i++) {
+        const field = OPTIONAL_TEXT_FIELDS[i];
+        if (data[field.key] === undefined) continue;
+        if (col[field.header] === undefined) {
+            return jsonError('عمود "' + field.header + '" غير موجود في الجدول', 'NO_OPTIONAL_COLUMN', {
+                field: field.key
+            });
+        }
+        newRow[col[field.header]] = sanitizeText(data[field.key], field.maxLength);
+    }
+
     // 🔥 [FIX #12] كتابة كل الصف مرة واحدة
     sheet.getRange(rowIndex, 1, 1, newRow.length).setValues([newRow]);
 
@@ -1016,6 +1045,12 @@ function handleAddItem(data) {
     }
     if (col['محذوف'] !== undefined) {
         newRow[col['محذوف']] = 'لا';
+    }
+    for (let i = 0; i < OPTIONAL_TEXT_FIELDS.length; i++) {
+        const field = OPTIONAL_TEXT_FIELDS[i];
+        if (col[field.header] !== undefined) {
+            newRow[col[field.header]] = sanitizeText(data[field.key], field.maxLength);
+        }
     }
 
     // 🔥 [FIX #13] setValues بدل appendRow
