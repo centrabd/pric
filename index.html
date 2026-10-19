@@ -289,17 +289,34 @@ body {
 }
 .category-heading h2 { font-size: var(--font-lg); font-weight: 800; }
 .category-count { color: var(--text-muted); font-size: var(--font-sm); white-space: nowrap; }
+<<<<<<< Updated upstream
 .category-chips { display: flex; gap: var(--space-sm); overflow-x: auto; padding: 2px 2px 8px; }
+=======
+.category-chips {
+    display: flex; gap: var(--space-sm); overflow-x: auto;
+    padding: 2px 2px 8px; scrollbar-width: thin;
+}
+>>>>>>> Stashed changes
 .category-chip {
     flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px;
     padding: 8px 16px; border: 1px solid var(--border-color);
     border-radius: var(--radius-full); background: var(--bg-input);
     color: var(--text-secondary); font-family: inherit;
+<<<<<<< Updated upstream
     font-size: var(--font-base); font-weight: 600; cursor: pointer;
     transition: all var(--transition-base);
 }
 .category-chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
 .category-chip.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+=======
+    font-size: var(--font-base); font-weight: 600;
+    cursor: pointer; transition: all var(--transition-base);
+}
+.category-chip:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.category-chip.active {
+    background: var(--color-primary); border-color: var(--color-primary); color: #fff;
+}
+>>>>>>> Stashed changes
 .category-chip-count {
     min-width: 22px; padding: 1px 6px; border-radius: var(--radius-full);
     background: rgb(127 127 127 / 12%); font-size: var(--font-sm); text-align: center;
@@ -307,11 +324,14 @@ body {
 .category-chip.active .category-chip-count { background: rgb(255 255 255 / 20%); }
 .category-hint { margin-top: var(--space-xs); color: var(--text-muted); font-size: var(--font-sm); }
 .category-hint:empty { display: none; }
+<<<<<<< Updated upstream
 .product-metadata {
     color: var(--text-secondary); font-size: var(--font-sm);
     margin: -2px 0 var(--space-sm); overflow-wrap: anywhere;
 }
 .product-category { color: var(--color-primary); font-weight: 700; }
+=======
+>>>>>>> Stashed changes
 .chip {
     padding: 6px 14px; border-radius: var(--radius-full);
     border: 2px solid var(--border-color);
@@ -1257,7 +1277,11 @@ const Utils = (function() {
         const len = items.length;
         for (let i = 0; i < len; i++) {
             const it = items[i];
+<<<<<<< Updated upstream
             const part = it.id + '|' + it.cashPrice + '|' + it.installPrice + '|' + it.quantity + '|' + (it.available ? 1 : 0) + '|' + (it.image || '') + '|' + (it.category || '') + '|' + (it.description || '') + '|' + (it.brand || '');
+=======
+            const part = it.id + '|' + it.cashPrice + '|' + it.installPrice + '|' + it.quantity + '|' + (it.available ? 1 : 0) + '|' + (it.image || '') + '|' + (it.category || '');
+>>>>>>> Stashed changes
             const plen = part.length;
             for (let j = 0; j < plen; j++) {
                 acc = ((acc << 5) - acc) + part.charCodeAt(j);
@@ -1410,9 +1434,15 @@ const DB = (function() {
                         quantity: Utils.toNumber(item.quantity),
                         available: !!item.available,
                         image: String(item.image || ''),
+<<<<<<< Updated upstream
                         ...(Object.prototype.hasOwnProperty.call(item, 'category') ? { category: String(item.category || '') } : {}),
                         ...(Object.prototype.hasOwnProperty.call(item, 'description') ? { description: String(item.description || '') } : {}),
                         ...(Object.prototype.hasOwnProperty.call(item, 'brand') ? { brand: String(item.brand || '') } : {})
+=======
+                        ...(Object.prototype.hasOwnProperty.call(item, 'category')
+                            ? { category: String(item.category || '').trim() }
+                            : {})
+>>>>>>> Stashed changes
                     });
                 }
                 tx.oncomplete = () => resolve(len);
@@ -2197,9 +2227,15 @@ const Api = (function() {
             quantity: Utils.toNumber(item.quantity),
             available: item.available === true || item.available === 'true' || item.available === 'متوفر',
             image: Utils.isAllowedImageUrl(item.image) ? String(item.image) : '',
+<<<<<<< Updated upstream
             ...(Object.prototype.hasOwnProperty.call(item, 'category') ? { category: String(item.category || '').trim() } : {}),
             ...(Object.prototype.hasOwnProperty.call(item, 'description') ? { description: String(item.description || '').trim() } : {}),
             ...(Object.prototype.hasOwnProperty.call(item, 'brand') ? { brand: String(item.brand || '').trim() } : {})
+=======
+            ...(Object.prototype.hasOwnProperty.call(item, 'category')
+                ? { category: String(item.category || '').trim() }
+                : {})
+>>>>>>> Stashed changes
         };
     }
 
@@ -2713,10 +2749,18 @@ const App = (function() {
 
     function renderCategoryFilter() {
         const counts = new Map();
+<<<<<<< Updated upstream
         const hasCategoryField = state.allItems.some(item =>
             Object.prototype.hasOwnProperty.call(item, 'category')
         );
         if (hasCategoryField) {
+=======
+        const hasCategoryColumn = state.allItems.some(item =>
+            Object.prototype.hasOwnProperty.call(item, 'category')
+        );
+
+        if (hasCategoryColumn) {
+>>>>>>> Stashed changes
             state.allItems.forEach(item => {
                 const category = String(item.category || '').trim();
                 const key = category ? `category:${category}` : 'uncategorized';
@@ -2726,6 +2770,7 @@ const App = (function() {
 
         Utils.clearElement(categoryChips);
         categoryCount.textContent = `${Utils.formatNumber(state.allItems.length)} منتج`;
+<<<<<<< Updated upstream
         categoryHint.textContent = hasCategoryField
             ? (state.allItems.length ? '' : 'لا توجد منتجات في البيانات الحالية.')
             : 'أعمدة التصنيف والوصف والعلامة التجارية موجودة في الجدول، لكن الخادم الحالي لا يرسلها بعد. انشر إصدار Apps Script المحدّث.';
@@ -2740,6 +2785,26 @@ const App = (function() {
         categories.forEach(([key, count]) => options.push({
             key, label: key.slice(9), count
         }));
+=======
+        categoryHint.textContent = hasCategoryColumn
+            ? (state.allItems.length === 0 ? 'لا توجد منتجات في البيانات الحالية.' : '')
+            : 'التصنيفات غير متاحة من السيرفر بعد. أضف عمود «التصنيف» إلى ورقة Menu لتظهر تلقائيًا.';
+
+        const options = [
+            { key: 'all', label: 'كل المنتجات', count: state.allItems.length }
+        ];
+        const categories = Array.from(counts.entries())
+            .filter(([key]) => key.startsWith('category:'))
+            .sort(([keyA], [keyB]) =>
+                keyA.slice('category:'.length).localeCompare(keyB.slice('category:'.length), 'ar')
+            );
+        if (state.filters.category !== 'all' && !counts.has(state.filters.category)) {
+            state.filters.category = 'all';
+        }
+        categories.forEach(([key, count]) => {
+            options.push({ key, label: key.slice('category:'.length), count });
+        });
+>>>>>>> Stashed changes
         if (counts.has('uncategorized')) {
             options.push({ key: 'uncategorized', label: 'غير مصنف', count: counts.get('uncategorized') });
         }

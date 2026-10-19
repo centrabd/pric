@@ -27,7 +27,11 @@
 // ================================================================
 
 const SERVER_VERSION = '5.1.0';
+<<<<<<< Updated upstream
 const SHEET_ID = '1ev1AhcQmnhwYQuU5QV2drdGdiUW6zY6eXz4QabmFOMc';
+=======
+const SHEET_ID = '1ev1AhcQmnhwYQuY5QV2drdGdiUW6zY6eXz4QabmFOMc';
+>>>>>>> Stashed changes
 const SHEET_NAME = 'Menu';
 
 // 🔥 [FIX #3] CACHE_KEY مرتبط بالإصدار
@@ -80,9 +84,13 @@ const REQUIRED_HEADERS = [
 const OPTIONAL_HEADERS = [
     'رابط الصورة',
     'محذوف',      // 🔥 [FIX #6] عمود الحذف الناعم (اختياري)
+<<<<<<< Updated upstream
     'التصنيف',
     'الوصف',
     'العلامة التجارية'
+=======
+    'التصنيف'
+>>>>>>> Stashed changes
 ];
 
 // أعمدة مسموح تعديلها
@@ -598,7 +606,11 @@ function readFromSheet() {
     const col = validation.map;
     const hasImage = col['رابط الصورة'] !== undefined;
     const hasDeleted = col['محذوف'] !== undefined;
+<<<<<<< Updated upstream
     const textFields = OPTIONAL_TEXT_FIELDS.filter(field => col[field.header] !== undefined);
+=======
+    const hasCategory = col['التصنيف'] !== undefined;
+>>>>>>> Stashed changes
 
     const rows = sheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
 
@@ -628,10 +640,15 @@ function readFromSheet() {
             installPrice: toPrice(row[col['سعر البيع قسط']]),
             quantity: toInt(row[col['الكمية']]),
             available: toAvailable(row[col['التوافر']]),
+<<<<<<< Updated upstream
             image: imageUrl
         };
         textFields.forEach(field => {
             item[field.key] = sanitizeText(row[col[field.header]], field.maxLength);
+=======
+            image: imageUrl,
+            ...(hasCategory ? { category: sanitizeText(row[col['التصنيف']], MAX_NAME_LENGTH) } : {})
+>>>>>>> Stashed changes
         });
         items.push(item);
     }
