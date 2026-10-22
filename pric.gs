@@ -26,8 +26,9 @@
 //   🔥 [FIX #20] Logging منظّم + rollback
 // ================================================================
 
-const SERVER_VERSION = '5.0.0';
-const SHEET_ID = '1ev1AhcQmnhwYQuY5QV2drdGdiUW6zY6eXz4QabmFOMc';
+const SERVER_VERSION = '5.1.0';
+const SHEET_ID = '1ev1AhcQmnhwYQuU5QV2drdGdiUW6zY6eXz4QabmFOMc';
+const SOURCE_SHEET_NAME = '0';
 const SHEET_NAME = 'Menu';
 
 // 🔥 [FIX #3] CACHE_KEY مرتبط بالإصدار
@@ -62,6 +63,7 @@ const IMAGE_HOST_WHITELIST = [
     'images.unsplash.com',
     'cdn.shopify.com',
     'encrypted-tbn0.gstatic.com',
+    'files.easy-orders.net',
 ];
 
 // 🔥 [FIX #8] لا يوجد عمود تاريخ في العناوين المطلوبة
@@ -76,13 +78,17 @@ const REQUIRED_HEADERS = [
 
 const OPTIONAL_HEADERS = [
     'رابط الصورة',
+    'التصنيف',
+    'الوصف',
+    'العلامة التجارية',
     'محذوف'       // 🔥 [FIX #6] عمود الحذف الناعم (اختياري)
 ];
 
 // أعمدة مسموح تعديلها
 const EDITABLE_FIELDS = [
     'اسم الصنف', 'سعر الكاش', 'سعر البيع قسط',
-    'الكمية', 'التوافر', 'رابط الصورة'
+    'الكمية', 'التوافر', 'رابط الصورة',
+    'التصنيف', 'الوصف', 'العلامة التجارية'
 ];
 
 // ================================================================
@@ -575,8 +581,19 @@ function readFromSheet() {
         );
     }
 
-    // 🔥 [FIX #8] لا نبحث عن عمود تاريخ - lastUpdate من PropertiesService
-    const lastUpdate = getLastUpdate();
+    // 🔥 قراءة التوقيت من PropertiesService أو من الخلية K1 في ورقة Menu كبديل تلقائي
+    let lastUpdate = getLastUpdate();
+    if (!lastUpdate && headers.length >= 11 && headers[10]) {
+        try {
+            if (headers[10] instanceof Date) {
+                lastUpdate = Utilities.formatDate(headers[10], Session.getScriptTimeZone(), 'yyyy/MM/dd HH:mm');
+            } else {
+                lastUpdate = sanitizeText(headers[10], 60);
+            }
+        } catch (e) {
+            lastUpdate = String(headers[10] || '');
+        }
+    }
 
     if (lastRow <= 1) {
         return { items: [], lastUpdate: lastUpdate, skipped: 0 };
@@ -584,6 +601,9 @@ function readFromSheet() {
 
     const col = validation.map;
     const hasImage = col['رابط الصورة'] !== undefined;
+    const hasCategory = col['التصنيف'] !== undefined;
+    const hasDesc = col['الوصف'] !== undefined;
+    const hasBrand = col['العلامة التجارية'] !== undefined;
     const hasDeleted = col['محذوف'] !== undefined;
 
     const rows = sheet.getRange(2, 1, lastRow - 1, lastColumn).getValues();
@@ -614,7 +634,10 @@ function readFromSheet() {
             installPrice: toPrice(row[col['سعر البيع قسط']]),
             quantity: toInt(row[col['الكمية']]),
             available: toAvailable(row[col['التوافر']]),
-            image: imageUrl
+            image: imageUrl,
+            category: hasCategory ? sanitizeText(row[col['التصنيف']], 100) : '',
+            description: hasDesc ? sanitizeText(row[col['الوصف']], 1000) : '',
+            brand: hasBrand ? sanitizeText(row[col['العلامة التجارية']], 100) : ''
         });
     }
 
@@ -856,9 +879,29 @@ function doPost(e) {
 // [12] دوال مساعدة للكتابة
 // ================================================================
 function getSheet() {
-    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) throw new Error('الورقة غير موجودة');
     return sheet;
+}
+
+/**
+ * حماية ورقة Menu من خطأ #REF! عند التعديل المباشر من لوحة الأدمن:
+ * إذا كانت ورقة Menu تحتوي على معادلات مصفوفية (ARRAYFORMULA) في A2 أو G1:J1،
+ * يتم تثبيت القيم الحالية في Menu قبل الكتابة المباشرة حتى لا تنكسر المصفوفة.
+ */
+function ensureMenuWritable(sheet) {
+    try {
+        const fA2 = sheet.getRange('A2').getFormula();
+        const fG1 = sheet.getRange('G1').getFormula();
+        if (fA2 || fG1) {
+            const dataRange = sheet.getDataRange();
+            const vals = dataRange.getValues();
+            dataRange.setValues(vals);
+        }
+    } catch (e) {
+        logError('ensureMenuWritable', e);
+    }
 }
 
 function getHeadersAndValidation(sheet) {
@@ -958,14 +1001,23 @@ function handleUpdateItem(data) {
     }
 
     // الصورة
-    if (data.image !== undefined) {
-        if (col['رابط الصورة'] === undefined) {
-            return jsonError('عمود "رابط الصورة" غير موجود في الجدول', 'NO_IMAGE_COLUMN');
-        }
+    if (data.image !== undefined && col['رابط الصورة'] !== undefined) {
         newRow[col['رابط الصورة']] = sanitizeImageUrl(data.image);
     }
 
-    // 🔥 [FIX #12] كتابة كل الصف مرة واحدة
+    // التصنيف والوصف والعلامة التجارية
+    if (data.category !== undefined && col['التصنيف'] !== undefined) {
+        newRow[col['التصنيف']] = sanitizeText(data.category, 100);
+    }
+    if (data.description !== undefined && col['الوصف'] !== undefined) {
+        newRow[col['الوصف']] = sanitizeText(data.description, 1000);
+    }
+    if (data.brand !== undefined && col['العلامة التجارية'] !== undefined) {
+        newRow[col['العلامة التجارية']] = sanitizeText(data.brand, 100);
+    }
+
+    // 🔥 حماية من #REF! ثم كتابة كل الصف مرة واحدة
+    ensureMenuWritable(sheet);
     sheet.getRange(rowIndex, 1, 1, newRow.length).setValues([newRow]);
 
     return jsonOutput({
@@ -1014,11 +1066,21 @@ function handleAddItem(data) {
     if (col['رابط الصورة'] !== undefined && data.image) {
         newRow[col['رابط الصورة']] = sanitizeImageUrl(data.image);
     }
+    if (col['التصنيف'] !== undefined && data.category) {
+        newRow[col['التصنيف']] = sanitizeText(data.category, 100);
+    }
+    if (col['الوصف'] !== undefined && data.description) {
+        newRow[col['الوصف']] = sanitizeText(data.description, 1000);
+    }
+    if (col['العلامة التجارية'] !== undefined && data.brand) {
+        newRow[col['العلامة التجارية']] = sanitizeText(data.brand, 100);
+    }
     if (col['محذوف'] !== undefined) {
         newRow[col['محذوف']] = 'لا';
     }
 
-    // 🔥 [FIX #13] setValues بدل appendRow
+    // 🔥 حماية من #REF! ثم setValues بدل appendRow
+    ensureMenuWritable(sheet);
     const newRowIndex = sheet.getLastRow() + 1;
     sheet.getRange(newRowIndex, 1, 1, newRow.length).setValues([newRow]);
 
@@ -1057,7 +1119,8 @@ function handleDeleteItem(data) {
         });
     }
 
-    // fallback: حذف فعلي (مع تحذير)
+    // fallback: حذف فعلي (مع تحذير) بعد تثبيت القيم لمنع #REF!
+    ensureMenuWritable(sheet);
     sheet.deleteRow(rowIndex);
 
     return jsonOutput({
@@ -1250,4 +1313,83 @@ function testCache() {
 function clearCacheManual() {
     cacheClear();
     return 'Cache cleared';
+}
+
+
+// ================================================================
+// [17] دالة المزامنة الآمنة بين DATAIMP و priceimg (منع انزلاق الصفوف والمسح الدائري)
+// ================================================================
+/**
+ * تُستخدم داخل مصنف priceimg بدلاً من الدالة القديمة copyDataimpToPrice()
+ * تقرأ البيانات في الذاكرة أولاً قبل أي مسح، وتدمج (رابط الصورة، الاسم المختصر، الوصف، العلامة التجارية)
+ * بناءً على «كود الصنف» (المفتاح الفريد) لمنع انزلاق الصفوف أو ضياع البيانات عند إعادة الترتيب.
+ */
+function copyDataimpToPriceSafe() {
+    const SOURCE_SHEET_NAME = 'DATAIMP';
+    const TARGET_SHEET_NAME = 'priceimg';
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sourceSheet = ss.getSheetByName(SOURCE_SHEET_NAME);
+    if (!sourceSheet) {
+        Logger.log('⚠️ الورقة المصدر غير موجودة: ' + SOURCE_SHEET_NAME);
+        return;
+    }
+
+    // 1. قراءة البيانات الحية من DATAIMP أولاً قبل مسح أي شيء!
+    const sourceRange = sourceSheet.getDataRange();
+    const sourceValues = sourceRange.getValues();
+    if (sourceValues.length <= 1 || sourceValues[0].length === 0) return;
+
+    let targetSheet = ss.getSheetByName(TARGET_SHEET_NAME);
+    const enrichmentMap = {};
+
+    // 2. الاحتفاظ بخريطة الإثراء التسويقي من priceimg مربوطة بكود الصنف
+    if (targetSheet && targetSheet.getLastRow() > 1) {
+        const oldValues = targetSheet.getDataRange().getValues();
+        for (let r = 1; r < oldValues.length; r++) {
+            const code = String(oldValues[r][0] || '').trim();
+            if (!code) continue;
+            enrichmentMap[code] = {
+                image: oldValues[r][7] || '',       // Col H: رابط الصورة
+                shortName: oldValues[r][8] || '',   // Col I: اسم مختصر
+                description: oldValues[r][9] || '', // Col J: الوصف
+                brand: oldValues[r][11] || '',      // Col L: العلامة التجارية
+                unit: oldValues[r][12] || '',       // Col M: الوحدة
+                condition: oldValues[r][13] || '',  // Col N: حالة المنتج
+                lastEdit: oldValues[r][14] || ''    // Col O: آخر تعديل
+            };
+        }
+    } else if (!targetSheet) {
+        targetSheet = ss.insertSheet(TARGET_SHEET_NAME);
+    }
+
+    // 3. دمج بيانات الإثراء التسويقي مع الصفوف الحية القادمة من DATAIMP بواسطة كود الصنف
+    const mergedValues = sourceValues.map(function(row, idx) {
+        const newRow = row.slice();
+        while (newRow.length < 15) newRow.push('');
+        if (idx === 0) {
+            newRow[7] = 'رابط الصورة';
+            newRow[8] = 'اسم مختصر';
+            newRow[9] = 'الوصف';
+            newRow[11] = 'العلامة التجارية';
+            return newRow;
+        }
+        const code = String(newRow[0] || '').trim();
+        const saved = enrichmentMap[code];
+        if (saved) {
+            if (!newRow[7] || String(newRow[7]).indexOf('[link removed]') !== -1) newRow[7] = saved.image;
+            if (!newRow[8]) newRow[8] = saved.shortName;
+            if (!newRow[9]) newRow[9] = saved.description;
+            if (!newRow[11]) newRow[11] = saved.brand;
+            if (!newRow[12]) newRow[12] = saved.unit;
+            if (!newRow[13]) newRow[13] = saved.condition;
+            if (!newRow[14]) newRow[14] = saved.lastEdit;
+        }
+        return newRow;
+    });
+
+    // 4. كتابة الجدول المدمج في priceimg بأمان تام
+    targetSheet.clearContents();
+    targetSheet.getRange(1, 1, mergedValues.length, mergedValues[0].length).setValues(mergedValues);
+    Logger.log('✅ تمت مزامنة ' + (mergedValues.length - 1) + ' صنف بنجاح دون انزلاق صفوف في: ' + new Date());
 }
