@@ -15,7 +15,7 @@
 <!-- ✅ FIX #47-52: CSP مصحح + إزالة meta التي لا تعمل -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://wa.me https://api.whatsapp.com;">
 
-<title>كتالوج سنتر عبد الله السويس - بيع نقدي وتقسيط - الإصدار 5.2.0</title>
+<title>كتالوج سنتر عبد الله السويس - بيع نقدي وتقسيط - الإصدار 5.3.0</title>
 
 <style>
 /* ================================================================
@@ -1138,6 +1138,261 @@ body {
     font-size: 10px; font-weight: 800; min-width: 16px; text-align: center;
 }
 
+
+/* ===== [v5.3.0] الهيدير المثبت أثناء التمرير (Sticky Header) ===== */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.94);
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    margin-bottom: var(--space-lg);
+    transition: background var(--transition-base), box-shadow var(--transition-base);
+}
+[data-theme="dark"] .header {
+    background: rgba(31, 36, 44, 0.94);
+    border-bottom-color: #2d3748;
+}
+
+/* ===== [v5.3.0] تحسين صور المنتجات لتملأ مربع الصورة بالكامل ===== */
+.card .product-image-wrap {
+    width: 100%;
+    height: 200px;
+    background: var(--bg-muted);
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    overflow: hidden;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.card .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* ملء المربع بالكامل كحجم الكارت */
+    display: block;
+    transition: transform 0.35s ease;
+}
+.card:hover .product-image {
+    transform: scale(1.06);
+}
+
+/* تفاصيل الكارت وبياناته */
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.card-short-name {
+    font-size: var(--font-base);
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 2px;
+}
+.card-desc-snippet {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== [v5.3.0] شريط التصنيفات المتحرك (Animated Category Carousel) ===== */
+.category-carousel-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    background: var(--bg-card);
+    padding: 6px 10px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(0,0,0,0.04);
+}
+.category-scroll-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 2;
+    flex-shrink: 0;
+    transition: all var(--transition-fast);
+}
+.category-scroll-btn:hover {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+.category-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 6px;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    flex: 1;
+}
+.category-bar::-webkit-scrollbar { display: none; }
+.category-bar .chip {
+    white-space: nowrap;
+    padding: 7px 16px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--border-color);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.category-bar .chip:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+.category-bar .chip.active {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    color: #fff;
+    border-color: var(--color-primary);
+    box-shadow: 0 4px 12px rgba(41, 128, 185, 0.35);
+    transform: scale(1.03);
+    animation: pulseActive 2s infinite;
+}
+@keyframes pulseActive {
+    0% { box-shadow: 0 0 0 0 rgba(41, 128, 185, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(41, 128, 185, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(41, 128, 185, 0); }
+}
+.chip-count {
+    background: rgba(0,0,0,0.08);
+    padding: 1px 7px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+.chip.active .chip-count {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+}
+
+/* ===== [v5.3.0] أزرار تبديل طريقة العرض (شبكة وقائمة) ===== */
+.view-toggle {
+    display: flex;
+    background: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-full);
+    padding: 2px;
+}
+.view-btn {
+    padding: 6px 12px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--text-muted);
+    transition: all var(--transition-fast);
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.view-btn.active {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+/* نمط القائمة (List View) */
+.grid.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+.grid.list-view .card {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    min-height: unset;
+}
+.grid.list-view .card .product-image-wrap {
+    width: 140px;
+    height: 120px;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    border-radius: var(--radius-md);
+}
+.grid.list-view .card .card-body {
+    flex: 1;
+    min-width: 0;
+}
+.grid.list-view .card .card-actions {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    flex-direction: column;
+    width: 150px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 650px) {
+    .grid.list-view .card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .grid.list-view .card .product-image-wrap {
+        width: 100%;
+        height: 180px;
+    }
+    .grid.list-view .card .card-actions {
+        width: 100%;
+        flex-direction: row;
+        border-top: 1px solid var(--bg-muted);
+        padding-top: var(--space-sm);
+    }
+}
+
+/* درج المفضلة (Wishlist Drawer) */
+.wishlist-sidebar {
+    position: fixed; top: 0; left: -420px;
+    width: 420px; max-width: 92vw; height: 100%;
+    background: var(--bg-card); z-index: var(--z-cart);
+    padding: var(--space-xl); 
+    transition: left var(--transition-base);
+    display: flex; flex-direction: column;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+    overscroll-behavior: contain;
+}
+.wishlist-sidebar.open { left: 0; }
+.wishlist-item-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-left: 10px;
+    flex-shrink: 0;
+    background: var(--bg-muted);
+}
+
 </style>
 </head>
 <body>
@@ -1164,7 +1419,7 @@ body {
             </span>
             <span class="title-meta">
                 <!-- ✅ FIX #100: يُحدّث ديناميكياً من JS -->
-                <span class="title-version" id="versionLabel">الإصدار 3.0.0</span>
+                <span class="title-version" id="versionLabel">الإصدار 5.3.0</span>
                 <span class="title-update" id="lastUpdateLabel"></span>
             </span>
         </h1>
@@ -1206,6 +1461,10 @@ body {
                 <option value="desc">تنازلي</option>
                 <option value="asc">تصاعدي</option>
             </select>
+            <div class="view-toggle" role="group" aria-label="طريقة العرض">
+                <button type="button" class="view-btn active" id="viewGrid" title="عرض شبكة (مربعات)" aria-label="عرض شبكة">⊞</button>
+                <button type="button" class="view-btn" id="viewList" title="عرض قائمة (سطور)" aria-label="عرض قائمة">☰</button>
+            </div>
             <button class="filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filtersPanel">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                 فلاتر
@@ -1263,7 +1522,11 @@ body {
         </div>
     </section>
 
-    <div class="category-bar" id="categoryBar" role="navigation" aria-label="شريط التصنيفات السريع"></div>
+    <div class="category-carousel-wrap" role="region" aria-label="شريط التصنيفات المتحرك">
+        <button class="category-scroll-btn" id="catScrollRight" aria-label="تمرير التصنيفات لليمين" type="button">▶</button>
+        <div class="category-bar" id="categoryBar" role="navigation" aria-label="شريط التصنيفات السريع"></div>
+        <button class="category-scroll-btn" id="catScrollLeft" aria-label="تمرير التصنيفات لليسار" type="button">◀</button>
+    </div>
     <main id="productGrid" class="grid" role="main" aria-label="شبكة المنتجات"></main>
     <div class="load-more-area" id="loadMoreArea" role="status"></div>
     <div id="sentinel" class="sentinel" aria-hidden="true"></div>
@@ -1349,6 +1612,26 @@ body {
     </button>
 </aside>
 
+<div class="cart-overlay" id="wishlistOverlay" aria-hidden="true"></div>
+<aside class="wishlist-sidebar" id="wishlistSidebar" role="dialog" aria-modal="true" aria-label="قائمة المفضلة">
+    <header class="cart-header">
+        <h2>قائمة المفضلة ❤️</h2>
+        <button id="wishlistClose" aria-label="إغلاق قائمة المفضلة" type="button">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+    </header>
+    <div class="cart-items" id="wishlistItems" aria-label="قائمة المنتجات في المفضلة"></div>
+    <div style="padding-top: 14px; border-top: 2px solid var(--bg-muted); display: flex; flex-direction: column; gap: 8px;">
+        <button class="cart-checkout" id="wishlistAddAllToCart" type="button" style="background: var(--color-primary);">
+            🛒 إضافة جميع المفضلة للسلة
+        </button>
+        <button type="button" id="wishlistClearAll" style="width: 100%; padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-muted); color: var(--color-danger-light); font-weight: 700; cursor: pointer; font-family: inherit;">
+            🗑️ إفراغ قائمة المفضلة
+        </button>
+    </div>
+</aside>
+
+
 <div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalName" aria-hidden="true">
     <div class="modal-box">
         <button class="modal-close" id="modalClose" aria-label="إغلاق نافذة المنتج" type="button">
@@ -1397,7 +1680,7 @@ body {
    ================================================================ */
 const CONFIG = Object.freeze({
     APP_NAME: 'كتالوج سنتر عبد الله السويس',
-    APP_VERSION: '5.2.0',
+    APP_VERSION: '5.3.0',
     API_URL: 'https://script.google.com/macros/s/AKfycbzMiy090MgUPuRPjsmlX_VTJhO_Nu75aBOWi1C6z49ToXs6iKxLtYH2OJRP903SIUBq/exec',
     WHATSAPP_PHONE: '201065786569',
     PAGE_SIZE: 25,
@@ -1679,6 +1962,7 @@ const DB = (function() {
                     store.put({
                         id: String(item.id),
                         name: String(item.name),
+                        shortName: String(item.shortName || ''),
                         cashPrice: Utils.toNumber(item.cashPrice),
                         installPrice: Utils.toNumber(item.installPrice),
                         quantity: Utils.toNumber(item.quantity),
@@ -1921,6 +2205,7 @@ const Wishlist = (function() {
         }
         Utils.safeSetItem(CONFIG.WISHLIST_KEY, items);
         updateBadge();
+        render();
     }
     function isIn(id) { return getAll().some(i => String(i.id) === String(id)); }
     function toggle(item) {
@@ -1934,10 +2219,13 @@ const Wishlist = (function() {
                 return false;
             }
             list.push({
-                id: String(item.id), name: String(item.name),
+                id: String(item.id),
+                name: String(item.name),
+                shortName: String(item.shortName || ''),
                 cashPrice: Utils.toNumber(item.cashPrice),
                 installPrice: Utils.toNumber(item.installPrice),
                 quantity: Utils.toNumber(item.quantity),
+                available: item.available !== false,
                 image: String(item.image || '')
             });
             added = true;
@@ -1945,7 +2233,12 @@ const Wishlist = (function() {
         save(list);
         return added;
     }
-    // ✅ FIX #89: re-sync مع البيانات الحديثة
+    function remove(id) {
+        save(getAll().filter(i => String(i.id) !== String(id)));
+    }
+    function clearAll() {
+        save([]);
+    }
     function resync(allItems) {
         const list = getAll();
         const map = new Map(allItems.map(i => [String(i.id), i]));
@@ -1953,9 +2246,9 @@ const Wishlist = (function() {
         const fresh = list.map(w => {
             const curr = map.get(String(w.id));
             if (!curr) return w;
-            if (curr.name !== w.name || curr.cashPrice !== w.cashPrice || curr.installPrice !== w.installPrice) {
+            if (curr.name !== w.name || curr.cashPrice !== w.cashPrice || curr.installPrice !== w.installPrice || curr.available !== w.available) {
                 changed = true;
-                return { ...w, name: curr.name, cashPrice: curr.cashPrice, installPrice: curr.installPrice, quantity: curr.quantity };
+                return { ...w, name: curr.name, cashPrice: curr.cashPrice, installPrice: curr.installPrice, quantity: curr.quantity, available: curr.available };
             }
             return w;
         });
@@ -1971,12 +2264,79 @@ const Wishlist = (function() {
         const mobEl = document.getElementById('mobWishlistCount');
         if (mobEl) mobEl.textContent = count;
     }
-    return { getAll, isIn, toggle, updateBadge, resync };
+
+    // 🔥 [v5.3.0] رسم محتويات شريط المفضلة الجانبي
+    function render() {
+        const container = document.getElementById('wishlistItems');
+        if (!container) return;
+        const list = getAll();
+        Utils.clearElement(container);
+
+        if (list.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'cart-empty';
+            empty.textContent = 'قائمة المفضلة فارغة حالياً ❤️';
+            container.appendChild(empty);
+            return;
+        }
+
+        list.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+
+            if (item.image) {
+                const img = document.createElement('img');
+                img.src = Utils.formatDriveImageUrl(item.image);
+                img.className = 'wishlist-item-img';
+                img.alt = item.name;
+                div.appendChild(img);
+            }
+
+            const info = document.createElement('div');
+            info.className = 'cart-item-info';
+            const h4 = document.createElement('h4');
+            h4.textContent = item.name;
+            const p = document.createElement('p');
+            p.textContent = `${Utils.formatNumber(item.cashPrice)} ج.م كاش | ${Utils.formatNumber(item.installPrice)} ج.م قسط`;
+            info.appendChild(h4);
+            info.appendChild(p);
+
+            const actions = document.createElement('div');
+            actions.className = 'cart-item-actions';
+
+            const addCartBtn = document.createElement('button');
+            addCartBtn.type = 'button';
+            addCartBtn.textContent = '🛒';
+            addCartBtn.title = 'إضافة للسلة';
+            addCartBtn.setAttribute('aria-label', `إضافة ${item.name} للسلة`);
+            addCartBtn.addEventListener('click', () => {
+                Cart.add(item);
+                Toast.show(`تمت إضافة ${item.name} للسلة`, 'success');
+            });
+
+            const delBtn = document.createElement('button');
+            delBtn.type = 'button';
+            delBtn.textContent = '×';
+            delBtn.style.background = '#fce7e7';
+            delBtn.style.color = 'var(--color-danger-light)';
+            delBtn.setAttribute('aria-label', `حذف ${item.name} من المفضلة`);
+            delBtn.addEventListener('click', () => {
+                remove(item.id);
+                Toast.show('حُذف من المفضلة', 'warning');
+            });
+
+            actions.appendChild(addCartBtn);
+            actions.appendChild(delBtn);
+
+            div.appendChild(info);
+            div.appendChild(actions);
+            container.appendChild(div);
+        });
+    }
+
+    return { getAll, isIn, toggle, remove, clearAll, updateBadge, resync, render };
 })();
 
-/* ================================================================
-   [JS-08] CART - 🔥 FIX #1 (audit): حساب السعر حسب نوع الدفع
-   ================================================================ */
 const Cart = (function() {
     'use strict';
 
@@ -2037,6 +2397,7 @@ const Cart = (function() {
         } else {
             list.push({
                 id: String(item.id), name: String(item.name),
+                        shortName: String(item.shortName || ''),
                 cashPrice: Utils.toNumber(item.cashPrice),
                 installPrice: Utils.toNumber(item.installPrice),
                 quantity: 1,
@@ -2045,6 +2406,10 @@ const Cart = (function() {
             });
         }
         save(list);
+        // 🔥 [v5.3.0] فتح شريط السلة الجانبي تلقائياً عند إضافة منتج
+        if (window.App && window.App.openCartSidebar) {
+            window.App.openCartSidebar();
+        }
         return true;
     }
 
@@ -2472,6 +2837,7 @@ const Api = (function() {
         return {
             id: String(item.id || '').trim(),
             name: String(item.name || '').trim(),
+            shortName: String(item.shortName || item['اسم مختصر'] || '').trim(),
             cashPrice: Utils.toNumber(item.cashPrice),
             installPrice: Utils.toNumber(item.installPrice),
             quantity: Utils.toNumber(item.quantity),
@@ -2664,6 +3030,7 @@ const Card = (function() {
         card.setAttribute('aria-label', `منتج: ${item.name}`);
         card.dataset.id = item.id;
         card.style.animationDelay = `${Math.min(index, 10) * 0.03}s`;
+        card.style.cursor = 'pointer';
 
         if (item.available && item.quantity > CONFIG.LOW_STOCK_THRESHOLD) {
             const priority = document.createElement('div');
@@ -2673,7 +3040,7 @@ const Card = (function() {
             card.appendChild(priority);
         }
 
-        // 🔥 [v5.2.0] توحيد حاوية الصورة لمنع تشوه ارتفاعات البطاقات
+        // 🔥 [v5.3.0] صورة المنتج تملأ مربع الصورة بالكامل بحجم الكارت
         const imgWrap = document.createElement('div');
         imgWrap.className = 'product-image-wrap';
         const img = document.createElement('img');
@@ -2692,12 +3059,16 @@ const Card = (function() {
         imgWrap.appendChild(img);
         card.appendChild(imgWrap);
 
+        // تفاصيل الكارت (Card Body)
+        const body = document.createElement('div');
+        body.className = 'card-body';
+
         const code = document.createElement('div');
         code.className = 'code';
         code.textContent = `كود: ${item.id}`;
-        card.appendChild(code);
+        body.appendChild(code);
 
-        // 🔥 [v5.2.0] شارات تفاعلية قابلة للنقر للفلترة السريعة
+        // شارات التصنيف والماركة التفاعلية
         if (item.category || item.brand) {
             const metaWrap = document.createElement('div');
             metaWrap.className = 'card-meta-badges';
@@ -2731,19 +3102,33 @@ const Card = (function() {
                 });
                 metaWrap.appendChild(brandBadge);
             }
-            card.appendChild(metaWrap);
+            body.appendChild(metaWrap);
         }
 
-        const nameBtn = document.createElement('button');
-        nameBtn.type = 'button';
+        // اسم مختصر إذا وجد
+        if (item.shortName && item.shortName !== item.name) {
+            const shortNameEl = document.createElement('div');
+            shortNameEl.className = 'card-short-name';
+            shortNameEl.textContent = item.shortName;
+            body.appendChild(shortNameEl);
+        }
+
+        const nameBtn = document.createElement('h3');
         nameBtn.className = 'card-title-btn';
         if (searchQuery) {
             nameBtn.innerHTML = Utils.highlightText(item.name, searchQuery);
         } else {
             nameBtn.textContent = item.name;
         }
-        nameBtn.setAttribute('aria-label', `عرض تفاصيل ${item.name}`);
-        card.appendChild(nameBtn);
+        body.appendChild(nameBtn);
+
+        // مقتطف الوصف
+        if (item.description) {
+            const descEl = document.createElement('p');
+            descEl.className = 'card-desc-snippet';
+            descEl.textContent = item.description.replace(/•/g, '').replace(/\n/g, ' ').trim();
+            body.appendChild(descEl);
+        }
 
         const prices = document.createElement('div');
         prices.className = 'prices';
@@ -2755,18 +3140,20 @@ const Card = (function() {
         inst.textContent = `${Utils.formatNumber(item.installPrice)} ج.م قسط`;
         prices.appendChild(cash);
         prices.appendChild(inst);
-        card.appendChild(prices);
+        body.appendChild(prices);
 
         const qty = document.createElement('div');
         qty.className = 'qty';
         const low = item.available && item.quantity <= CONFIG.LOW_STOCK_THRESHOLD;
         qty.innerHTML = `الكمية: <strong class="${low ? 'low-stock' : ''}">${Utils.formatNumber(item.quantity)}</strong>`;
-        card.appendChild(qty);
+        body.appendChild(qty);
 
         const status = document.createElement('span');
         status.className = 'status-badge ' + (item.available ? 'available' : 'unavailable');
         status.textContent = item.available ? '✓ متوفر' : '✗ غير متوفر';
-        card.appendChild(status);
+        body.appendChild(status);
+
+        card.appendChild(body);
 
         const actions = document.createElement('div');
         actions.className = 'card-actions';
@@ -2782,7 +3169,10 @@ const Card = (function() {
         waBtn.setAttribute('aria-label', canOrder ? `طلب ${item.name} عبر واتساب` : `${item.name} غير متاح للطلب`);
         if (canOrder) {
             const defaultPayType = (Cart.getType() === 'installment' && item.installPrice > 0) ? 'installment' : 'cash';
-            waBtn.addEventListener('click', () => WhatsApp.order(item, defaultPayType));
+            waBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                WhatsApp.order(item, defaultPayType);
+            });
         }
         actions.appendChild(waBtn);
 
@@ -2793,7 +3183,8 @@ const Card = (function() {
         cartBtn.textContent = inCart ? 'في السلة' : 'أضف';
         cartBtn.setAttribute('aria-label', inCart ? `${item.name} في السلة` : `إضافة ${item.name} للسلة`);
         cartBtn.setAttribute('aria-pressed', inCart ? 'true' : 'false');
-        cartBtn.addEventListener('click', () => {
+        cartBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const added = Cart.toggle(item);
             cartBtn.textContent = added ? 'في السلة' : 'أضف';
             cartBtn.classList.toggle('in-cart', added);
@@ -2810,20 +3201,29 @@ const Card = (function() {
         wishBtn.innerHTML = svgWishlist(inWish);
         wishBtn.setAttribute('aria-label', inWish ? `إزالة ${item.name} من المفضلة` : `إضافة ${item.name} للمفضلة`);
         wishBtn.setAttribute('aria-pressed', inWish ? 'true' : 'false');
-        wishBtn.addEventListener('click', () => {
+        wishBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             const added = Wishlist.toggle(item);
             wishBtn.innerHTML = svgWishlist(added);
             wishBtn.classList.toggle('in-wishlist', added);
             wishBtn.setAttribute('aria-pressed', added ? 'true' : 'false');
             wishBtn.setAttribute('aria-label', added ? `إزالة ${item.name} من المفضلة` : `إضافة ${item.name} للمفضلة`);
             Toast.show(added ? 'أُضيف للمفضلة' : 'حُذف من المفضلة', added ? 'success' : 'warning');
+            if (added && window.App && window.App.openWishlistSidebar) {
+                window.App.openWishlistSidebar();
+            }
         });
         actions.appendChild(wishBtn);
 
         card.appendChild(actions);
 
-        // فتح نافذة تفاصيل المنتج
-        nameBtn.addEventListener('click', () => Modal.open(item));
+        // 🔥 [v5.3.0] النقر على أي مكان في كارت المنتج يفتح التفاصيل
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.card-actions') || e.target.closest('.meta-badge.clickable')) {
+                return;
+            }
+            Modal.open(item);
+        });
 
         return card;
     }
@@ -3017,25 +3417,33 @@ const App = (function() {
     const brandSelect = document.getElementById('brandSelect');
 
     function populateDynamicFilters(items) {
-        const categories = Array.from(new Set(items.map(i => i.category).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ar'));
-        const brands = Array.from(new Set(items.map(i => i.brand).filter(Boolean))).sort((a, b) => a.localeCompare(b, 'ar'));
+        const catCountMap = {};
+        const brandCountMap = {};
+        items.forEach(i => {
+            if (i.category) catCountMap[i.category] = (catCountMap[i.category] || 0) + 1;
+            if (i.brand) brandCountMap[i.brand] = (brandCountMap[i.brand] || 0) + 1;
+        });
+
+        // ترتيب الأقسام تنازلياً حسب عدد المنتجات المتوفرة لتسهيل الوصول
+        const categories = Object.keys(catCountMap).sort((a, b) => catCountMap[b] - catCountMap[a]);
+        const brands = Object.keys(brandCountMap).sort((a, b) => a.localeCompare(b, 'ar'));
 
         if (categorySelect) {
             const currentCat = state.filters.category || 'all';
             categorySelect.innerHTML = '<option value="all">كل التصنيفات (' + categories.length + ')</option>' +
-                categories.map(c => `<option value="${Utils.escapeHtml(c)}">${Utils.escapeHtml(c)}</option>`).join('');
+                categories.map(c => `<option value="${Utils.escapeHtml(c)}">${Utils.escapeHtml(c)} (${catCountMap[c]})</option>`).join('');
             categorySelect.value = categories.includes(currentCat) ? currentCat : 'all';
         }
         if (brandSelect) {
             const currentBrand = state.filters.brand || 'all';
             brandSelect.innerHTML = '<option value="all">كل الماركات (' + brands.length + ')</option>' +
-                brands.map(b => `<option value="${Utils.escapeHtml(b)}">${Utils.escapeHtml(b)}</option>`).join('');
+                brands.map(b => `<option value="${Utils.escapeHtml(b)}">${Utils.escapeHtml(b)} (${brandCountMap[b]})</option>`).join('');
             brandSelect.value = brands.includes(currentBrand) ? currentBrand : 'all';
         }
         if (categoryBar) {
             const currentCat = state.filters.category || 'all';
-            categoryBar.innerHTML = `<button type="button" class="chip ${currentCat === 'all' ? 'active' : ''}" data-cat="all">الكل</button>` +
-                categories.map(c => `<button type="button" class="chip ${currentCat === c ? 'active' : ''}" data-cat="${Utils.escapeHtml(c)}">${Utils.escapeHtml(c)}</button>`).join('');
+            categoryBar.innerHTML = `<button type="button" class="chip ${currentCat === 'all' ? 'active' : ''}" data-cat="all">الكل <span class="chip-count">${items.length}</span></button>` +
+                categories.map(c => `<button type="button" class="chip ${currentCat === c ? 'active' : ''}" data-cat="${Utils.escapeHtml(c)}">${Utils.escapeHtml(c)} <span class="chip-count">${catCountMap[c]}</span></button>`).join('');
         }
     }
     const priceMin = document.getElementById('priceMin');
@@ -3105,6 +3513,8 @@ const App = (function() {
                 grid.appendChild(empty);
                 renderLoadMoreButton();
                 updateTotalBadge();
+                // 🔥 [FIX-CRITICAL] تحرير الراية حتى لا يتجمد البحث عند مسح الحروف!
+                state.isRendering = false;
                 return;
             }
 
@@ -3464,7 +3874,112 @@ const App = (function() {
         observer.observe(sentinel);
     }
 
-    /* -------- Cart Sidebar -------- */
+        /* -------- View Switcher (Grid vs List) [v5.3.0] -------- */
+    const viewGridBtn = document.getElementById('viewGrid');
+    const viewListBtn = document.getElementById('viewList');
+
+    function setViewMode(mode) {
+        if (!grid) return;
+        const isList = (mode === 'list');
+        grid.classList.toggle('list-view', isList);
+        if (viewGridBtn) viewGridBtn.classList.toggle('active', !isList);
+        if (viewListBtn) viewListBtn.classList.toggle('active', isList);
+        Utils.safeSetItem('preferred_view', mode);
+    }
+
+    if (viewGridBtn) viewGridBtn.addEventListener('click', () => setViewMode('grid'));
+    if (viewListBtn) viewListBtn.addEventListener('click', () => setViewMode('list'));
+
+    // استرجاع وضع العرض المحفوظ
+    const savedView = Utils.safeGetItem('preferred_view', 'grid');
+    setViewMode(savedView);
+
+    /* -------- Category Bar Animated Scroll Buttons -------- */
+    const catScrollRight = document.getElementById('catScrollRight');
+    const catScrollLeft = document.getElementById('catScrollLeft');
+    if (catScrollRight && categoryBar) {
+        catScrollRight.addEventListener('click', () => {
+            categoryBar.scrollBy({ left: 240, behavior: 'smooth' });
+        });
+    }
+    if (catScrollLeft && categoryBar) {
+        catScrollLeft.addEventListener('click', () => {
+            categoryBar.scrollBy({ left: -240, behavior: 'smooth' });
+        });
+    }
+
+    /* -------- Wishlist Sidebar & Overlay [v5.3.0] -------- */
+    const wishlistSidebar = document.getElementById('wishlistSidebar');
+    const wishlistOverlay = document.getElementById('wishlistOverlay');
+    const wishlistCloseBtn = document.getElementById('wishlistClose');
+
+    function openWishlistSidebar() {
+        Wishlist.render();
+        if (wishlistSidebar) wishlistSidebar.classList.add('open');
+        if (wishlistOverlay) {
+            wishlistOverlay.classList.add('open');
+            wishlistOverlay.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+    function closeWishlistSidebar() {
+        if (wishlistSidebar) wishlistSidebar.classList.remove('open');
+        if (wishlistOverlay) {
+            wishlistOverlay.classList.remove('open');
+            wishlistOverlay.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    if (wishlistCloseBtn) wishlistCloseBtn.addEventListener('click', closeWishlistSidebar);
+    if (wishlistOverlay) wishlistOverlay.addEventListener('click', closeWishlistSidebar);
+
+    // إضافة جميع المفضلة للسلة
+    const addAllFavBtn = document.getElementById('wishlistAddAllToCart');
+    if (addAllFavBtn) {
+        addAllFavBtn.addEventListener('click', () => {
+            const list = Wishlist.getAll();
+            if (list.length === 0) {
+                Toast.show('المفضلة فارغة', 'warning');
+                return;
+            }
+            let count = 0;
+            list.forEach(item => {
+                if (item.available) {
+                    Cart.add(item, false);
+                    count++;
+                }
+            });
+            Cart.render();
+            closeWishlistSidebar();
+            openCartSidebar();
+            Toast.show(`تمت إضافة ${count} منتج إلى السلة بنجاح!`, 'success');
+        });
+    }
+
+    // إفراغ المفضلة
+    const clearFavBtn = document.getElementById('wishlistClearAll');
+    if (clearFavBtn) {
+        clearFavBtn.addEventListener('click', async () => {
+            if (Wishlist.getAll().length === 0) return;
+            const ok = await Confirm.ask('إفراغ المفضلة', 'هل أنت متأكد من مسح جميع المنتجات من المفضلة؟', { danger: true });
+            if (ok) {
+                Wishlist.clearAll();
+                Toast.show('تم إفراغ قائمة المفضلة', 'warning');
+            }
+        });
+    }
+
+    /* -------- Cart Sidebar Open/Close Helpers -------- */
+    function openCartSidebar() {
+        Cart.render();
+        if (cartSidebar) cartSidebar.classList.add('open');
+        if (cartOverlay) {
+            cartOverlay.classList.add('open');
+            cartOverlay.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+/* -------- Cart Sidebar -------- */
     const cartSidebar = document.getElementById('cartSidebar');
     const cartOverlay = document.getElementById('cartOverlay');
 
@@ -3611,7 +4126,7 @@ const App = (function() {
         renderPage(false);
     }
 
-    document.getElementById('wishlistBtn').addEventListener('click', () => toggleWishlistView());
+    document.getElementById('wishlistBtn').addEventListener('click', () => openWishlistSidebar());
 
     // 🔥 [v5.2.0] دعم الروابط المباشرة (Deep Linking)
     function handleDeepLinking() {
@@ -3696,7 +4211,7 @@ const App = (function() {
     }
     const mobWish = document.getElementById('mobNavWishlist');
     if (mobWish) {
-        mobWish.addEventListener('click', () => toggleWishlistView());
+        mobWish.addEventListener('click', () => openWishlistSidebar());
     }
     const mobCart = document.getElementById('mobNavCart');
     if (mobCart) {
@@ -3730,7 +4245,9 @@ const App = (function() {
         refreshFromServer,
         setCategoryFilter,
         setBrandFilter,
-        toggleWishlistView
+        toggleWishlistView,
+        openWishlistSidebar,
+        openCartSidebar
     };
 })();
 
