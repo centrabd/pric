@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="كتالوج سنتر عبدالله - الإصدار 3.0.0">
+<meta name="description" content="كتالوج سنتر عبد الله السويس - بيع نقدي وتقسيط - الإصدار 5.2.0">
 <meta name="theme-color" content="#2980b9">
 <meta name="color-scheme" content="light dark">
 
@@ -13,9 +13,9 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 
 <!-- ✅ FIX #47-52: CSP مصحح + إزالة meta التي لا تعمل -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ibb.co https://drive.google.com https://lh3.googleusercontent.com https://res.cloudinary.com https://encrypted-tbn0.gstatic.com https://images.unsplash.com https://cdn.shopify.com https://files.easy-orders.net; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://wa.me https://api.whatsapp.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://script.google.com https://script.googleusercontent.com https://wa.me https://api.whatsapp.com;">
 
-<title>كتالوج سنتر عبدالله - الإصدار 3.0.0</title>
+<title>كتالوج سنتر عبد الله السويس - بيع نقدي وتقسيط - الإصدار 5.2.0</title>
 
 <style>
 /* ================================================================
@@ -1045,6 +1045,99 @@ body {
 }
 .brand-footer a:hover { text-decoration: underline; }
 
+
+/* ===== [v5.2.0] دعم الثيم اليدوي والوضع الليلي المحفوظ ===== */
+[data-theme="dark"] {
+    --bg-main: #14171c; --bg-card: #1f242c;
+    --bg-input: #2a303a; --bg-muted: #323842;
+    --bg-badge: #3a414d;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e0;
+    --text-muted: #a0aec0;
+    --border-color: #4a5568;
+}
+[data-theme="light"] {
+    --bg-main: #f0f4f9; --bg-card: #ffffff;
+    --bg-input: #f8fafc; --bg-muted: #e8ecf1;
+    --bg-badge: #dde4ed;
+    --text-primary: #1a2634;
+    --text-secondary: #3d4852;
+    --text-muted: #5a6772;
+    --border-color: #d5dce3;
+}
+
+/* شارات تفاعلية قابلة للنقر */
+.meta-badge.clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease;
+    border: none;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+}
+.meta-badge.clickable:hover {
+    transform: translateY(-1px);
+    background: var(--color-primary);
+    color: #fff !important;
+}
+
+/* زر المفضلة النشط */
+.header-btn.active, .mobile-nav-btn.active {
+    background: var(--color-danger-light) !important;
+    color: #fff !important;
+    border-color: var(--color-danger-light) !important;
+}
+.header-btn.active svg, .mobile-nav-btn.active svg {
+    fill: currentColor;
+}
+
+/* زر مشاركة المنتج */
+.btn-share {
+    background: var(--bg-muted);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+.btn-share:hover {
+    background: var(--border-color);
+}
+
+/* شريط التنقل السفلي للهواتف */
+.mobile-bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.08);
+    z-index: 9990;
+    padding: 6px 12px;
+    justify-content: space-around;
+    align-items: center;
+}
+@media (max-width: 768px) {
+    .mobile-bottom-nav { display: flex; }
+    body { padding-bottom: 70px; }
+}
+.mobile-nav-btn {
+    background: none; border: none;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 3px; font-size: 11px; font-weight: 700;
+    color: var(--text-secondary);
+    cursor: pointer; font-family: inherit;
+    padding: 4px 8px; border-radius: 8px;
+    position: relative;
+    transition: color 0.15s ease;
+}
+.mobile-nav-btn svg { width: 20px; height: 20px; }
+.mobile-nav-btn:hover, .mobile-nav-btn.active { color: var(--color-primary); }
+.mobile-nav-badge {
+    position: absolute; top: 0; right: 10px;
+    background: var(--color-danger-light); color: #fff;
+    border-radius: 10px; padding: 1px 5px;
+    font-size: 10px; font-weight: 800; min-width: 16px; text-align: center;
+}
+
 </style>
 </head>
 <body>
@@ -1076,6 +1169,9 @@ body {
             </span>
         </h1>
         <div class="header-actions">
+            <button class="header-btn" id="themeToggle" aria-label="تبديل المظهر (ليلي / نهاري)" type="button" title="تبديل الوضع الليلي">
+                <span id="themeIcon">🌙</span>
+            </button>
             <button class="header-btn" id="wishlistBtn" aria-label="عرض قائمة المفضلة">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 المفضلة <span class="badge-count" id="wishlistCount" aria-label="عدد المنتجات في المفضلة">0</span>
@@ -1278,6 +1374,7 @@ body {
             <button class="btn-primary" id="modalWhatsappInst" type="button" style="background: var(--color-warning-light);">اطلب تقسيط</button>
             <button class="btn-secondary" id="modalCart" type="button">السلة</button>
             <button class="btn-secondary" id="modalWishlist" type="button">المفضلة</button>
+            <button class="btn-secondary btn-share" id="modalShareBtn" type="button" title="مشاركة رابط المنتج">مشاركة 🔗</button>
         </div>
     </div>
 </div>
@@ -1299,28 +1396,26 @@ body {
    [JS-01] CONFIG
    ================================================================ */
 const CONFIG = Object.freeze({
-    APP_NAME: 'كتالوج سنتر عبدالله',
-    APP_VERSION: '3.0.0',
-    // ✅ FIX #3 (audit): يجب أن يطابق admin.html - استبدل هذا بالـ URL الصحيح
+    APP_NAME: 'كتالوج سنتر عبد الله السويس',
+    APP_VERSION: '5.2.0',
     API_URL: 'https://script.google.com/macros/s/AKfycbzMiy090MgUPuRPjsmlX_VTJhO_Nu75aBOWi1C6z49ToXs6iKxLtYH2OJRP903SIUBq/exec',
     WHATSAPP_PHONE: '201065786569',
     PAGE_SIZE: 25,
-    // ✅ FIX #4 (audit): pagination
-    API_PAGE_SIZE: 500,
+    API_PAGE_SIZE: 1000,
     API_MAX_PAGES: 20,
     FETCH_TIMEOUT: 20000,
     DB_NAME: 'catalog_db',
-    // ✅ FIX #53: رفع الإصدار مع migration بدل الحذف
-    DB_VERSION: 4,
+    DB_VERSION: 5,
     DB_STORE: 'products',
     DB_META_STORE: 'meta',
     REVALIDATE_THRESHOLD: 30 * 60 * 1000,
-    CART_KEY: 'cart_v5_items',
-    CART_TYPE_KEY: 'cart_v5_type',
-    CART_PLAN_KEY: 'cart_v5_plan',
-    WISHLIST_KEY: 'wishlist_v5',
+    CART_KEY: 'cart_v52_items',
+    CART_TYPE_KEY: 'cart_v52_type',
+    CART_PLAN_KEY: 'cart_v52_plan',
+    WISHLIST_KEY: 'wishlist_v52',
+    THEME_KEY: 'theme_v52',
     WISHLIST_MAX: 500,
-    SEARCH_DEBOUNCE: 300,
+    SEARCH_DEBOUNCE: 250,
     MAX_TOASTS: 4,
     LOW_STOCK_THRESHOLD: 3,
     INSTALLMENT_MIN_TOTAL: 2500,
@@ -1330,9 +1425,14 @@ const CONFIG = Object.freeze({
     INSTALLMENT_MAX_DAYS: 450,
     RENDER_CHUNK_SIZE: 10,
     IMG_WHITELIST: [
-        'i.ibb.co', 'drive.google.com', 'lh3.googleusercontent.com',
-        'res.cloudinary.com', 'images.unsplash.com', 'cdn.shopify.com',
-        'encrypted-tbn0.gstatic.com', 'files.easy-orders.net'
+        'i.ibb.co', 'ibb.co', 'drive.google.com', 'lh3.googleusercontent.com',
+        'googleusercontent.com', 'res.cloudinary.com', 'images.unsplash.com',
+        'cdn.shopify.com', 'encrypted-tbn0.gstatic.com', 'files.easy-orders.net',
+        'easy-orders.net', 'myeasyorders.com', 'elarabygroup.com',
+        'wuiltstore.com', 'assets.wuiltstore.com', 'sokany-eg.com', 'sokany.com',
+        'homzmart.net', 'eg-rv.homzmart.net', 'roxystore.net', 'alasly.net',
+        'tv-it.com', 'homyonline.com', 'postimages.org', 'postimg.cc',
+        'imgur.com', 'i.imgur.com', 'media-amazon.com', 'noon.com'
     ]
 });
 
@@ -1342,13 +1442,11 @@ const CONFIG = Object.freeze({
 const Utils = (function() {
     'use strict';
 
-    // ✅ FIX #68: cache للـ formatter
     const _numberFormatter = new Intl.NumberFormat('ar-EG');
     const _escapeDiv = document.createElement('div');
 
     function escapeHtml(text) {
         if (text === undefined || text === null) return '';
-        // ✅ FIX #68: إعادة استخدام نفس الـ div
         _escapeDiv.textContent = String(text);
         return _escapeDiv.innerHTML;
     }
@@ -1362,7 +1460,6 @@ const Utils = (function() {
     }
 
     function formatNumber(n) {
-        // ✅ FIX #77: استخدام formatter مخزّن
         return _numberFormatter.format(Number(n) || 0);
     }
 
@@ -1393,6 +1490,21 @@ const Utils = (function() {
         while (el && el.firstChild) el.removeChild(el.firstChild);
     }
 
+    // 🔥 [v5.2.0] خوارزمية تطبيع النصوص العربية الشاملة
+    function normalizeArabic(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/[\u064B-\u065F\u0670]/g, '') // إزالة التشكيل والتنوين
+            .replace(/ـ/g, '')                     // إزالة التطويل (الكشيدة)
+            .replace(/[أإآٱ]/g, 'ا')               // توحيد الألفات
+            .replace(/ة/g, 'ه')                    // توحيد التاء المربوطة والهاء
+            .replace(/[ىي]/g, 'ي')                 // توحيد الياء والألف المقصورة
+            .replace(/ؤ/g, 'و')
+            .replace(/ئ/g, 'ي')
+            .toLowerCase()
+            .trim();
+    }
+
     function highlightText(text, query) {
         if (!query || !text) return escapeHtml(text);
         const escaped = escapeHtml(text);
@@ -1401,7 +1513,6 @@ const Utils = (function() {
         return escaped.replace(regex, '<mark>$1</mark>');
     }
 
-    // ✅ FIX #69: hash أسرع
     function itemsHash(items) {
         if (!Array.isArray(items) || items.length === 0) return 'empty';
         let acc = items.length;
@@ -1437,18 +1548,32 @@ const Utils = (function() {
         return setTimeout(fn, 0);
     }
 
-    // ✅ FIX #32: تحقق من النطاق المسموح للصور
+    // 🔥 [v5.2.0] تحويل روابط مشاركة Google Drive لروابط صور مباشرة
+    function formatDriveImageUrl(url) {
+        if (!url || typeof url !== 'string') return '';
+        const trimmed = url.trim();
+        const match = trimmed.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|id=)([a-zA-Z0-9_-]{25,})/);
+        if (match && match[1]) {
+            return 'https://lh3.googleusercontent.com/d/' + match[1];
+        }
+        return trimmed;
+    }
+
+    // 🔥 [v5.2.0] فحص وتعقيم روابط الصور مع دعم النطاقات والصور المباشرة
     function isAllowedImageUrl(url) {
-        if (!url || !/^https:\/\//i.test(url)) return false;
+        if (!url || !/^https?:\/\//i.test(url)) return false;
         try {
-            const host = new URL(url).hostname.toLowerCase();
-            return CONFIG.IMG_WHITELIST.some(allowed =>
+            const converted = formatDriveImageUrl(url);
+            const host = new URL(converted).hostname.toLowerCase();
+            const ok = CONFIG.IMG_WHITELIST.some(allowed =>
                 host === allowed || host.endsWith('.' + allowed)
             );
+            if (ok) return true;
+            // السماح بأي صورة مباشرة بصيغة قياسية
+            return /\.(jpg|jpeg|png|webp|avif|gif|svg)(\?.*)?$/i.test(new URL(converted).pathname);
         } catch (e) { return false; }
     }
 
-    // ✅ FIX #84: escape لماركداون واتساب
     function escapeWhatsappMarkdown(text) {
         return String(text || '').replace(/([*_~`])/g, '\\$1');
     }
@@ -1456,14 +1581,12 @@ const Utils = (function() {
     return {
         escapeHtml, debounce, formatNumber, toNumber,
         safeGetItem, safeSetItem, safeRemove, clearElement,
-        highlightText, itemsHash, timeAgo,
-        scheduleIdle, isAllowedImageUrl, escapeWhatsappMarkdown
+        normalizeArabic, highlightText, itemsHash, timeAgo,
+        scheduleIdle, formatDriveImageUrl, isAllowedImageUrl,
+        escapeWhatsappMarkdown
     };
 })();
 
-/* ================================================================
-   [JS-03] DB - ✅ FIX #53: migration بدل الحذف
-   ================================================================ */
 const DB = (function() {
     'use strict';
     let dbInstance = null;
@@ -1633,6 +1756,7 @@ const State = (function() {
             priceMin: null, priceMax: null,
             qtyMin: null, qtyMax: null, lowStockOnly: false
         },
+        showingWishlistOnly: false,
         sort: 'priority',
         order: 'asc',
         // ✅ FIX #63: قائمة AbortControllers منفصلة
@@ -1838,12 +1962,14 @@ const Wishlist = (function() {
         if (changed) save(fresh);
     }
     function updateBadge() {
+        const count = getAll().length;
         const el = document.getElementById('wishlistCount');
         if (el) {
-            const count = getAll().length;
             el.textContent = count;
             el.setAttribute('aria-label', `عدد المنتجات في المفضلة: ${count}`);
         }
+        const mobEl = document.getElementById('mobWishlistCount');
+        if (mobEl) mobEl.textContent = count;
     }
     return { getAll, isIn, toggle, updateBadge, resync };
 })();
@@ -2001,12 +2127,14 @@ const Cart = (function() {
     }
 
     function updateBadge() {
+        const count = getAll().length;
         const el = document.getElementById('cartCount');
         if (el) {
-            const count = getAll().length;
             el.textContent = count;
             el.setAttribute('aria-label', `عدد المنتجات في السلة: ${count}`);
         }
+        const mobEl = document.getElementById('mobCartCount');
+        if (mobEl) mobEl.textContent = count;
     }
 
     function render() {
@@ -2239,7 +2367,7 @@ const Cart = (function() {
         if (type === 'installment' && calc.meetsMinimum) {
             const freqLabel = calc.frequency === 'daily' ? 'يومي' : 'شهري';
             const periodLabel = calc.frequency === 'daily' ? 'يوم' : 'شهر';
-            msg += `\n*خطة التقسيط:*\n`;
+            msg += `\n*خطة التقسيط (مشتري + ضامن بالسويس):*\n`;
             msg += `- النوع: ${freqLabel}\n`;
             msg += `- المدة: ${calc.duration} ${periodLabel}\n`;
             msg += `- القسط: ${Math.round(calc.payment)} ج.م / ${periodLabel}\n`;
@@ -2293,6 +2421,7 @@ const WhatsApp = (function() {
         msg += `الكود: ${item.id}\n`;
         msg += `نوع الدفع: ${typeLabel}\n`;
         msg += `السعر: ${price} ج.م\n`;
+        if (type === 'installment') msg += '📌 سياسة التقسيط: مشتري + ضامن داخل محافظة السويس\n';
         return msg;
     }
 
@@ -2453,16 +2582,19 @@ const FilterSort = (function() {
     function apply(items, filters, sort, order) {
         let result = items.slice();
 
+        // 🔥 [v5.2.0] محرك البحث العربي الذكي مع تقسيم الكلمات (Tokenization)
         if (filters.search) {
-            const q = filters.search.toLowerCase().trim();
-            result = result.filter(i =>
-                i.id.toLowerCase().includes(q) ||
-                i.name.toLowerCase().includes(q) ||
-                (i.category && i.category.toLowerCase().includes(q)) ||
-                (i.brand && i.brand.toLowerCase().includes(q)) ||
-                (i.description && i.description.toLowerCase().includes(q))
-            );
+            const rawTokens = filters.search.trim().split(/\s+/).filter(Boolean);
+            const normTokens = rawTokens.map(Utils.normalizeArabic);
+
+            result = result.filter(item => {
+                const targetText = Utils.normalizeArabic(
+                    `${item.id} ${item.name} ${item.category || ''} ${item.brand || ''} ${item.description || ''}`
+                );
+                return normTokens.every(tok => targetText.includes(tok));
+            });
         }
+
         if (filters.category && filters.category !== 'all') {
             result = result.filter(i => i.category === filters.category);
         }
@@ -2471,8 +2603,18 @@ const FilterSort = (function() {
         }
         if (filters.availability === 'available') result = result.filter(i => i.available);
         else if (filters.availability === 'unavailable') result = result.filter(i => !i.available);
-        if (filters.priceMin != null) result = result.filter(i => i.cashPrice >= filters.priceMin);
-        if (filters.priceMax != null) result = result.filter(i => i.cashPrice <= filters.priceMax);
+
+        // 🔥 [v5.2.0] فلترة السعر حسب نوع الدفع النشط
+        const isInstallmentMode = (Cart.getType() === 'installment');
+        const priceField = isInstallmentMode ? 'installPrice' : 'cashPrice';
+
+        if (filters.priceMin != null) {
+            result = result.filter(i => (i[priceField] > 0 ? i[priceField] : i.cashPrice) >= filters.priceMin);
+        }
+        if (filters.priceMax != null) {
+            result = result.filter(i => (i[priceField] > 0 ? i[priceField] : i.cashPrice) <= filters.priceMax);
+        }
+
         if (filters.qtyMin != null) result = result.filter(i => i.quantity >= filters.qtyMin);
         if (filters.qtyMax != null) result = result.filter(i => i.quantity <= filters.qtyMax);
         if (filters.lowStockOnly) result = result.filter(i => i.available && i.quantity <= CONFIG.LOW_STOCK_THRESHOLD);
@@ -2504,14 +2646,11 @@ const FilterSort = (function() {
     return { apply };
 })();
 
-/* ================================================================
-   [JS-12] CARD - ✅ FIX #70: event delegation
-   ================================================================ */
 const Card = (function() {
     'use strict';
 
     const PLACEHOLDER = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#bdc3c7" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>'
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="2"/><path d="M21 15l-5-5L5 21"/><text x="12" y="19" font-size="3" fill="#64748b" text-anchor="middle" font-family="sans-serif">سنتر عبد الله</text></svg>'
     );
 
     function svgWishlist(filled) {
@@ -2534,42 +2673,62 @@ const Card = (function() {
             card.appendChild(priority);
         }
 
-        if (item.image) {
-            const imgWrap = document.createElement('div');
-            imgWrap.className = 'product-image-wrap';
-            const img = document.createElement('img');
-            img.className = 'product-image';
-            img.loading = 'lazy';
-            img.decoding = 'async';
-            img.alt = item.name || 'صورة المنتج';
-            img.draggable = false;
-            img.src = item.image;
-            img.addEventListener('error', () => {
-                img.src = PLACEHOLDER;
-                img.alt = 'صورة غير متاحة';
-            });
-            imgWrap.appendChild(img);
-            card.appendChild(imgWrap);
-        }
+        // 🔥 [v5.2.0] توحيد حاوية الصورة لمنع تشوه ارتفاعات البطاقات
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'product-image-wrap';
+        const img = document.createElement('img');
+        img.className = 'product-image';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.alt = item.name || 'صورة المنتج';
+        img.draggable = false;
+
+        const effectiveImage = item.image ? Utils.formatDriveImageUrl(item.image) : PLACEHOLDER;
+        img.src = effectiveImage;
+        img.addEventListener('error', () => {
+            img.src = PLACEHOLDER;
+            img.alt = 'صورة غير متاحة';
+        });
+        imgWrap.appendChild(img);
+        card.appendChild(imgWrap);
 
         const code = document.createElement('div');
         code.className = 'code';
         code.textContent = `كود: ${item.id}`;
         card.appendChild(code);
 
+        // 🔥 [v5.2.0] شارات تفاعلية قابلة للنقر للفلترة السريعة
         if (item.category || item.brand) {
             const metaWrap = document.createElement('div');
             metaWrap.className = 'card-meta-badges';
             if (item.category) {
-                const catBadge = document.createElement('span');
-                catBadge.className = 'meta-badge';
+                const catBadge = document.createElement('button');
+                catBadge.type = 'button';
+                catBadge.className = 'meta-badge clickable';
                 catBadge.textContent = item.category;
+                catBadge.title = `فلترة حسب قسم: ${item.category}`;
+                catBadge.setAttribute('aria-label', `عرض منتجات تصنيف ${item.category}`);
+                catBadge.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (window.App && window.App.setCategoryFilter) {
+                        window.App.setCategoryFilter(item.category);
+                    }
+                });
                 metaWrap.appendChild(catBadge);
             }
             if (item.brand) {
-                const brandBadge = document.createElement('span');
-                brandBadge.className = 'meta-badge brand-badge';
+                const brandBadge = document.createElement('button');
+                brandBadge.type = 'button';
+                brandBadge.className = 'meta-badge brand-badge clickable';
                 brandBadge.textContent = item.brand;
+                brandBadge.title = `فلترة حسب علامة: ${item.brand}`;
+                brandBadge.setAttribute('aria-label', `عرض منتجات ماركة ${item.brand}`);
+                brandBadge.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (window.App && window.App.setBrandFilter) {
+                        window.App.setBrandFilter(item.brand);
+                    }
+                });
                 metaWrap.appendChild(brandBadge);
             }
             card.appendChild(metaWrap);
@@ -2622,7 +2781,7 @@ const Card = (function() {
         waBtn.textContent = canOrder ? 'اطلب' : 'غير متاح';
         waBtn.setAttribute('aria-label', canOrder ? `طلب ${item.name} عبر واتساب` : `${item.name} غير متاح للطلب`);
         if (canOrder) {
-            const defaultPayType = item.cashPrice > 0 ? 'cash' : 'installment';
+            const defaultPayType = (Cart.getType() === 'installment' && item.installPrice > 0) ? 'installment' : 'cash';
             waBtn.addEventListener('click', () => WhatsApp.order(item, defaultPayType));
         }
         actions.appendChild(waBtn);
@@ -2663,7 +2822,7 @@ const Card = (function() {
 
         card.appendChild(actions);
 
-        // اسم الزر لفتح الـ modal
+        // فتح نافذة تفاصيل المنتج
         nameBtn.addEventListener('click', () => Modal.open(item));
 
         return card;
@@ -2672,9 +2831,6 @@ const Card = (function() {
     return { create };
 })();
 
-/* ================================================================
-   [JS-13] MODAL - 🔥 FIX #2 (audit): خيارات كاش/قسط
-   ================================================================ */
 const Modal = (function() {
     'use strict';
     const modal = document.getElementById('productModal');
@@ -2697,7 +2853,8 @@ const Modal = (function() {
         waInstBtn: document.getElementById('modalWhatsappInst'),
         cartBtn: document.getElementById('modalCart'),
         wishBtn: document.getElementById('modalWishlist'),
-        closeBtn: document.getElementById('modalClose')
+        closeBtn: document.getElementById('modalClose'),
+        shareBtn: document.getElementById('modalShareBtn')
     };
     let lastFocused = null;
 
@@ -2793,6 +2950,23 @@ const Modal = (function() {
                 els.wishBtn.textContent = added ? '✓ في المفضلة' : 'إضافة للمفضلة';
                 els.wishBtn.setAttribute('aria-label', added ? `${item.name} في المفضلة` : `إضافة ${item.name} للمفضلة`);
                 Toast.show(added ? 'أُضيف للمفضلة' : 'حُذف من المفضلة', added ? 'success' : 'warning');
+            };
+        }
+
+        
+        if (els.shareBtn) {
+            els.shareBtn.onclick = () => {
+                const url = new URL(window.location.href);
+                url.searchParams.set('product', item.id);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url.toString()).then(() => {
+                        Toast.show('✓ تم نسخ رابط المنتج للمشاركة 🔗', 'success');
+                    }).catch(() => {
+                        prompt('انسخ رابط المنتج المباشر:', url.toString());
+                    });
+                } else {
+                    prompt('انسخ رابط المنتج المباشر:', url.toString());
+                }
             };
         }
 
@@ -3270,7 +3444,7 @@ const App = (function() {
         sortSelect.value = 'priority';
         orderSelect.value = 'desc';
         state.sort = 'priority';
-        state.order = 'asc';
+        state.order = 'desc';
         applyFiltersAndSort();
         Toast.show('تم إعادة تعيين الفلاتر', 'success');
     });
@@ -3375,14 +3549,163 @@ const App = (function() {
         WhatsApp.orderCart();
     });
 
-    document.getElementById('wishlistBtn').addEventListener('click', () => {
+    /* -------- Theme & Wishlist & Navigation Handlers (v5.2.0) -------- */
+    function initTheme() {
+        const saved = Utils.safeGetItem(CONFIG.THEME_KEY, null);
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        applyTheme(theme);
+    }
+
+    function applyTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+        const icon = document.getElementById('themeIcon');
+        if (icon) icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        Utils.safeSetItem(CONFIG.THEME_KEY, theme);
+    }
+
+    function toggleTheme() {
+        const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+        applyTheme(current === 'dark' ? 'light' : 'dark');
+        Toast.show(current === 'dark' ? 'الوضع النهاري' : 'الوضع الليلي', 'info');
+    }
+
+    const themeToggleBtn = document.getElementById('themeToggle');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+    }
+
+    // 🔥 [v5.2.0] عرض المفضلة الفعلي في الشبكة
+    function toggleWishlistView(forceState) {
         const list = Wishlist.getAll();
-        if (list.length === 0) {
-            Toast.show('لا توجد منتجات في المفضلة', 'warning');
+        const btn = document.getElementById('wishlistBtn');
+        const mobBtn = document.getElementById('mobNavWishlist');
+
+        if (forceState !== undefined) {
+            state.showingWishlistOnly = forceState;
+        } else {
+            state.showingWishlistOnly = !state.showingWishlistOnly;
+        }
+
+        if (state.showingWishlistOnly) {
+            if (list.length === 0) {
+                Toast.show('قائمة المفضلة فارغة حالياً', 'warning');
+                state.showingWishlistOnly = false;
+                if (btn) btn.classList.remove('active');
+                if (mobBtn) mobBtn.classList.remove('active');
+                return;
+            }
+            const favIds = new Set(list.map(i => String(i.id)));
+            state.filteredItems = state.allItems.filter(i => favIds.has(String(i.id)));
+            if (btn) btn.classList.add('active');
+            if (mobBtn) mobBtn.classList.add('active');
+            Toast.show(`عرض منتجاتك المفضلة (${list.length})`, 'success');
+        } else {
+            if (btn) btn.classList.remove('active');
+            if (mobBtn) mobBtn.classList.remove('active');
+            applyFiltersAndSort();
+            Toast.show('تمت العودة لكامل الكتالوج', 'info');
             return;
         }
-        Toast.show(`لديك ${list.length} منتج في المفضلة`, 'success');
-    });
+        state.visibleCount = 0;
+        renderPage(false);
+    }
+
+    document.getElementById('wishlistBtn').addEventListener('click', () => toggleWishlistView());
+
+    // 🔥 [v5.2.0] دعم الروابط المباشرة (Deep Linking)
+    function handleDeepLinking() {
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const pId = params.get('product') || params.get('id');
+            const cat = params.get('cat') || params.get('category');
+            const brand = params.get('brand');
+            const q = params.get('q') || params.get('search');
+            const showFav = params.get('wishlist');
+
+            if (q) {
+                state.filters.search = q;
+                if (searchInput) searchInput.value = q;
+            }
+            if (cat) {
+                state.filters.category = cat;
+                if (categorySelect) categorySelect.value = cat;
+            }
+            if (brand) {
+                state.filters.brand = brand;
+                if (brandSelect) brandSelect.value = brand;
+            }
+            if (q || cat || brand) {
+                applyFiltersAndSort();
+            }
+            if (showFav === '1' || showFav === 'true') {
+                toggleWishlistView(true);
+            }
+            if (pId) {
+                const found = state.allItems.find(i => String(i.id) === String(pId));
+                if (found) {
+                    setTimeout(() => Modal.open(found), 250);
+                }
+            }
+        } catch (e) { /* silent */ }
+    }
+
+    function setCategoryFilter(category) {
+        state.filters.category = category || 'all';
+        if (categorySelect) categorySelect.value = state.filters.category;
+        if (categoryBar) {
+            categoryBar.querySelectorAll('.chip').forEach(ch => {
+                ch.classList.toggle('active', ch.dataset.cat === state.filters.category);
+            });
+        }
+        applyFiltersAndSort();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setBrandFilter(brand) {
+        state.filters.brand = brand || 'all';
+        if (brandSelect) brandSelect.value = state.filters.brand;
+        applyFiltersAndSort();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* -------- شريط التنقل السفلي للهواتف (Mobile Bottom Bar) -------- */
+    const mobHome = document.getElementById('mobNavHome');
+    if (mobHome) {
+        mobHome.addEventListener('click', () => {
+            if (state.showingWishlistOnly) toggleWishlistView(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+    const mobSearch = document.getElementById('mobNavSearch');
+    if (mobSearch) {
+        mobSearch.addEventListener('click', () => {
+            if (searchInput) {
+                searchInput.focus();
+                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+    const mobFilter = document.getElementById('mobNavFilter');
+    if (mobFilter) {
+        mobFilter.addEventListener('click', () => {
+            const isOpen = filtersPanel.classList.toggle('open');
+            filterToggle.classList.toggle('active', isOpen);
+            if (isOpen) filtersPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+    const mobWish = document.getElementById('mobNavWishlist');
+    if (mobWish) {
+        mobWish.addEventListener('click', () => toggleWishlistView());
+    }
+    const mobCart = document.getElementById('mobNavCart');
+    if (mobCart) {
+        mobCart.addEventListener('click', () => {
+            Cart.render();
+            cartSidebar.classList.add('open');
+            cartOverlay.classList.add('open');
+        });
+    }
 
     return {
         init: async function() {
@@ -3395,14 +3718,19 @@ const App = (function() {
             Connection.update();
             setupObserver();
 
+            initTheme();
             try {
                 await initLoad();
+                handleDeepLinking();
             }
             catch (e) {
                 showError('فشل بدء التطبيق: ' + (e.message || 'خطأ غير معروف'));
             }
         },
-        refreshFromServer
+        refreshFromServer,
+        setCategoryFilter,
+        setBrandFilter,
+        toggleWishlistView
     };
 })();
 
@@ -3427,5 +3755,32 @@ if (document.readyState === 'loading') {
     }
 }
 </script>
+
+<!-- شريط التنقل السفلي للهواتف المحمولة -->
+<nav class="mobile-bottom-nav" role="navigation" aria-label="شريط التنقل السريع">
+    <button class="mobile-nav-btn active" id="mobNavHome" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>الرئيسية</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobNavSearch" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>بحث</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobNavFilter" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+        <span>فلاتر</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobNavWishlist" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>المفضلة</span>
+        <span class="mobile-nav-badge" id="mobWishlistCount">0</span>
+    </button>
+    <button class="mobile-nav-btn" id="mobNavCart" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span>السلة</span>
+        <span class="mobile-nav-badge" id="mobCartCount">0</span>
+    </button>
+</nav>
+
 </body>
 </html>
